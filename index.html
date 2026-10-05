@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#7c3aed">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Camile ET">
+  <meta name="application-name" content="Camile ET">
+  <title>Método ET · Camile · CGU</title>
+  <meta name="metodo-et-build" content="1.0.0-camile-bizurafo-focus">
+  <link rel="icon" type="image/png" href="./assets/camile-sunflower.svg?v=1.0.0-camile">
+  <link rel="apple-touch-icon" href="./assets/camile-sunflower.svg?v=1.0.0-camile">
+  <link rel="manifest" href="./manifest.webmanifest?v=1.0.0-camile">
+  <link rel="stylesheet" href="./styles.css?v=1.0.0-camile">
+  <link rel="stylesheet" href="./drive-sync.css?v=1.0.0-camile">
+  <style>
+    .app-footer{padding-top:24px}
+    .brand.brand-lockup{display:block;width:100%;padding:0;margin:0;text-decoration:none;line-height:0}
+    .brand.brand-lockup img{display:block;width:100%;height:auto;aspect-ratio:3 / 1;object-fit:contain;object-position:center;border-radius:12px;box-shadow:0 0 18px rgba(197,246,91,.08)}
+    @media(max-width:1100px){.brand.brand-lockup img{border-radius:10px}}
+    @media(max-width:720px){.app-footer{padding-top:20px}.sidebar .brand.brand-lockup{display:none}}
+  </style>
+  <script>
+    // v2.0: a StudyOS atual não depende do Service Worker para navegar.
+    // Remove o SW/cache antigo da Método ET para impedir execução de scripts obsoletos no Dock.
+    window.addEventListener('load', () => {
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations().then(regs => Promise.all(
+          regs.filter(reg => reg.scope.includes('/metodo-camile/')).map(reg => reg.unregister())
+        )).catch(() => {});
+      }
+      if ('caches' in window) {
+        caches.keys().then(keys => Promise.all(
+          keys.filter(key => key.startsWith('studyos-metodo-et-')).map(key => caches.delete(key))
+        )).catch(() => {});
+      }
+    }, { once: true });
+  </script>
+</head>
+<body>
+  <a class="skip" href="#main">Pular para o conteúdo</a>
+  <aside class="sidebar">
+    <a class="brand brand-lockup" href="#today" aria-label="Método ET · Estudos da Camile · CGU">
+      <img src="./assets/camile-brand.svg?v=1.0.0-camile" width="594" height="198" alt="Método ET · Estudos da Camile · CGU">
+    </a>
+    <div class="focus"><span class="dot"></span> MISSÃO CGU <small>Auditoria e Fiscalização</small></div>
+    <nav aria-label="Navegação principal">
+      <a href="#today">◉ <span>Hoje</span></a>
+      <a href="#progress">▰ <span>Progresso</span></a>
+      <a href="#achievements">🚀 <span>Conquistas</span></a>
+      <a href="#subjects">▤ <span>Disciplinas</span></a>
+      <a href="#solid">◇ <span>Estudo Sólido</span></a>
+      <a href="#planning">↻ <span>Metas ET</span></a>
+      <a href="#history">▥ <span>Diário</span></a>
+      <a href="#legislation">§ <span>Legislação Seca</span></a>
+      <a href="#data">⇅ <span>Dados</span></a>
+      <a href="#reminders">▧ <span>Lembretes</span></a>
+      <a href="#motivation">✦ <span>Lembre-se sempre!</span></a>
+    </nav>
+    <footer><strong>🌻 Constância floresce em aprovação.</strong></footer>
+  </aside>
+  <div class="workspace">
+    <header class="topbar"><span id="date-label"></span><span class="pill">PRÉ-EDITAL <i></i></span></header>
+    <main id="main" tabindex="-1"><p>Preparando seu espaço de estudo…</p></main>
+    <footer class="app-footer"><div class="footer-message"><p class="footer-title">Sua preparação de hoje <strong>constrói a Camile aprovada de amanhã.</strong></p><p class="footer-detail">Um ciclo por vez. Uma meta por vez. <strong>Rumo à CGU.</strong></p></div></footer>
+    <div id="notice" role="status" aria-live="polite"></div>
+  </div>
+  <dialog id="modal"><div id="modal-body"></div><button class="close secondary" id="close-modal" aria-label="Fechar janela">Fechar</button></dialog>
+
+  <script type="module" src="./src/app.js?v=1.0.0-camile"></script>
+  <script src="./oauth-client-hotfix.js?v=1.0.0-camile" defer></script>
+  <script src="./drive-sync.js?v=1.0.0-camile" defer></script>
+  <script src="./drive-sync-ui.js?v=1.0.0-camile" defer></script>
+</body>
+</html>
