@@ -6,10 +6,4 @@
 <circle cx="490" cy="163" r="9" fill="#21170f"/><ellipse cx="544" cy="195" rx="22" ry="14" fill="#4b2d21"/>
 <path d="M445 133 l-14 -28 q28 -8 38 16z" fill="#7b523b"/><path d="M498 126 l10 -28 q25 8 24 30z" fill="#7b523b"/>
 <rect x="179" y="275" width="38" height="48" rx="18" fill="#6d4934"/><rect x="400" y="274" width="38" height="49" rx="18" fill="#6d4934"/>
-<g transform="translate(210 55)">
-<circle cx="0" cy="0" r="29" fill="#6b3f2a"/>
-<g fill="#ffd85f">
-<ellipse rx="12" ry="34" transform="rotate(0) translate(0 -44)"/><ellipse rx="12" ry="34" transform="rotate(45) translate(0 -44)"/><ellipse rx="12" ry="34" transform="rotate(90) translate(0 -44)"/><ellipse rx="12" ry="34" transform="rotate(135) translate(0 -44)"/><ellipse rx="12" ry="34" transform="rotate(180) translate(0 -44)"/><ellipse rx="12" ry="34" transform="rotate(225) translate(0 -44)"/><ellipse rx="12" ry="34" transform="rotate(270) translate(0 -44)"/><ellipse rx="12" ry="34" transform="rotate(315) translate(0 -44)"/>
-</g>
-</g>
 </svg>
