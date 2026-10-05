@@ -194,3 +194,49 @@ input,select,textarea{background:#140e1c;border-color:#503b60}
 .metrics.four{grid-template-columns:repeat(4,minmax(0,1fr))}
 @media(max-width:1250px){.metrics.four{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:720px){.metrics.four{grid-template-columns:1fr}}
+
+/* v1.0.2 Camile — identidade visual isolada da Método ET original */
+.sidebar{background:linear-gradient(180deg,#1b1026 0%,#120d18 100%);border-right-color:#4f3565}
+.sidebar footer{color:#d8b8ff}
+.secondary{background:#261830;border-color:#634779;color:#fff8fd}
+.hero{border-color:#9a5fc2;background:linear-gradient(130deg,#4a235f 0%,#241530 62%,#1c1326 100%)}
+.progress-toolbar,.trend-chart,.attention-item,.goal-task,.layer-subject,.bizur-module,.motivation-card{background:#1a1024;border-color:#4f3565}
+.self-compare{border-color:#7b4d96;background:linear-gradient(145deg,#2d1839,#17101f 68%)}
+.self-compare .metric.mini{background:#1a1024}
+.comparison-delta.up{border-color:#9a5fc2;color:#ffb7de;background:#2a1735}
+.comparison-delta.same{background:#24152f}
+.trend-column i{background:linear-gradient(180deg,#ff9bd2,#9b7cff);box-shadow:0 0 12px rgba(255,155,210,.16)}
+.attention-item.lime{border-color:#8f5aad;background:#281532}
+.intensity-card{border-color:#8858a0;background:radial-gradient(circle at 50% 25%,rgba(255,155,210,.14),transparent 34%),linear-gradient(145deg,#2b1735,#160f20 72%);box-shadow:0 22px 55px rgba(0,0,0,.28),inset 0 0 0 1px rgba(216,184,255,.04)}
+.intensity-card .intensity-mark{border-color:#a76ad7;color:#ffb7de;box-shadow:0 0 22px rgba(216,184,255,.14)}
+.goal-summary{border-color:#694b82}
+.goal-task.done{border-color:#8f5aad;background:#281532}
+.goal-task>span{border-color:#694b82}
+.goal-task.done b{color:#ffd9ef}
+.layer-subject{border-color:#4f3565;background:#1a1024}
+.layer-subject.subject-afo{--subject:#ff8fc7}
+.layer-subject.subject-dad{--subject:#d8b8ff}
+.layer-subject.subject-ti{--subject:#a98bff}
+.layer-subject.subject-port{--subject:#ffb7de}
+.layer-subject.subject-dcon{--subject:#9eb8ff}
+.layer-subject.subject-info{--subject:#c3a1ff}
+.layer-row>div{background:#2c2037}
+.bizur-panel{border-color:#7b4d96;background:linear-gradient(145deg,#2b1735,#160f20 72%)}
+.bizur-module{background:#1a1024;border-color:#4f3565}
+.bizur-module.core{border-left-color:#ff9bd2}
+.bizur-module.done{border-color:#9a5fc2;background:#281532}
+.bizur-module-number,.bizur-number{border-color:#7b4d96;color:#ffb7de}
+.bizur-command{border-color:#7b4d96}
+.sticky{box-shadow:3px 7px 0 #0004;color:#25142f;border-top-color:#9a5fc2}
+.sticky-todo{background:#efc9ff;border-color:#b884dd}
+.sticky-done{background:#e6b8dc;border-color:#b978a8}
+.sticky-future{background:#cbb5f4;border-color:#8e72c2}
+.sticky textarea,.sticky label,.sticky select{color:#2a1735}
+.sticky button{background:#4a235f;color:#fff8fd}
+.motivation-card{background:#1a1024}
+.footer-message{border:1px solid #694b82;border-top-color:#9a5fc2;border-bottom-color:#3b2549;background:linear-gradient(150deg,#2d1839,#17101f 68%);box-shadow:inset 0 1px 0 rgba(216,184,255,.12),inset 0 -1px 0 rgba(0,0,0,.42),0 5px 0 #0e0813,0 6px 0 #4a315b,0 18px 28px rgba(0,0,0,.34)}
+.footer-title strong{color:#ff9bd2}
+.footer-detail{color:#d2c0df}
+.footer-detail strong{color:#f4eaff}
+.app-footer::after{background-image:url('./assets/camile-capybara.svg');filter:none}
+.subject-info .layer-head b::after{content:""}
