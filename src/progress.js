@@ -1,4 +1,4 @@
-import {day,validDay,RULES} from './core.js';
+import {day,validDay,RULES} from './core.js?v=1.0.1-camile';
 export function durationMinutes(hours,minutes){let h=Number(hours||0),m=Number(minutes||0);if(!Number.isInteger(h)||!Number.isInteger(m)||h<0||m<0||m>59||h*60+m<1||h*60+m>1440)throw Error('Informe horas e minutos válidos: minutos entre 0 e 59 e duração total entre 1 min e 24h.');return h*60+m;}
 const serial=s=>Date.parse(s+'T12:00:00Z')/86400000;
 function optionalGap(a,b){for(let d=serial(a)+1;d<serial(b);d++){if(new Date(d*86400000).getUTCDay()!==0)return false;}return true;}
