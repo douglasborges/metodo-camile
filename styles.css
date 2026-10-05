@@ -189,3 +189,8 @@ input,select,textarea{background:#140e1c;border-color:#503b60}
 .info-route-note{border-left:4px solid #ffd75e}
 .subject-info .layer-head b::after{content:" 🌻";font-size:.9em}
 @media(max-width:720px){.app-footer::after{width:112px;height:66px;right:8px;opacity:.48}}
+
+/* v1.0.1 Camile — carga semanal e painel ampliado */
+.metrics.four{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media(max-width:1250px){.metrics.four{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:720px){.metrics.four{grid-template-columns:1fr}}
