@@ -12,25 +12,25 @@ export const LEGISLATION_QUEUE=[
 ];
 export const GOAL_TEMPLATES=[
  {
-  id:'meta-01',number:1,title:'Meta 01 · 30h reais',subtitle:'Início da jornada CGU: construir base em Português, Direito Constitucional e Informática e Dados, com ciclo mínimo de 1h por disciplina e tempo real livre.',targetMinutes:1800,coreMinutes:1500,marginMinutes:300,
+  id:'meta-01',number:1,title:'Meta 01 · 30h reais',subtitle:'Início da jornada CGU: Português com Marcello Giullian + Andresan à noite, DCON com Nelma (Art. 5º em 24 blocos do Estratégia) e Informática e Dados, com ciclo mínimo de 1h por disciplina.',targetMinutes:1800,coreMinutes:1500,marginMinutes:300,
   tasks:[
    {id:'c01-01',title:'Português · Aula 1 — teoria',check:['theory','port','port-u-1']},
-   {id:'c01-02',title:'DCON · Aula 1 — Aplicabilidade das normas · teoria',check:['theory','dcon','dcon-u-1']},
+   {id:'c01-02',title:'DCON · Nelma Aula 01 — teoria',check:['theory','dcon','dcon-u-1']},
    {id:'c01-03',title:'Informática · Windows 11 — teoria',check:['theory','info','info-u-1']},
    {id:'c01-04',title:'Português · Aula 1 — revisão + bateria',check:['battery','port','port-u-1']},
-   {id:'c01-05',title:'DCON · Aula 1 — revisão + bateria',check:['battery','dcon','dcon-u-1']},
+   {id:'c01-05',title:'DCON · Nelma Aula 01 — revisão + bateria',check:['battery','dcon','dcon-u-1']},
    {id:'c01-06',title:'Informática · Word — teoria',check:['theory','info','info-u-4']},
    {id:'c01-07',title:'Português · Aula 2 — teoria',check:['theory','port','port-u-2']},
-   {id:'c01-08',title:'DCON · Aula 2 — Princípios fundamentais · teoria',check:['theory','dcon','dcon-u-2']},
+   {id:'c01-08',title:'DCON · Art. 5º Estratégia — blocos 1–8',check:['blockAtLeast','dcon','dcon-u-2',8]},
    {id:'c01-09',title:'Informática · Excel — teoria',check:['theory','info','info-u-5']},
    {id:'c01-10',title:'Português · Aula 2 — revisão + bateria',check:['battery','port','port-u-2']},
-   {id:'c01-11',title:'DCON · Aula 2 — revisão + bateria',check:['battery','dcon','dcon-u-2']},
+   {id:'c01-11',title:'DCON · Art. 5º Estratégia — blocos 9–16',check:['blockAtLeast','dcon','dcon-u-2',16]},
    {id:'c01-12',title:'Informática · PowerPoint — teoria',check:['theory','info','info-u-6']},
    {id:'c01-13',title:'Português · Aula 3 — teoria',check:['theory','port','port-u-3']},
-   {id:'c01-14',title:'DCON · Aula 3 — Direitos e Garantias Fundamentais · teoria',check:['theory','dcon','dcon-u-3']},
+   {id:'c01-14',title:'DCON · Art. 5º Estratégia — blocos 17–24 · concluir teoria',check:['theory','dcon','dcon-u-2']},
    {id:'c01-15',title:'Informática · Correio Eletrônico — teoria',check:['theory','info','info-u-8']},
    {id:'c01-16',title:'Português · Aula 3 — revisão + bateria',check:['battery','port','port-u-3']},
-   {id:'c01-17',title:'DCON · Aula 3 — revisão + bateria',check:['battery','dcon','dcon-u-3']},
+   {id:'c01-17',title:'DCON · Art. 5º — revisão + bateria',check:['battery','dcon','dcon-u-2']},
    {id:'c01-18',title:'Informática · Navegadores — teoria',check:['theory','info','info-u-9']}
   ]
  },
