@@ -1,4 +1,4 @@
-import {copy,day,validDay,uid} from './core.js?v=1.0.1-camile';
+import {copy,day,validDay,uid} from './core.js?v=1.0.2-camile';
 export const REMINDER_STATUS={todo:'A fazer',done:'Feito',future:'Futuramente'};
 export const LEGISLATION_QUEUE=[
  {id:'cf88',short:'CF/88',title:'Constituição Federal de 1988'},
