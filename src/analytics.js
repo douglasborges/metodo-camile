@@ -1,4 +1,4 @@
-import * as M from './core.js?v=1.0.0-camile';
+import * as M from './core.js?v=1.0.1-camile';
 
 const ACTIVE=['port','dcon','info','afo','dad','ti'];
 const shift=(date,days)=>{const d=new Date(date+'T12:00:00');d.setDate(d.getDate()+days);return M.day(d);};
@@ -47,7 +47,7 @@ function subjectAnalytics(st,period,today){
   });
 }
 function activityDistribution(rows){
-  const ids=['theory','battery','checkpoint','general','solid','micro','free'];
+  const ids=['theory','battery','andresan','checkpoint','general','solid','micro','free'];
   return ids.map(id=>({id,label:M.ACTIVITIES[id],minutes:sum(rows.filter(x=>x.activity===id),'minutes')})).filter(x=>x.minutes>0);
 }
 function seriesByWeek(st,today,subjectId='all',count=8){
