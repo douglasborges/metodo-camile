@@ -1,0 +1,47 @@
+{
+  "name": "Método ET · Estudos da Camile · CGU",
+  "short_name": "Camile ET",
+  "description": "Método ET para a preparação da Camile rumo à CGU — Auditoria e Fiscalização.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": [
+    "standalone",
+    "minimal-ui",
+    "browser"
+  ],
+  "background_color": "#160f20",
+  "theme_color": "#7c3aed",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "./assets/camile-sunflower.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "./assets/camile-sunflower.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Hoje",
+      "short_name": "Hoje",
+      "url": "./index.html#today"
+    },
+    {
+      "name": "Progresso",
+      "short_name": "Progresso",
+      "url": "./index.html#progress"
+    },
+    {
+      "name": "Dados",
+      "short_name": "Dados",
+      "url": "./index.html#data"
+    }
+  ]
+}
