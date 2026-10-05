@@ -148,13 +148,12 @@ export function session(current,input){
  if(input.activity==='solid'&&s.phase!=='solid')throw Error('Conclua o Estudo Novo antes de registrar sessões do Estudo Sólido.');
  if(input.activity==='night'&&st.sessions.filter(v=>v.subjectId===s.id&&v.date===input.date&&v.activity==='night').reduce((a,v)=>a+v.minutes,0)+minutes>10)throw Error('A revisão noturna totaliza de 5 a 10 minutos por disciplina no dia.');
  if(input.activity==='checkpoint'&&!checkpoints(s).some(c=>c.units.some(v=>v.id===u.id)&&['due','done'].includes(c.status)))throw Error('Conclua teoria e baterias do bloco antes do checkpoint.');
- if(input.activity==='battery'&&(!u.theoryDone||!u.theoryDate||input.date<=u.theoryDate))throw Error('Confirme a teoria e faça a primeira bateria em outro dia, após a teoria.');
- if(input.activity==='general'&&(!methodUnits(s).every(u=>u.theoryDone&&u.batteryDone)||!checkpoints(s).every(c=>c.status==='done')))throw Error('A revisão geral começa após teoria, baterias e checkpoints.');
+ // Modo flexível Camile: registros históricos de bateria/revisão podem ser lançados livremente.
+ // A consolidação da etapa continua dependendo dos requisitos do Método ET.
  let start=input.start===''||input.start==null?null:Number(input.start),end=input.end===''||input.end==null?null:Number(input.end);
  if((start!==null||end!==null)&&(!Number.isFinite(start)||!Number.isFinite(end)||start<0||end<start))throw Error('Preencha início e fim válidos do conteúdo.');
  const entry={id:uid(),subjectId:s.id,unitId:u?.id||'',title:String(input.title||'').trim()||u?.title||'',date:input.date,createdAt:new Date().toISOString(),activity:input.activity,minutes,questions:q,correct,medium:input.medium||'',start,end,notes:String(input.notes||''),legacy:false,cycleApplied:false};
- if(input.applyCycle&&!['night','andresan'].includes(input.activity)){
-  if(input.date!==day()||CYCLE[st.cycle.index]!==s.id)throw Error('Só a disciplina atual, registrada hoje, pode concluir a ocorrência do ciclo.');
+ if(input.applyCycle&&!['night','andresan'].includes(input.activity)&&input.date===day()&&CYCLE[st.cycle.index]===s.id){
   st.cycle.minutes=0;
   st.cycle.index=(st.cycle.index+1)%CYCLE.length;
   entry.cycleApplied=true;
@@ -164,7 +163,7 @@ export function session(current,input){
 }
 export function setUnit(current,sid,id,values){let st=copy(current),{s,u}=getUnit(st,sid,id);
  let theory=!!values.theoryDone,battery=!!values.batteryDone,general=!!values.generalDone,material=!!values.materialReady;
- if(theory&&!u.theoryDone&&!u.legacy.some(e=>e.status!=='Em espera'||e.date))requirePrevious(s,u);
+ // Modo flexível Camile: a conclusão pode ser informada fora da ordem para reconstruir histórico.
  if(theory&&(!validDay(values.theoryDate)||values.theoryDate>day()))throw Error('Informe a data real da conclusão da teoria.');
  if(battery&&(!theory||u.battery.attempted<30))throw Error('A primeira bateria exige teoria concluída e ao menos 30 questões registradas.');
  if(general&&(!methodUnits(s).every(v=>v.id===u.id?theory&&battery:v.theoryDone&&v.batteryDone)||!checkpoints(s).every(c=>c.status==='done')))throw Error('Conclua teoria, baterias e checkpoints antes da revisão geral.');
