@@ -1,4 +1,4 @@
-import * as M from './core.js?v=1.0.1-camile';
+import * as M from './core.js?v=1.0.2-camile';
 
 const ACTIVE=['port','dcon','info','afo','dad','ti'];
 const shift=(date,days)=>{const d=new Date(date+'T12:00:00');d.setDate(d.getDate()+days);return M.day(d);};
