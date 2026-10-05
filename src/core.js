@@ -52,27 +52,14 @@ export function normalizeMethodState(current){
  const dcon=st.subjects?.find(s=>s.id==='dcon');
  if(dcon){
   dcon.course='Direito Constitucional — Nelma Fontana (Cebraspe) · Art. 5º pelo Estratégia';
-  const legacyShape=(dcon.units||[]).length===21&&(dcon.units||[]).some(u=>/\[A0?1\]/.test(String(u.title||'')));
   const untouched=!(st.sessions||[]).some(x=>x.subjectId==='dcon')&&(dcon.units||[]).every(u=>!u.theoryDone&&!u.batteryDone&&!u.generalDone&&!u.materialReady);
+  const legacyShape=(dcon.units||[]).length===21||(dcon.units||[]).length===16;
   if(legacyShape&&untouched){
    const unit=(id,order,title,extra={})=>({id,title,order,theoryDone:false,theoryDate:'',batteryDone:false,generalDone:false,materialReady:false,battery:{attempted:0,correct:0},general:{attempted:0,correct:0},legacy:[],marks:[],...extra});
    dcon.units=[
-    unit('dcon-u-1',1,'Nelma · Aula 01 — Aplicabilidade das normas constitucionais + Princípios fundamentais'),
-    unit('dcon-u-2',2,'Art. 5º — Estratégia · 24 blocos de videoaulas',{studyPlan:'Estudar os 24 blocos do Estratégia antes de retomar a Nelma.',totalBlocks:24,source:'Estratégia Concursos'}),
-    unit('dcon-u-3',3,'Nelma · Aula 03 — Direitos Sociais + Direitos de Nacionalidade'),
-    unit('dcon-u-4',4,'Nelma · Aula 04 — Direitos Políticos + Partidos Políticos'),
-    unit('dcon-u-5',5,'Nelma · Aula 05 — Organização do Estado'),
-    unit('dcon-u-6',6,'Nelma · Aula 06 — Poder Legislativo'),
-    unit('dcon-u-7',7,'Nelma · Aula 07 — Processo Legislativo'),
-    unit('dcon-u-8',8,'Nelma · Aula 08 — Fiscalização Contábil, Financeira e Orçamentária + Poder Executivo'),
-    unit('dcon-u-9',9,'Nelma · Aula 09 — Poder Judiciário'),
-    unit('dcon-u-10',10,'Nelma · Aula 10 — Funções Essenciais à Justiça'),
-    unit('dcon-u-11',11,'Nelma · Aula 11 — Controle de Constitucionalidade'),
-    unit('dcon-u-12',12,'Nelma · Aula 12 — Defesa do Estado e das Instituições Democráticas'),
-    unit('dcon-u-13',13,'Nelma · Aula 13 — Constituição: conceito e classificações'),
-    unit('dcon-u-14',14,'Nelma · Aula 14 — Poder Constituinte'),
-    unit('dcon-u-15',15,'Nelma · Aula 15 — Ordem Econômica e Financeira'),
-    unit('dcon-u-16',16,'Nelma · Aula 16 — Ordem Social')
+    unit('dcon-u-1',1,'Nelma · Aula 01'),
+    unit('dcon-u-2',2,'Art. 5º — Estratégia · 24 blocos de videoaulas',{studyPlan:'Estudar os 24 blocos do Estratégia antes de retomar as aulas da Nelma.',totalBlocks:24,source:'Estratégia Concursos'}),
+    ...Array.from({length:15},(_,i)=>unit('dcon-u-'+(i+3),i+3,'Nelma · Aula '+String(i+2).padStart(2,'0')))
    ];
    dcon.checkpoints={};
   }
@@ -86,6 +73,11 @@ export function normalizeMethodState(current){
   if(!/(finalizei|concluid[ao]|totalmente concluid[ao]|pdf concluido|teoria concluida)/.test(note))continue;
   const s=st.subjects?.find(x=>x.id===row.subjectId),u=s?.units?.find(x=>x.id===row.unitId);
   if(u&&!u.theoryDone){u.theoryDone=true;u.theoryDate=validDay(row.date)?row.date:u.theoryDate;}
+ }
+ const art5=dcon?.units?.find(u=>u.id==='dcon-u-2');
+ if(art5&&!art5.theoryDone){
+  const hit=(st.sessions||[]).some(row=>row.subjectId==='dcon'&&row.unitId==='dcon-u-2'&&/bloco\s*24\b/i.test(String(row.title||'')+' '+String(row.notes||'')));
+  if(hit){art5.theoryDone=true;art5.theoryDate=(st.sessions||[]).filter(row=>row.subjectId==='dcon'&&row.unitId==='dcon-u-2'&&/bloco\s*24\b/i.test(String(row.title||'')+' '+String(row.notes||''))).map(row=>row.date).sort().at(-1)||art5.theoryDate;}
  }
  return st;
 }
