@@ -1,7 +1,7 @@
 export const KEY='metodo-et:camile:v1';
 export const CYCLE=['port','dcon','info'];
 export const RULES=Object.freeze({afo:{label:'AFO',minutes:120,checkpoint:3,unit:'módulo'},cpu:{label:'Contabilidade Pública',minutes:120,checkpoint:3,unit:'módulo'},dad:{label:'DAD',minutes:120,checkpoint:4,unit:'aula'},ti:{label:'TI',minutes:90,checkpoint:4,unit:'aula'},port:{label:'Português',minutes:60,checkpoint:4,unit:'aula'},dcon:{label:'DCON',minutes:60,checkpoint:4,unit:'aula'},info:{label:'Informática e Dados',minutes:60,checkpoint:4,unit:'aula'}});
-export const ACTIVITIES={free:'Estudo livre',theory:'Teoria',micro:'Microrrevisão',battery:'Revisão + primeira bateria',checkpoint:'Checkpoint',general:'Revisão geral',solid:'Questões — Estudo Sólido',night:'Revisão noturna'};
+export const ACTIVITIES={free:'Estudo livre',theory:'Teoria',micro:'Microrrevisão',battery:'Revisão + primeira bateria',checkpoint:'Checkpoint',general:'Revisão geral',solid:'Questões — Estudo Sólido',andresan:'Andresan · questões Cebraspe',night:'Revisão noturna'};
 export const TI_TCU_SELECTED_36=Object.freeze([
  'FD00','FD01','FD02','FD03','FD04','FD05','FD06','SI00','SI01',
  'TI01.I','TI01.II','TI02','TI03','TI04','TI05','TI06','TI07','TI08','TI08.II','TI09',
@@ -46,11 +46,40 @@ export function methodUnits(s){
 export function methodOrder(s,u){const i=methodUnits(s).findIndex(v=>v.id===u?.id);return i>=0?i+1:Number(u?.order)||0;}
 export function normalizeMethodState(current){
  const st=copy(current);
+ st.settings=st.settings||{};
+ st.settings.weeklyMinimum=1200;
+ st.settings.dailyMinimum=180;
+ const dcon=st.subjects?.find(s=>s.id==='dcon');
+ if(dcon){
+  dcon.course='Direito Constitucional — Nelma Fontana (Cebraspe) · Art. 5º pelo Estratégia';
+  const legacyShape=(dcon.units||[]).length===21&&(dcon.units||[]).some(u=>/\[A0?1\]/.test(String(u.title||'')));
+  const untouched=!(st.sessions||[]).some(x=>x.subjectId==='dcon')&&(dcon.units||[]).every(u=>!u.theoryDone&&!u.batteryDone&&!u.generalDone&&!u.materialReady);
+  if(legacyShape&&untouched){
+   const unit=(id,order,title,extra={})=>({id,title,order,theoryDone:false,theoryDate:'',batteryDone:false,generalDone:false,materialReady:false,battery:{attempted:0,correct:0},general:{attempted:0,correct:0},legacy:[],marks:[],...extra});
+   dcon.units=[
+    unit('dcon-u-1',1,'Nelma · Aula 01 — Aplicabilidade das normas constitucionais + Princípios fundamentais'),
+    unit('dcon-u-2',2,'Art. 5º — Estratégia · 24 blocos de videoaulas',{studyPlan:'Estudar os 24 blocos do Estratégia antes de retomar a Nelma.',totalBlocks:24,source:'Estratégia Concursos'}),
+    unit('dcon-u-3',3,'Nelma · Aula 03 — Direitos Sociais + Direitos de Nacionalidade'),
+    unit('dcon-u-4',4,'Nelma · Aula 04 — Direitos Políticos + Partidos Políticos'),
+    unit('dcon-u-5',5,'Nelma · Aula 05 — Organização do Estado'),
+    unit('dcon-u-6',6,'Nelma · Aula 06 — Poder Legislativo'),
+    unit('dcon-u-7',7,'Nelma · Aula 07 — Processo Legislativo'),
+    unit('dcon-u-8',8,'Nelma · Aula 08 — Fiscalização Contábil, Financeira e Orçamentária + Poder Executivo'),
+    unit('dcon-u-9',9,'Nelma · Aula 09 — Poder Judiciário'),
+    unit('dcon-u-10',10,'Nelma · Aula 10 — Funções Essenciais à Justiça'),
+    unit('dcon-u-11',11,'Nelma · Aula 11 — Controle de Constitucionalidade'),
+    unit('dcon-u-12',12,'Nelma · Aula 12 — Defesa do Estado e das Instituições Democráticas'),
+    unit('dcon-u-13',13,'Nelma · Aula 13 — Constituição: conceito e classificações'),
+    unit('dcon-u-14',14,'Nelma · Aula 14 — Poder Constituinte'),
+    unit('dcon-u-15',15,'Nelma · Aula 15 — Ordem Econômica e Financeira'),
+    unit('dcon-u-16',16,'Nelma · Aula 16 — Ordem Social')
+   ];
+   dcon.checkpoints={};
+  }
+ }
  for(const s of st.subjects||[])for(const u of s.units||[]){
   if(u.theoryDone&&Number(u.battery?.attempted||0)>=30)u.batteryDone=true;
  }
- // Se o Diário registra explicitamente a conclusão da teoria, sincroniza o estado da unidade.
- // Não inferimos conclusão apenas por tempo: exigimos linguagem inequívoca no próprio registro.
  for(const row of st.sessions||[]){
   if(row.legacy===true||row.activity!=='theory'||!row.unitId)continue;
   const note=(String(row.title||'')+' '+String(row.notes||'')).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
@@ -67,7 +96,7 @@ export function validDay(s){return /^\d{4}-\d{2}-\d{2}$/.test(s||'')&&day(new Da
 export function weekStart(s=day()){let d=new Date(s+'T12:00:00');d.setDate(d.getDate()-(d.getDay()+6)%7);return day(d);}
 export function hm(n){n=Math.round(n||0);return Math.floor(n/60)+'h'+String(n%60).padStart(2,'0');}
 export function pct(q){return q?.attempted?Math.round(q.correct/q.attempted*100)+'%':'—';}
-export function emptyState(){return {version:1,settings:{weeklyMinimum:1260,dailyMinimum:180,focus:'CGU',secondary:'TCU'},subjects:[],sessions:[],cycle:{index:0,minutes:0},imports:[],archive:[],updatedAt:null};}
+export function emptyState(){return {version:1,settings:{weeklyMinimum:1200,dailyMinimum:180,focus:'CGU',secondary:'TCU'},subjects:[],sessions:[],cycle:{index:0,minutes:0},imports:[],archive:[],updatedAt:null};}
 const touched=u=>u.legacy.some(e=>e.status!=='Em espera')||u.theoryDone;
 export function checkpoints(s){let result=[],size=RULES[s.id]?.checkpoint||4,route=methodUnits(s);for(let i=0;i<route.length;i+=size){let units=route.slice(i,i+size),id=s.id+'-cp-'+(i/size+1),record=s.checkpoints[id];result.push({id,number:i/size+1,units,partial:units.length<size,record,status:record?.done?'done':units.every(u=>u.theoryDone&&u.batteryDone)?'due':units.every(u=>u.theoryDone)?'battery':units.every(touched)?'audit':'planned'});}return result;}
 export function unitSituation(u){if(u?.deferred&&!u.theoryDone&&!u.batteryDone)return 'Deixar para depois';return u.generalDone&&u.materialReady?'Revisão geral concluída':u.theoryDone&&u.batteryDone?'Bateria concluída':u.theoryDone?'Bateria pendente':touched(u)?'Conferir avanço importado':'Estudar';}
@@ -121,6 +150,7 @@ export function session(current,input){
  if(!s||!validDay(input.date)||input.date>day()||!Number.isInteger(minutes)||minutes<1||minutes>1440||!ACTIVITIES[input.activity])throw Error('Confira disciplina, data, atividade e duração.');
  if(!Number.isInteger(q)||!Number.isInteger(correct)||q<0||correct<0||correct>q)throw Error('Confira questões e acertos.');
  if(input.activity==='night'&&(minutes<5||minutes>10))throw Error('Revisão noturna: de 5 a 10 minutos por disciplina.');
+ if(input.activity==='andresan'&&(s.id!=='port'||q<1))throw Error('Andresan: registre em Português e informe ao menos 1 questão resolvida.');
  let u=input.unitId?getUnit(st,s.id,input.unitId).u:null;
  if(['theory','battery','general','checkpoint'].includes(input.activity)&&!u)throw Error('Selecione a aula ou módulo.');
  if(input.activity==='solid'&&s.phase!=='solid')throw Error('Conclua o Estudo Novo antes de registrar sessões do Estudo Sólido.');
@@ -131,7 +161,7 @@ export function session(current,input){
  let start=input.start===''||input.start==null?null:Number(input.start),end=input.end===''||input.end==null?null:Number(input.end);
  if((start!==null||end!==null)&&(!Number.isFinite(start)||!Number.isFinite(end)||start<0||end<start))throw Error('Preencha início e fim válidos do conteúdo.');
  const entry={id:uid(),subjectId:s.id,unitId:u?.id||'',title:String(input.title||'').trim()||u?.title||'',date:input.date,createdAt:new Date().toISOString(),activity:input.activity,minutes,questions:q,correct,medium:input.medium||'',start,end,notes:String(input.notes||''),legacy:false,cycleApplied:false};
- if(input.applyCycle&&input.activity!=='night'){
+ if(input.applyCycle&&!['night','andresan'].includes(input.activity)){
   if(input.date!==day()||CYCLE[st.cycle.index]!==s.id)throw Error('Só a disciplina atual, registrada hoje, pode concluir a ocorrência do ciclo.');
   st.cycle.minutes=0;
   st.cycle.index=(st.cycle.index+1)%CYCLE.length;
