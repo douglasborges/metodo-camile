@@ -38,6 +38,7 @@ jobs:
           cp src/analytics.js /tmp/analytics.mjs
           cp src/achievements.js /tmp/achievements.mjs
           cp src/cgu-syllabus.js /tmp/cgu-syllabus.mjs
+          cp src/cgu-materials.js /tmp/cgu-materials.mjs
           node --check /tmp/app.mjs
           node --check /tmp/core.mjs
           node --check /tmp/personal.mjs
@@ -45,6 +46,7 @@ jobs:
           node --check /tmp/analytics.mjs
           node --check /tmp/achievements.mjs
           node --check /tmp/cgu-syllabus.mjs
+          node --check /tmp/cgu-materials.mjs
           node --check drive-sync.js
           node --check drive-sync-ui.js
           grep -q "PÓS-EDITAL · CGU 2026" index.html
@@ -63,6 +65,17 @@ jobs:
           grep -q "historical-camile" src/core.js
           grep -q "blocksCompleted" src/core.js
           grep -q "cobertura parcial" src/app.js
+          grep -q "GOAL_PLAN_VERSION=3" src/personal.js
+          grep -q "GOAL_CYCLES_PER_META=2" src/personal.js
+          grep -q "GOAL_META_COUNT=8" src/personal.js
+          grep -q "cycleStep" src/personal.js
+          grep -q "Marcelo Soares" src/cgu-materials.js
+          grep -q "Rafael Oliveira" src/cgu-materials.js
+          grep -q "Ramon · TI TOTAL" src/cgu-materials.js
+          grep -q "Estratégia · curso de Políticas Públicas" src/cgu-materials.js
+          grep -q "Não usar Direção" src/cgu-materials.js
+          grep -q "Não adquirir/reabrir curso próprio do Rodrigo Rennó" src/cgu-materials.js
+          grep -q "1.2.0-cgu-metas" index.html
 
       - name: Empacotar site
         uses: actions/upload-pages-artifact@v3
