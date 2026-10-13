@@ -6,7 +6,7 @@
 export const MATERIAL_PLAN=Object.freeze({
  port:{
   label:'Português',
-  principal:['Marcello Giullian · curso integral · manter em sequência até concluir'],
+  principal:['Marcello Giulian · curso integral · manter em sequência até concluir'],
   complement:['Andresan · resolução de questões Cebraspe por assunto'],
   avoid:['Não reabrir teoria equivalente do Estratégia/Direção enquanto o mesmo assunto estiver sendo coberto pelo Marcello.'],
   order:'Marcello → questões Andresan → pacote somente se surgir lacuna objetiva do edital.'
