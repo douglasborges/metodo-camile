@@ -82,6 +82,7 @@ function dconHistoricalProgress(st,dcon){
  const u1=dcon.units?.find(u=>u.id==='dcon-u-1');
  const art5=dcon.units?.find(u=>u.id==='dcon-u-2');
  const u3=dcon.units?.find(u=>u.id==='dcon-u-4');
+ if(u3)u3.title='Nelma · Aula 03 · Direitos Sociais';
  // Histórico confirmado pelo usuário em 12/10/2026: Aula 01 concluída, Aula 03 estudada,
  // e 1ª videoaula do Art. 5º concluída. Não importamos horas/progresso do Douglas.
  if(u1&&!u1.theoryDone){u1.theoryDone=true;u1.theoryDate='2026-10-12';u1.historical=true;u1.historicalNote='Conclusão confirmada pelo usuário em 12/10/2026 · dois blocos da Aula 01.';}
