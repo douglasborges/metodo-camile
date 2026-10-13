@@ -85,6 +85,8 @@ export function normalizeMethodState(current){
  if(!Array.isArray(st.subjects))st.subjects=[];
  if(!st.cycle||!Number.isInteger(st.cycle.index))st.cycle={index:0,minutes:0};
  if(st.cycle.index<0||st.cycle.index>=CYCLE.length)st.cycle={index:0,minutes:0};
+ const oldInfo=st.subjects.find(s=>s.id==='info');
+ if(oldInfo&&subjectUntouched(st,oldInfo))st.subjects=st.subjects.filter(s=>s.id!=='info');
 
  const port=st.subjects.find(s=>s.id==='port');
  if(port){port.course='Português — Marcello Giullian · curso mantido integralmente';port.slotMinutes=60;}
@@ -179,6 +181,7 @@ export function normalizeMethodState(current){
 
  for(const s of st.subjects||[])for(const u of s.units||[]){
   if(u.theoryDone&&Number(u.battery?.attempted||0)>=30)u.batteryDone=true;
+  if(u.theoryDone)markCguCodes(st,u.cguCodes,'auto-history');
  }
  for(const row of st.sessions||[]){
   if(row.legacy===true||row.activity!=='theory'||!row.unitId)continue;
