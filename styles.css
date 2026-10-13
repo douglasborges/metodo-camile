@@ -269,3 +269,16 @@ input,select,textarea{background:#140e1c;border-color:#503b60}
 .law-plan-lines{display:flex;gap:18px;flex-wrap:wrap}.law-plan-lines p{margin:0;padding:10px 14px;border:1px solid var(--line);border-radius:8px;background:#16101e}
 @media(max-width:1150px){.metrics.four{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:720px){.metrics.four{grid-template-columns:1fr}.cgu-sunflower-head{align-items:flex-start;flex-direction:column}.sunflower-score{font-size:28px}.cgu-check-group summary{padding:16px}.cgu-topic{padding:13px 16px}.cgu-group-pct{font-size:15px}.sunflower-scale span:nth-child(2),.sunflower-scale span:nth-child(4){display:none}}
+
+
+/* v1.1.1 · progresso histórico da Camile no Check CGU */
+.cgu-topic.partial{background:linear-gradient(90deg,rgba(255,212,125,.08),rgba(216,184,255,.05));border-left:3px solid var(--amber)}
+.cgu-topic.partial input[type=checkbox]{opacity:.7}
+.cgu-evidence{display:grid;gap:6px;margin-top:9px}
+.cgu-evidence span{display:block;font-size:11px;line-height:1.45;padding:7px 9px;border-radius:7px;border:1px solid var(--line)}
+.cgu-evidence .done{color:#f6e9ff;background:#2d2037;border-color:#6b4c80}
+.cgu-evidence .partial{color:var(--amber);background:#2d271b;border-color:#6f5c2b}
+.cgu-history-card{margin-bottom:24px;border-color:#6b4c80;background:linear-gradient(135deg,#22162d,#18101f)}
+.cgu-history-card h2{margin-top:8px}
+.cgu-history-card .cgu-evidence{margin:14px 0}
+.cgu-group-pct{font-variant-numeric:tabular-nums}
