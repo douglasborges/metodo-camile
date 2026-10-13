@@ -1,5 +1,7 @@
 # Método ET · Camile · CGU 2026
 
+Build atual: **1.3.1-cgu-final** (família v1.3). A aba **Dados** exibe a versão carregada no aparelho e permite verificar/recarregar o build mais recente sem apagar o histórico.
+
 Aplicação independente da Camile, baseada no Método ET, em **pós-edital para a CGU — Auditor Federal de Finanças e Controle · Especialidade Auditoria**, preservando o TCU como objetivo secundário de longo prazo.
 
 ## Prazo e carga
