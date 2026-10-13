@@ -182,10 +182,10 @@ export function normalizeExtras(current){
  st.legislation.current=0;
  for(const x of st.legislation.sessions){if(typeof x.id!=='string'||!validDay(x.date)||!Number.isInteger(x.minutes)||x.minutes<1||x.minutes>1440||typeof x.normId!=='string')throw Error('Registro de legislação inválido no backup.');}
 
- if(st.cguCheck===undefined)st.cguCheck={version:1,startedAt:'2026-10-12',examDate:'2026-12-13',checked:{}};
+ if(st.cguCheck===undefined)st.cguCheck={version:2,startedAt:'2026-10-12',examDate:'2026-12-13',checked:{}};
  if(!st.cguCheck||typeof st.cguCheck!=='object')throw Error('Check do edital CGU inválido.');
  if(!st.cguCheck.checked||typeof st.cguCheck.checked!=='object'||Array.isArray(st.cguCheck.checked))st.cguCheck.checked={};
- st.cguCheck.version=1;st.cguCheck.startedAt=st.cguCheck.startedAt||'2026-10-12';st.cguCheck.examDate='2026-12-13';
+ st.cguCheck.version=2;st.cguCheck.startedAt=st.cguCheck.startedAt||'2026-10-12';st.cguCheck.examDate='2026-12-13';
 
  if(st.achievementsSeen===undefined)st.achievementsSeen=[];
  if(!Array.isArray(st.achievementsSeen)||st.achievementsSeen.some(id=>typeof id!=='string')||new Set(st.achievementsSeen).size!==st.achievementsSeen.length)throw Error('Histórico de conquistas inválido no backup.');
