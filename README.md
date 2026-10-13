@@ -24,7 +24,7 @@ Cada Meta exige:
 ## Plano mestre de materiais
 
 ### Português
-- **Marcello Giullian** como fonte principal.
+- **Marcello Giulian** como fonte principal.
 - **Andresan** para questões Cebraspe por assunto.
 - Não duplicar teoria equivalente em outros pacotes.
 
