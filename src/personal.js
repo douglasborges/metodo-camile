@@ -1,4 +1,5 @@
-import {copy,day,validDay,uid} from './core.js?v=1.1.2-cgu-history';
+import {copy,day,validDay,uid,CYCLE,RULES} from './core.js?v=1.2.0-cgu-metas';
+import {cycleSourceLabel} from './cgu-materials.js?v=1.2.0-cgu-metas';
 export const REMINDER_STATUS={todo:'A fazer',done:'Feito',future:'Futuramente'};
 export const LEGISLATION_QUEUE=[
  {id:'cf88',short:'CF/88',title:'Constituição Federal de 1988'},
@@ -13,34 +14,41 @@ export function legislationPair(date=day()){
  const index=Math.max(0,serial(date)-serial(LAW_PLAN_START))%LEGISLATION_PAIRS.length;
  return LEGISLATION_PAIRS[index].map(id=>LEGISLATION_QUEUE.find(x=>x.id===id));
 }
-export const GOAL_TEMPLATES=[
- {
-  id:'meta-01',number:1,title:'Meta 01 · 30h pós-edital',subtitle:'Primeiro giro do novo ciclo CGU. Português permanece no ciclo; Auditoria e Políticas Públicas entram desde já, e AFO aparece três vezes por volta.',targetMinutes:1800,coreMinutes:1500,marginMinutes:300,
-  tasks:[
-   {id:'cgu01-01',title:'Português · Marcello · Aula 1 — teoria',check:['theory','port','port-u-1']},
-   {id:'cgu01-02',title:'DCON · Nelma · Aula 01 — teoria',check:['theory','dcon','dcon-u-1']},
-   {id:'cgu01-03',title:'AFO · BizurAFO · Módulo 01',check:['theory','afo','afo-cgu-01']},
-   {id:'cgu01-04',title:'Dados · Ramon · FD01',check:['theory','ti','ti-cgu-fd01']},
-   {id:'cgu01-05',title:'Adm. Pública · Estado e legitimidade',check:['theory','adm-publica','adm-cgu-01']},
-   {id:'cgu01-06',title:'Diversidade · Fundamentos sociológicos',check:['theory','diversidade','div-cgu-1']},
-   {id:'cgu01-07',title:'AFO · BizurAFO · Módulo 02',check:['theory','afo','afo-cgu-02']},
-   {id:'cgu01-08',title:'DAD · primeira aula da trilha',check:['theory','dad','dad-u-1']},
-   {id:'cgu01-09',title:'Políticas Públicas · Aula 01 · ciclo',check:['theory','politicas','pp-cgu-1']},
-   {id:'cgu01-10',title:'Auditoria · Propósito, serviços e papéis',check:['theory','auditoria','aud-cgu-07']},
-   {id:'cgu01-11',title:'AFO · BizurAFO · Módulo 03',check:['theory','afo','afo-cgu-03']},
-   {id:'cgu01-12',title:'Português · Marcello · Aula 2 — teoria',check:['theory','port','port-u-2']},
-   {id:'cgu01-13',title:'DCON · Art. 5º · blocos 1–8',check:['blockAtLeast','dcon','dcon-u-2',8]},
-   {id:'cgu01-14',title:'Dados · Ramon · TI60',check:['theory','ti','ti-cgu-ti60']},
-   {id:'cgu01-15',title:'Adm. Pública · Democracia e representação',check:['theory','adm-publica','adm-cgu-02']},
-   {id:'cgu01-16',title:'Auditoria · Avaliação, consultoria e apuração',check:['theory','auditoria','aud-cgu-12']},
-   {id:'cgu01-17',title:'Políticas Públicas · Aula 02 · indicadores e métodos',check:['theory','politicas','pp-cgu-2']},
-   {id:'cgu01-18',title:'AFO · BizurAFO · Módulo 04',check:['theory','afo','afo-cgu-04']}
-  ]
- },
- {
-  id:'meta-02',number:2,title:'Meta 02 · 30h reais',subtitle:'Continuação do pós-edital. O roteiro detalhado será definido pelo avanço real da Camile e pelas atualizações dos pacotes Estratégia/Direção.',targetMinutes:1800,coreMinutes:1500,marginMinutes:300,tasks:[],placeholder:true
- }
-];
+export const GOAL_PLAN_VERSION=3;
+export const GOAL_PLAN_START='2026-10-12T00:00:00-03:00';
+export const GOAL_CYCLES_PER_META=2;
+export const GOAL_META_COUNT=8;
+const GOAL_CORE_MINUTES=CYCLE.reduce((sum,id)=>sum+(RULES[id]?.minutes||60),0)*GOAL_CYCLES_PER_META;
+
+function buildCycleGoalTasks(metaNumber){
+ let step=0;
+ return Array.from({length:GOAL_CYCLES_PER_META},(_,round)=>CYCLE.map((sid,index)=>{
+  step++;
+  return {
+   id:'meta-'+String(metaNumber).padStart(2,'0')+'-c'+(round+1)+'-'+String(index+1).padStart(2,'0'),
+   title:'Volta '+(round+1)+' · '+(RULES[sid]?.label||sid)+' · '+cycleSourceLabel(sid),
+   hint:'Ocorrência '+step+'/'+(CYCLE.length*GOAL_CYCLES_PER_META)+' · referência '+Math.round((RULES[sid]?.minutes||60)/15)*15+' min · conclua a etapa real prevista, não uma cota artificial.',
+   subjectId:sid,
+   cycleRound:round+1,
+   cyclePosition:index+1,
+   referenceMinutes:RULES[sid]?.minutes||60,
+   check:['cycleStep',sid,'',step]
+  };
+ })).flat();
+}
+export const GOAL_TEMPLATES=Array.from({length:GOAL_META_COUNT},(_,i)=>{
+ const number=i+1;
+ return {
+  id:'meta-'+String(number).padStart(2,'0'),
+  number,
+  title:'Meta '+String(number).padStart(2,'0')+' · 30h · 2 voltas do ciclo',
+  subtitle:'Duas voltas completas na ordem Port → DCON → AFO → TI → Adm. Pública → Diversidade → AFO → DAD → Políticas Públicas → Auditoria → AFO.',
+  targetMinutes:1800,
+  coreMinutes:GOAL_CORE_MINUTES,
+  marginMinutes:1800-GOAL_CORE_MINUTES,
+  tasks:buildCycleGoalTasks(number)
+ };
+});
 
 export const BIZURAFO_MODULES=Object.freeze([
  {id:'biz-01',number:1,title:'Conceito, dimensões, tipos de orçamento e intervenção do Estado nas finanças públicas',status:'core',note:'Núcleo TCU: funções do governo, falhas de mercado, políticas econômicas, federalismo fiscal e conceitos de orçamento. Se a aula entrar em tripé macroeconômico como aprofundamento autônomo, não priorize nesta passagem de AFO.'},
@@ -100,24 +108,39 @@ function ensureGoalItem(st,index,status='locked'){
  return item;
 }
 function normalizeGoalState(st){
- if(st.goals===undefined)st.goals={current:0,items:GOAL_TEMPLATES.map((g,i)=>({id:g.id,status:i===0?'active':'locked',startedAt:i===0?'2026-09-18T00:00:00-03:00':null,completedAt:null}))};
+ if(st.goalPlanVersion!==GOAL_PLAN_VERSION){
+  if(st.goals)st.goalArchive=[...(Array.isArray(st.goalArchive)?st.goalArchive:[]),{version:st.goalPlanVersion||1,savedAt:new Date().toISOString(),goals:copy(st.goals)}];
+  st.goals={current:0,items:GOAL_TEMPLATES.map((g,i)=>({id:g.id,status:i===0?'active':'locked',startedAt:i===0?GOAL_PLAN_START:null,completedAt:null}))};
+  st.goalPlanVersion=GOAL_PLAN_VERSION;
+ }
  if(!st.goals||!Array.isArray(st.goals.items))throw Error('Metas ET inválidas no backup.');
  for(const [i,t] of GOAL_TEMPLATES.entries()){
   let item=st.goals.items.find(x=>x.id===t.id);
-  if(!item){item={id:t.id,status:i===0?'active':'locked',startedAt:i===0?'2026-09-18T00:00:00-03:00':null,completedAt:null};st.goals.items.push(item);}
+  if(!item){item={id:t.id,status:i===0?'active':'locked',startedAt:i===0?GOAL_PLAN_START:null,completedAt:null};st.goals.items.push(item);}
   if(!['active','locked','done'].includes(item.status))throw Error('Situação de Meta ET inválida no backup.');
  }
  let activeIndex=st.goals.items.findIndex(x=>x.status==='active');
- if(!Number.isInteger(st.goals.current)||st.goals.current<0||activeIndex<0)st.goals.current=activeIndex>=0?activeIndex:Math.max(0,Math.min(st.goals.current||0,st.goals.items.length-1));
- else st.goals.current=activeIndex;
- // Regra permanente: sempre mostrar exatamente a próxima meta como horizonte bloqueado.
- const horizon=st.goals.current+1,next=ensureGoalItem(st,horizon,'locked');
- if(next.status!=='done'&&next.status!=='active')next.status='locked';
+ if(activeIndex>=0)st.goals.current=activeIndex;
+ else{
+  const firstNotDone=GOAL_TEMPLATES.findIndex(t=>st.goals.items.find(x=>x.id===t.id)?.status!=='done');
+  st.goals.current=firstNotDone>=0?firstNotDone:GOAL_TEMPLATES.length-1;
+ }
+ const horizon=st.goals.current+1;
+ if(horizon<GOAL_TEMPLATES.length){
+  const next=ensureGoalItem(st,horizon,'locked');
+  if(next.status!=='done'&&next.status!=='active')next.status='locked';
+ }
  return st;
 }
-export function goalTaskDone(current,task){
+export function goalTaskDone(current,task,goalRows=[]){
  if(!task?.check)return false;
  const [kind,sid,id,a,b]=task.check,s=current.subjects?.find(x=>x.id===sid);
+ if(kind==='cycleStep'){
+  const target=Number(a)||0;
+  const cycleRows=[...goalRows].filter(v=>v.legacy!==true&&v.cycleApplied===true).sort((x,y)=>String(x.createdAt||x.date).localeCompare(String(y.createdAt||y.date)));
+  const row=cycleRows[target-1];
+  return !!row&&row.subjectId===sid;
+ }
  if(kind==='checkpoint')return !!s?.checkpoints?.[id]?.done;
  if(kind==='sessionCount'){
   const count=Number(b)||1;
@@ -135,26 +158,30 @@ export function goalSnapshot(current,index=null){
  const st=normalizeGoalState(copy(current)),i=index===null?st.goals.current:Number(index),template=goalTemplateAt(i),item=st.goals.items.find(x=>x.id===template.id);
  if(!template||!item)throw Error('Meta ET não encontrada.');
  const target=template.targetMinutes;
- if(item.status==='locked')return {...template,...item,index:i,minutes:0,studyMinutes:0,lawMinutes:0,remaining:target,progress:0,ready:false,tasks:template.tasks.map(t=>({...t,done:false}))};
+ if(item.status==='locked')return {...template,...item,index:i,minutes:0,studyMinutes:0,lawMinutes:0,remaining:target,progress:0,hoursReady:false,routeReady:false,ready:false,tasks:template.tasks.map(t=>({...t,done:false}))};
  const start=item.startedAt?Date.parse(item.startedAt):NaN,end=item.completedAt?Date.parse(item.completedAt):Infinity;
  const within=s=>{const stamp=Date.parse(s.createdAt||s.date+'T12:00:00');return (!Number.isFinite(start)||stamp>=start)&&stamp<=end;};
  const rows=st.sessions.filter(s=>s.legacy!==true&&s.activity!=='night'&&within(s)),lawRows=(st.legislation?.sessions||[]).filter(within);
  const studyMinutes=rows.reduce((a,s)=>a+(Number(s.minutes)||0),0),lawMinutes=lawRows.reduce((a,s)=>a+(Number(s.minutes)||0),0),minutes=studyMinutes+lawMinutes;
- return {...template,...item,index:i,minutes,studyMinutes,lawMinutes,remaining:Math.max(0,target-minutes),progress:target?Math.min(1,minutes/target):0,ready:minutes>=target,tasks:template.tasks.map(t=>({...t,done:goalTaskDone(st,t)}))};
+ const tasks=template.tasks.map(t=>({...t,done:goalTaskDone(st,t,rows)})),doneTasks=tasks.filter(t=>t.done).length;
+ const hoursReady=minutes>=target,routeReady=doneTasks===tasks.length;
+ return {...template,...item,index:i,minutes,studyMinutes,lawMinutes,remaining:Math.max(0,target-minutes),progress:target?Math.min(1,minutes/target):0,hoursReady,routeReady,ready:hoursReady&&routeReady,doneTasks,tasks};
 }
 export function completeGoal(current,id){
  const st=normalizeGoalState(copy(current)),index=st.goals.items.findIndex(x=>x.id===id),template=GOAL_TEMPLATES[index];
- if(index<0||!template)throw Error('Esta meta ainda é apenas o horizonte bloqueado. Configure o roteiro antes de ativá-la.');
+ if(index<0||!template)throw Error('Meta ET não encontrada.');
  const item=st.goals.items[index];
  if(item.status==='locked')throw Error('Esta meta ainda está bloqueada.');
  if(item.status==='done')return st;
  const snap=goalSnapshot(st,index);
- if(!snap.ready)throw Error('A meta fecha apenas com 30 horas reais registradas. Faltam '+Math.max(0,snap.remaining)+' minutos.');
- const next=GOAL_TEMPLATES[index+1];
- if(!next)throw Error('A próxima meta ainda precisa ser configurada antes do fechamento.');
+ if(!snap.hoursReady)throw Error('A meta fecha apenas com 30 horas reais registradas. Faltam '+Math.max(0,snap.remaining)+' minutos.');
+ if(!snap.routeReady)throw Error('Antes de fechar a meta, conclua as duas voltas completas do ciclo. Faltam '+(snap.tasks.length-snap.doneTasks)+' ocorrências.');
  const now=new Date().toISOString();item.status='done';item.completedAt=now;
- const n=ensureGoalItem(st,index+1,'locked');n.status='active';n.startedAt=now;st.goals.current=index+1;
- ensureGoalItem(st,index+2,'locked');
+ const next=GOAL_TEMPLATES[index+1];
+ if(next){
+  const n=ensureGoalItem(st,index+1,'locked');n.status='active';n.startedAt=now;st.goals.current=index+1;
+  if(index+2<GOAL_TEMPLATES.length)ensureGoalItem(st,index+2,'locked');
+ }else st.goals.current=index;
  return st;
 }
 
