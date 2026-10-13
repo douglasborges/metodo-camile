@@ -1,4 +1,4 @@
-import * as M from './core.js?v=1.1.2-cgu-history';
+import * as M from './core.js?v=1.2.0-cgu-metas';
 
 const ACTIVE=['port','dcon','afo','ti','adm-publica','diversidade','dad','politicas','auditoria'];
 const shift=(date,days)=>{const d=new Date(date+'T12:00:00');d.setDate(d.getDate()+days);return M.day(d);};
