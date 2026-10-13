@@ -1,41 +1,44 @@
-import {copy,day,validDay,uid} from './core.js?v=1.0.2-camile';
+import {copy,day,validDay,uid} from './core.js?v=1.1.0-cgu-edital';
 export const REMINDER_STATUS={todo:'A fazer',done:'Feito',future:'Futuramente'};
 export const LEGISLATION_QUEUE=[
  {id:'cf88',short:'CF/88',title:'Constituição Federal de 1988'},
- {id:'l8112',short:'Lei 8.112/1990',title:'Regime Jurídico dos Servidores Públicos Federais'},
- {id:'l9784',short:'Lei 9.784/1999',title:'Processo Administrativo Federal'},
- {id:'l14133',short:'Lei 14.133/2021',title:'Lei de Licitações e Contratos Administrativos'},
- {id:'l8429',short:'Lei 8.429/1992',title:'Lei de Improbidade Administrativa — texto consolidado'},
- {id:'lai',short:'Lei 12.527/2011',title:'Lei de Acesso à Informação'},
- {id:'lgpd',short:'Lei 13.709/2018',title:'Lei Geral de Proteção de Dados Pessoais'},
- {id:'l12846',short:'Lei 12.846/2013',title:'Lei Anticorrupção'}
+ {id:'lai',short:'LAI',title:'Lei 12.527/2011 — Lei de Acesso à Informação'},
+ {id:'cgu',short:'Leg. CGU',title:'Sistema de Controle Interno e Auditoria — Lei 10.180/2001, Decreto 3.591/2000 e IN SFC/CGU 3/2017'},
+ {id:'lgpd',short:'LGPD',title:'Lei 13.709/2018 — Lei Geral de Proteção de Dados Pessoais'}
 ];
+export const LEGISLATION_PAIRS=Object.freeze([['cf88','lai'],['cgu','lgpd']]);
+export const LAW_PLAN_START='2026-10-12';
+export function legislationPair(date=day()){
+ const serial=s=>{const [y,m,d]=s.split('-').map(Number);return Date.UTC(y,m-1,d)/86400000;};
+ const index=Math.max(0,serial(date)-serial(LAW_PLAN_START))%LEGISLATION_PAIRS.length;
+ return LEGISLATION_PAIRS[index].map(id=>LEGISLATION_QUEUE.find(x=>x.id===id));
+}
 export const GOAL_TEMPLATES=[
  {
-  id:'meta-01',number:1,title:'Meta 01 · 30h reais',subtitle:'Início da jornada CGU: Português com Marcello Giullian + Andresan à noite, DCON com Nelma (Art. 5º em 24 blocos do Estratégia) e Informática e Dados, com ciclo mínimo de 1h por disciplina.',targetMinutes:1800,coreMinutes:1500,marginMinutes:300,
+  id:'meta-01',number:1,title:'Meta 01 · 30h pós-edital',subtitle:'Primeiro giro do novo ciclo CGU. Português permanece no ciclo; Auditoria e Políticas Públicas entram desde já, e AFO aparece três vezes por volta.',targetMinutes:1800,coreMinutes:1500,marginMinutes:300,
   tasks:[
-   {id:'c01-01',title:'Português · Aula 1 — teoria',check:['theory','port','port-u-1']},
-   {id:'c01-02',title:'DCON · Nelma Aula 01 — teoria',check:['theory','dcon','dcon-u-1']},
-   {id:'c01-03',title:'Informática · Windows 11 — teoria',check:['theory','info','info-u-1']},
-   {id:'c01-04',title:'Português · Aula 1 — revisão + bateria',check:['battery','port','port-u-1']},
-   {id:'c01-05',title:'DCON · Nelma Aula 01 — revisão + bateria',check:['battery','dcon','dcon-u-1']},
-   {id:'c01-06',title:'Informática · Word — teoria',check:['theory','info','info-u-4']},
-   {id:'c01-07',title:'Português · Aula 2 — teoria',check:['theory','port','port-u-2']},
-   {id:'c01-08',title:'DCON · Art. 5º Estratégia — blocos 1–8',check:['blockAtLeast','dcon','dcon-u-2',8]},
-   {id:'c01-09',title:'Informática · Excel — teoria',check:['theory','info','info-u-5']},
-   {id:'c01-10',title:'Português · Aula 2 — revisão + bateria',check:['battery','port','port-u-2']},
-   {id:'c01-11',title:'DCON · Art. 5º Estratégia — blocos 9–16',check:['blockAtLeast','dcon','dcon-u-2',16]},
-   {id:'c01-12',title:'Informática · PowerPoint — teoria',check:['theory','info','info-u-6']},
-   {id:'c01-13',title:'Português · Aula 3 — teoria',check:['theory','port','port-u-3']},
-   {id:'c01-14',title:'DCON · Art. 5º Estratégia — blocos 17–24 · concluir teoria',check:['theory','dcon','dcon-u-2']},
-   {id:'c01-15',title:'Informática · Correio Eletrônico — teoria',check:['theory','info','info-u-8']},
-   {id:'c01-16',title:'Português · Aula 3 — revisão + bateria',check:['battery','port','port-u-3']},
-   {id:'c01-17',title:'DCON · Art. 5º — revisão + bateria',check:['battery','dcon','dcon-u-2']},
-   {id:'c01-18',title:'Informática · Navegadores — teoria',check:['theory','info','info-u-9']}
+   {id:'cgu01-01',title:'Português · Marcello · Aula 1 — teoria',check:['theory','port','port-u-1']},
+   {id:'cgu01-02',title:'DCON · Nelma · Aula 01 — teoria',check:['theory','dcon','dcon-u-1']},
+   {id:'cgu01-03',title:'AFO · BizurAFO · Módulo 01',check:['theory','afo','afo-cgu-01']},
+   {id:'cgu01-04',title:'Dados · Ramon · FD01',check:['theory','ti','ti-cgu-fd01']},
+   {id:'cgu01-05',title:'Adm. Pública · Estado e legitimidade',check:['theory','adm-publica','adm-cgu-01']},
+   {id:'cgu01-06',title:'Diversidade · Fundamentos sociológicos',check:['theory','diversidade','div-cgu-1']},
+   {id:'cgu01-07',title:'AFO · BizurAFO · Módulo 02',check:['theory','afo','afo-cgu-02']},
+   {id:'cgu01-08',title:'DAD · primeira aula da trilha',check:['theory','dad','dad-u-1']},
+   {id:'cgu01-09',title:'Políticas Públicas · Aula 01 · ciclo',check:['theory','politicas','pp-cgu-1']},
+   {id:'cgu01-10',title:'Auditoria · Propósito, serviços e papéis',check:['theory','auditoria','aud-cgu-07']},
+   {id:'cgu01-11',title:'AFO · BizurAFO · Módulo 03',check:['theory','afo','afo-cgu-03']},
+   {id:'cgu01-12',title:'Português · Marcello · Aula 2 — teoria',check:['theory','port','port-u-2']},
+   {id:'cgu01-13',title:'DCON · Art. 5º · blocos 1–8',check:['blockAtLeast','dcon','dcon-u-2',8]},
+   {id:'cgu01-14',title:'Dados · Ramon · TI60',check:['theory','ti','ti-cgu-ti60']},
+   {id:'cgu01-15',title:'Adm. Pública · Democracia e representação',check:['theory','adm-publica','adm-cgu-02']},
+   {id:'cgu01-16',title:'Auditoria · Avaliação, consultoria e apuração',check:['theory','auditoria','aud-cgu-12']},
+   {id:'cgu01-17',title:'Políticas Públicas · Aula 02 · indicadores e métodos',check:['theory','politicas','pp-cgu-2']},
+   {id:'cgu01-18',title:'AFO · BizurAFO · Módulo 04',check:['theory','afo','afo-cgu-04']}
   ]
  },
  {
-  id:'meta-02',number:2,title:'Meta 02 · 30h reais',subtitle:'🔒 Próxima etapa. O roteiro será definido ao final da Meta 01 usando o avanço real da Camile.',targetMinutes:1800,coreMinutes:1500,marginMinutes:300,tasks:[],placeholder:true
+  id:'meta-02',number:2,title:'Meta 02 · 30h reais',subtitle:'Continuação do pós-edital. O roteiro detalhado será definido pelo avanço real da Camile e pelas atualizações dos pacotes Estratégia/Direção.',targetMinutes:1800,coreMinutes:1500,marginMinutes:300,tasks:[],placeholder:true
  }
 ];
 
@@ -148,13 +151,52 @@ export function completeGoal(current,id){
  const snap=goalSnapshot(st,index);
  if(!snap.ready)throw Error('A meta fecha apenas com 30 horas reais registradas. Faltam '+Math.max(0,snap.remaining)+' minutos.');
  const next=GOAL_TEMPLATES[index+1];
- if(!next||next.placeholder||!next.tasks?.length)throw Error('A próxima meta ainda precisa ser configurada antes do fechamento.');
+ if(!next)throw Error('A próxima meta ainda precisa ser configurada antes do fechamento.');
  const now=new Date().toISOString();item.status='done';item.completedAt=now;
  const n=ensureGoalItem(st,index+1,'locked');n.status='active';n.startedAt=now;st.goals.current=index+1;
  ensureGoalItem(st,index+2,'locked');
  return st;
 }
 
-export function normalizeExtras(current){const st=copy(current);if(st.reminders===undefined)st.reminders=[];if(!Array.isArray(st.reminders))throw Error('Lista de lembretes inválida.');for(const n of st.reminders)if(typeof n.id!=='string'||typeof n.text!=='string'||!n.text.trim()||n.text.length>5000||!Object.hasOwn(REMINDER_STATUS,n.status))throw Error('Lembrete inválido no backup.');if(new Set(st.reminders.map(n=>n.id)).size!==st.reminders.length)throw Error('Lembretes duplicados.');if(st.motivationStartDay===undefined)st.motivationStartDay=day();if(!validDay(st.motivationStartDay))throw Error('Data de motivação inválida.');if(st.legislation===undefined)st.legislation={queue:copy(LEGISLATION_QUEUE),current:0,sessions:[],completed:[]};if(!Array.isArray(st.legislation.queue)||!st.legislation.queue.length)st.legislation.queue=copy(LEGISLATION_QUEUE);if(!Array.isArray(st.legislation.sessions))st.legislation.sessions=[];if(!Array.isArray(st.legislation.completed))st.legislation.completed=[];if(!Number.isInteger(st.legislation.current)||st.legislation.current<0)st.legislation.current=0;st.legislation.current=Math.min(st.legislation.current,Math.max(0,st.legislation.queue.length-1));for(const x of st.legislation.sessions){if(typeof x.id!=='string'||!validDay(x.date)||!Number.isInteger(x.minutes)||x.minutes<1||x.minutes>1440||typeof x.normId!=='string')throw Error('Registro de legislação inválido no backup.');}if(st.achievementsSeen===undefined)st.achievementsSeen=[];if(!Array.isArray(st.achievementsSeen)||st.achievementsSeen.some(id=>typeof id!=='string')||new Set(st.achievementsSeen).size!==st.achievementsSeen.length)throw Error('Histórico de conquistas inválido no backup.');if(st.bizurafo===undefined)st.bizurafo={focus:{active:false,startedAt:null,endedAt:null,pausedCycleIndex:Number(st.cycle?.index)||0},modules:BIZURAFO_MODULES.map(m=>({id:m.id,done:false}))};if(!st.bizurafo.focus||typeof st.bizurafo.focus.active!=='boolean')throw Error('Modo BizurAFO inválido no backup.');if(!Array.isArray(st.bizurafo.modules))st.bizurafo.modules=[];for(const m of BIZURAFO_MODULES)if(!st.bizurafo.modules.some(x=>x.id===m.id))st.bizurafo.modules.push({id:m.id,done:false});normalizeGoalState(st);return st;}
+export function normalizeExtras(current){
+ const st=copy(current);
+ if(st.reminders===undefined)st.reminders=[];
+ if(!Array.isArray(st.reminders))throw Error('Lista de lembretes inválida.');
+ for(const n of st.reminders)if(typeof n.id!=='string'||typeof n.text!=='string'||!n.text.trim()||n.text.length>5000||!Object.hasOwn(REMINDER_STATUS,n.status))throw Error('Lembrete inválido no backup.');
+ if(new Set(st.reminders.map(n=>n.id)).size!==st.reminders.length)throw Error('Lembretes duplicados.');
+ if(st.motivationStartDay===undefined)st.motivationStartDay=day();
+ if(!validDay(st.motivationStartDay))throw Error('Data de motivação inválida.');
+
+ if(st.legislation===undefined)st.legislation={queue:copy(LEGISLATION_QUEUE),current:0,sessions:[],completed:[],planVersion:2,planStart:LAW_PLAN_START};
+ if(!Array.isArray(st.legislation.sessions))st.legislation.sessions=[];
+ if(!Array.isArray(st.legislation.completed))st.legislation.completed=[];
+ if(st.legislation.planVersion!==2){
+  st.legislation.queue=copy(LEGISLATION_QUEUE);
+  st.legislation.current=0;
+  st.legislation.planVersion=2;
+  st.legislation.planStart=LAW_PLAN_START;
+ }
+ if(!Array.isArray(st.legislation.queue)||!st.legislation.queue.length)st.legislation.queue=copy(LEGISLATION_QUEUE);
+ for(const norm of LEGISLATION_QUEUE)if(!st.legislation.queue.some(x=>x.id===norm.id))st.legislation.queue.push(copy(norm));
+ st.legislation.queue=LEGISLATION_QUEUE.map(norm=>({...norm}));
+ st.legislation.current=0;
+ for(const x of st.legislation.sessions){if(typeof x.id!=='string'||!validDay(x.date)||!Number.isInteger(x.minutes)||x.minutes<1||x.minutes>1440||typeof x.normId!=='string')throw Error('Registro de legislação inválido no backup.');}
+
+ if(st.cguCheck===undefined)st.cguCheck={version:1,startedAt:'2026-10-12',examDate:'2026-12-13',checked:{}};
+ if(!st.cguCheck||typeof st.cguCheck!=='object')throw Error('Check do edital CGU inválido.');
+ if(!st.cguCheck.checked||typeof st.cguCheck.checked!=='object'||Array.isArray(st.cguCheck.checked))st.cguCheck.checked={};
+ st.cguCheck.version=1;st.cguCheck.startedAt=st.cguCheck.startedAt||'2026-10-12';st.cguCheck.examDate='2026-12-13';
+
+ if(st.achievementsSeen===undefined)st.achievementsSeen=[];
+ if(!Array.isArray(st.achievementsSeen)||st.achievementsSeen.some(id=>typeof id!=='string')||new Set(st.achievementsSeen).size!==st.achievementsSeen.length)throw Error('Histórico de conquistas inválido no backup.');
+
+ if(st.bizurafo===undefined)st.bizurafo={focus:{active:false,startedAt:null,endedAt:null,pausedCycleIndex:Number(st.cycle?.index)||0},modules:BIZURAFO_MODULES.map(m=>({id:m.id,done:false}))};
+ if(!st.bizurafo.focus||typeof st.bizurafo.focus.active!=='boolean')throw Error('Modo BizurAFO inválido no backup.');
+ if(!Array.isArray(st.bizurafo.modules))st.bizurafo.modules=[];
+ for(const m of BIZURAFO_MODULES)if(!st.bizurafo.modules.some(x=>x.id===m.id))st.bizurafo.modules.push({id:m.id,done:false});
+
+ normalizeGoalState(st);
+ return st;
+}
 export function saveReminder(current,{id,text,status='todo'}){const st=normalizeExtras(current);text=String(text??'').trim();if(!text||text.length>5000||!Object.hasOwn(REMINDER_STATUS,status))throw Error('Escreva um lembrete de até 5.000 caracteres e escolha uma situação válida.');let note=id?st.reminders.find(n=>n.id===id):null;if(id&&!note)throw Error('Lembrete não encontrado.');if(!note){note={id:uid(),createdAt:new Date().toISOString()};st.reminders.push(note);}Object.assign(note,{text,status,updatedAt:new Date().toISOString()});return st;}
 export function motivationForDay(start,date=day()){const serial=d=>{let [y,m,dd]=d.split('-').map(Number);return Date.UTC(y,m-1,dd)/86400000;};const elapsed=Math.max(0,serial(date)-serial(start));return {...MOTIVATION[elapsed%MOTIVATION.length],index:elapsed%MOTIVATION.length};}
