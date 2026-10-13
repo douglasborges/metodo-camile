@@ -1,5 +1,5 @@
-import {copy,day,validDay,uid,CYCLE,RULES} from './core.js?v=1.2.1-cgu-metas';
-import {cycleSourceLabel} from './cgu-materials.js?v=1.2.1-cgu-metas';
+import {copy,day,validDay,uid,CYCLE,RULES} from './core.js?v=1.3.0-cgu-final';
+import {cycleSourceLabel} from './cgu-materials.js?v=1.3.0-cgu-final';
 export const REMINDER_STATUS={todo:'A fazer',done:'Feito',future:'Futuramente'};
 export const LEGISLATION_QUEUE=[
  {id:'cf88',short:'CF/88',title:'Constituição Federal de 1988'},
