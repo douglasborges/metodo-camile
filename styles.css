@@ -240,3 +240,32 @@ input,select,textarea{background:#140e1c;border-color:#503b60}
 .footer-detail strong{color:#f4eaff}
 .app-footer::after{background-image:url('./assets/camile-capybara.svg');filter:none}
 .subject-info .layer-head b::after{content:""}
+
+
+/* v1.1.0 · Pós-edital CGU 2026 · Check do edital */
+.metrics.four{grid-template-columns:repeat(4,minmax(0,1fr))}
+.cgu-sunflower-card{margin-bottom:24px;border-color:#8f7431;background:radial-gradient(circle at 90% 10%,rgba(255,212,125,.16),transparent 32%),linear-gradient(135deg,#261b2d,#17101f 70%)}
+.cgu-sunflower-head{display:flex;justify-content:space-between;align-items:center;gap:24px}
+.cgu-sunflower-head h2{font-size:34px;margin:8px 0}
+.cgu-sunflower-head p{color:var(--muted);max-width:780px;margin:0}
+.sunflower-score{font-size:36px;white-space:nowrap}.sunflower-score b{font-size:28px;color:var(--amber)}
+.sunflower-track{position:relative;height:18px;border-radius:999px;background:#33283c;border:1px solid #5b4968;margin:30px 10px 12px;overflow:visible}
+.sunflower-fill{position:absolute;inset:0 auto 0 0;border-radius:999px;background:linear-gradient(90deg,#7c3aed,#ff9bd2,#ffd47d);transition:width .35s ease}
+.sunflower-runner{position:absolute;top:50%;transform:translate(-50%,-54%);font-size:30px;filter:drop-shadow(0 4px 6px #0008);transition:left .35s ease;z-index:2}
+.sunflower-scale{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);padding:0 4px}
+.cgu-check-note{margin:24px 0;border-left:4px solid var(--amber);background:#261f2e;color:#eadcf2}
+.cgu-check-groups{display:grid;gap:14px}
+.cgu-check-group{padding:0;overflow:hidden;margin:0}
+.cgu-check-group summary{list-style:none;display:flex;justify-content:space-between;align-items:center;gap:18px;padding:20px 22px;color:var(--text)}
+.cgu-check-group summary::-webkit-details-marker{display:none}
+.cgu-check-group summary>div{display:grid;gap:5px}.cgu-check-group summary strong{font-size:16px}.cgu-check-group summary small{font-size:12px}
+.cgu-check-group[data-complete="true"]{border-color:#6e7d3d}.cgu-check-group[data-complete="true"] summary{background:#26301e}
+.cgu-group-pct{font-size:18px;font-weight:700;color:var(--lime)}
+.cgu-topic-list{border-top:1px solid var(--line)}
+.cgu-topic{display:flex;grid-template-columns:none;align-items:flex-start;gap:12px;padding:14px 20px;border-bottom:1px solid var(--line);color:var(--text);cursor:pointer}
+.cgu-topic:last-child{border-bottom:0}.cgu-topic:hover{background:#ffffff06}.cgu-topic.checked{background:#2c2133}
+.cgu-topic input{flex:0 0 auto;margin-top:2px}.cgu-topic span{display:block}.cgu-topic b{color:var(--lilac)}.cgu-topic small{display:block;margin-top:3px;font-size:11px}
+.law-pair-card{border-color:#5f466f}.law-pair-card h2{font-size:25px;margin-top:8px}.law-pair-time{display:flex;align-items:baseline;gap:8px}.law-pair-time strong{font-size:30px}.law-pair-time span{color:var(--muted)}
+.law-plan-lines{display:flex;gap:18px;flex-wrap:wrap}.law-plan-lines p{margin:0;padding:10px 14px;border:1px solid var(--line);border-radius:8px;background:#16101e}
+@media(max-width:1150px){.metrics.four{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:720px){.metrics.four{grid-template-columns:1fr}.cgu-sunflower-head{align-items:flex-start;flex-direction:column}.sunflower-score{font-size:28px}.cgu-check-group summary{padding:16px}.cgu-topic{padding:13px 16px}.cgu-group-pct{font-size:15px}.sunflower-scale span:nth-child(2),.sunflower-scale span:nth-child(4){display:none}}
