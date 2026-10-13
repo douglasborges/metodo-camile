@@ -179,14 +179,14 @@ export function normalizeMethodState(current){
   ['B4.1','Organização administrativa'],['B4.2','Modelos de administração'],['B4.3','Políticas públicas'],['B4.4','Planejamento e recursos'],['B4.5','Serviços e transformação digital'],
   ['C1.1','Governança e responsabilidades'],['C1.2','Riscos e controles essenciais'],['C1.3','Integridade pública'],['C1.4','Integridade privada'],['C1.5','Prevenção e melhoria institucional']
  ];
- ensureSubject(st,{id:'adm-publica',course:'Administração Pública e Governança — Estratégia/Direção · plano CGU',minutes:60,units:admTopics.map((x,i)=>baseUnit('adm-cgu-'+String(i+1).padStart(2,'0'),i+1,x[1],{source:'Estratégia/Direção · pacote CGU',cguCodes:[x[0]]}))});
+ ensureSubject(st,{id:'adm-publica',course:'Administração Pública e Governança — Marcelo · curso principal + pacote CGU para lacunas',minutes:60,units:admTopics.map((x,i)=>baseUnit('adm-cgu-'+String(i+1).padStart(2,'0'),i+1,x[1],{source:['B4.1','B4.2'].includes(x[0])?'Marcelo · Administração Pública':'Estratégia/Direção · complemento/lacuna CGU',cguCodes:[x[0]]}))});
 
  const diversidadeTopics=[['B2.1','Fundamentos sociológicos'],['B2.2','Formação social e cidadania no Brasil'],['B2.3','População, território e trabalho'],['B2.4','Diversidade e acesso a direitos'],['B2.5','Desenvolvimento e realidade brasileira']];
  ensureSubject(st,{id:'diversidade',course:'Sociedade Brasileira, Desigualdades e Diversidade — pacote CGU',minutes:60,units:diversidadeTopics.map((x,i)=>baseUnit('div-cgu-'+(i+1),i+1,x[1],{source:'Estratégia/Direção · pacote CGU',cguCodes:[x[0]]}))});
 
  const dad=st.subjects.find(s=>s.id==='dad');
  if(dad){
-  dad.course=dad.course||'DAD — Rafael Oliveira';
+  dad.course='DAD — Rafael Oliveira · Herbert Almeida seletivo para atualização/lacunas';
   const addCodes=(matcher,codes)=>{for(const u of dad.units||[])if(matcher.test(u.title||''))u.cguCodes=[...new Set([...(u.cguCodes||[]),...codes])];};
   addCodes(/organiza[cç][aã]o administrativa|administra[cç][aã]o p[uú]blica indireta/i,['B4.1']);
   addCodes(/atos administrativos/i,['C3.1']);
