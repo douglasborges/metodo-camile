@@ -1,9 +1,9 @@
-import * as M from './core.js?v=1.1.1-cgu-progress';
-import {durationMinutes,progressMetrics} from './progress.js?v=1.1.1-cgu-progress';
-import { motivationForDay, saveReminder, normalizeExtras, LEGISLATION_QUEUE, legislationPair, goalSnapshot, completeGoal, BIZURAFO_MODULES, bizurSnapshot, bizurStatusLabel, recordBizurAFO, setBizurModuleDone, endBizurFocus, resumeBizurFocus } from './personal.js?v=1.1.1-cgu-progress';
-import {CGU_SYLLABUS,CGU_CHECK_TOPICS,CGU_OPERATIONAL_TOTAL,CGU_OFFICIAL_TOTAL,CGU_CHECK_START,cguDaysRemaining} from './cgu-syllabus.js?v=1.1.1-cgu-progress';
-import {achievementSnapshot,progressText,CATEGORY_META} from './achievements.js?v=1.1.1-cgu-progress';
-import {analyticsSnapshot} from './analytics.js?v=1.1.1-cgu-progress';
+import * as M from './core.js?v=1.1.2-cgu-history';
+import {durationMinutes,progressMetrics} from './progress.js?v=1.1.2-cgu-history';
+import { motivationForDay, saveReminder, normalizeExtras, LEGISLATION_QUEUE, legislationPair, goalSnapshot, completeGoal, BIZURAFO_MODULES, bizurSnapshot, bizurStatusLabel, recordBizurAFO, setBizurModuleDone, endBizurFocus, resumeBizurFocus } from './personal.js?v=1.1.2-cgu-history';
+import {CGU_SYLLABUS,CGU_CHECK_TOPICS,CGU_OPERATIONAL_TOTAL,CGU_OFFICIAL_TOTAL,CGU_CHECK_START,cguDaysRemaining} from './cgu-syllabus.js?v=1.1.2-cgu-history';
+import {achievementSnapshot,progressText,CATEGORY_META} from './achievements.js?v=1.1.2-cgu-history';
+import {analyticsSnapshot} from './analytics.js?v=1.1.2-cgu-history';
 const $=q=>document.querySelector(q), esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])), label=id=>M.RULES[id]?.label||id.replace('legacy:',''), option=(v,t,selected)=>`<option value="${esc(v)}" ${v===selected?'selected':''}>${esc(t)}</option>`, checks=v=>v?'checked':'', cpLabel={done:'Concluído',due:'Checkpoint pendente',battery:'Baterias pendentes',audit:'Conferir histórico',planned:'Planejado'}, phaseLabel={new:'Estudo Novo',solid:'Estudo Sólido'};
 let state,page='today',selected='port',pendingImport=null,timer=null,lawTimer=null,storedRaw=null,noticeTimeout,achievementCategoryFilter='all',achievementStatusFilter='all',progressView='overview',progressPeriod='all',progressSubject='all',goalView=null;
 const ACTIVE_SUBJECTS=['port','dcon','afo','ti','adm-publica','diversidade','dad','politicas','auditoria'];
