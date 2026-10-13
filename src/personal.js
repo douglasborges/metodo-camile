@@ -109,8 +109,9 @@ function ensureGoalItem(st,index,status='locked'){
 }
 function normalizeGoalState(st){
  if(st.goalPlanVersion!==GOAL_PLAN_VERSION){
-  if(st.goals)st.goalArchive=[...(Array.isArray(st.goalArchive)?st.goalArchive:[]),{version:st.goalPlanVersion||1,savedAt:new Date().toISOString(),goals:copy(st.goals)}];
+  if(st.goals)st.goalArchive=[...(Array.isArray(st.goalArchive)?st.goalArchive:[]),{version:st.goalPlanVersion||1,savedAt:new Date().toISOString(),goals:copy(st.goals),cycleIndex:Number(st.cycle?.index)||0}];
   st.goals={current:0,items:GOAL_TEMPLATES.map((g,i)=>({id:g.id,status:i===0?'active':'locked',startedAt:i===0?GOAL_PLAN_START:null,completedAt:null}))};
+  if(st.cycle)st.cycle={...st.cycle,index:0,minutes:0};
   st.goalPlanVersion=GOAL_PLAN_VERSION;
  }
  if(!st.goals||!Array.isArray(st.goals.items))throw Error('Metas ET inválidas no backup.');
