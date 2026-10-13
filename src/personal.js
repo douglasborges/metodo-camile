@@ -161,7 +161,16 @@ export function goalSnapshot(current,index=null){
  const target=template.targetMinutes;
  if(item.status==='locked')return {...template,...item,index:i,minutes:0,studyMinutes:0,lawMinutes:0,remaining:target,progress:0,hoursReady:false,routeReady:false,ready:false,tasks:template.tasks.map(t=>({...t,done:false}))};
  const start=item.startedAt?Date.parse(item.startedAt):NaN,end=item.completedAt?Date.parse(item.completedAt):Infinity;
- const within=s=>{const stamp=Date.parse(s.createdAt||s.date+'T12:00:00');return (!Number.isFinite(start)||stamp>=start)&&stamp<=end;};
+ const startDay=item.startedAt?String(item.startedAt).slice(0,10):'',endDay=item.completedAt?String(item.completedAt).slice(0,10):'';
+ const within=s=>{
+  const studyDay=String(s.date||'');
+  if(startDay&&studyDay<startDay)return false;
+  if(endDay&&studyDay>endDay)return false;
+  const stamp=Date.parse(s.createdAt||studyDay+'T12:00:00');
+  if(startDay&&studyDay===startDay&&Number.isFinite(start)&&Number.isFinite(stamp)&&stamp<start)return false;
+  if(endDay&&studyDay===endDay&&Number.isFinite(end)&&Number.isFinite(stamp)&&stamp>end)return false;
+  return true;
+ };
  const rows=st.sessions.filter(s=>s.legacy!==true&&s.activity!=='night'&&within(s)),lawRows=(st.legislation?.sessions||[]).filter(within);
  const studyMinutes=rows.reduce((a,s)=>a+(Number(s.minutes)||0),0),lawMinutes=lawRows.reduce((a,s)=>a+(Number(s.minutes)||0),0),minutes=studyMinutes+lawMinutes;
  const tasks=template.tasks.map(t=>({...t,done:goalTaskDone(st,t,rows)})),doneTasks=tasks.filter(t=>t.done).length;
