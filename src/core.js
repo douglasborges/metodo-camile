@@ -1,6 +1,18 @@
 export const KEY='metodo-et:camile:v1';
-export const CYCLE=['port','dcon','info'];
-export const RULES=Object.freeze({afo:{label:'AFO',minutes:120,checkpoint:3,unit:'módulo'},cpu:{label:'Contabilidade Pública',minutes:120,checkpoint:3,unit:'módulo'},dad:{label:'DAD',minutes:120,checkpoint:4,unit:'aula'},ti:{label:'TI',minutes:90,checkpoint:4,unit:'aula'},port:{label:'Português',minutes:60,checkpoint:4,unit:'aula'},dcon:{label:'DCON',minutes:60,checkpoint:4,unit:'aula'},info:{label:'Informática e Dados',minutes:60,checkpoint:4,unit:'aula'}});
+export const CYCLE=['port','dcon','afo','ti','adm-publica','diversidade','afo','dad','politicas','auditoria','afo'];
+export const RULES=Object.freeze({
+ afo:{label:'AFO',minutes:90,checkpoint:3,unit:'módulo'},
+ cpu:{label:'Contabilidade Pública',minutes:120,checkpoint:3,unit:'módulo'},
+ dad:{label:'DAD',minutes:75,checkpoint:4,unit:'aula'},
+ ti:{label:'TI / Dados',minutes:60,checkpoint:4,unit:'aula'},
+ port:{label:'Português',minutes:60,checkpoint:4,unit:'aula'},
+ dcon:{label:'DCON',minutes:60,checkpoint:4,unit:'aula'},
+ info:{label:'Informática (arquivo anterior)',minutes:60,checkpoint:4,unit:'aula'},
+ 'adm-publica':{label:'Adm. Pública',minutes:60,checkpoint:4,unit:'aula'},
+ diversidade:{label:'Diversidade',minutes:60,checkpoint:4,unit:'aula'},
+ politicas:{label:'Políticas Públicas',minutes:60,checkpoint:4,unit:'aula'},
+ auditoria:{label:'Auditoria',minutes:75,checkpoint:4,unit:'aula'}
+});
 export const ACTIVITIES={free:'Estudo livre',theory:'Teoria',micro:'Microrrevisão',battery:'Revisão + primeira bateria',checkpoint:'Checkpoint',general:'Revisão geral',solid:'Questões — Estudo Sólido',andresan:'Andresan · questões Cebraspe',night:'Revisão noturna'};
 export const TI_TCU_SELECTED_36=Object.freeze([
  'FD00','FD01','FD02','FD03','FD04','FD05','FD06','SI00','SI01',
@@ -33,37 +45,138 @@ function tiCode(u){
  return m?m[1].toUpperCase():'';
 }
 export function methodUnits(s){
- if(s?.id==='info'){
-  const units=[...(s.units||[])],active=units.filter(u=>!u.deferred),later=units.filter(u=>u.deferred);
-  return [...active,...later];
- }
- if(s?.id!=='ti')return s?.units||[];
- const byCode=new Map();
- for(const u of s.units||[]){const code=tiCode(u);if(code&&!byCode.has(code))byCode.set(code,u);}
- const ordered=TI_TCU_OPERATIONAL_ORDER.map(code=>byCode.get(code)).filter(Boolean),used=new Set(ordered.map(u=>u.id));
- return [...ordered,...(s.units||[]).filter(u=>!used.has(u.id)).sort((a,b)=>(Number(a.order)||0)-(Number(b.order)||0))];
+ const units=[...(s?.units||[])];
+ return units.sort((a,b)=>(Number(a.order)||0)-(Number(b.order)||0));
 }
 export function methodOrder(s,u){const i=methodUnits(s).findIndex(v=>v.id===u?.id);return i>=0?i+1:Number(u?.order)||0;}
+
+const CGU_CHECK_START='2026-10-12';
+function baseUnit(id,order,title,extra={}){return {id,title,order,theoryDone:false,theoryDate:'',batteryDone:false,generalDone:false,materialReady:false,battery:{attempted:0,correct:0},general:{attempted:0,correct:0},legacy:[],marks:[],...extra};}
+function subjectUntouched(st,s){return !!s&&!(st.sessions||[]).some(x=>x.subjectId===s.id)&&(s.units||[]).every(u=>!u.theoryDone&&!u.batteryDone&&!u.generalDone&&!u.materialReady);}
+function ensureSubject(st,{id,course,minutes,units,replaceUntouched=false}){
+ let s=st.subjects?.find(x=>x.id===id);
+ if(!s){s={id,course,phase:'new',slotMinutes:minutes,units:[],checkpoints:{},notebooks:[],andresanComplete:false};st.subjects.push(s);}
+ s.course=course;s.slotMinutes=minutes;s.phase=s.phase||'new';s.checkpoints=s.checkpoints||{};s.notebooks=s.notebooks||[];s.andresanComplete=!!s.andresanComplete;
+ if(replaceUntouched&&subjectUntouched(st,s)){s.units=units;s.checkpoints={};}
+ else{
+  for(const nu of units){
+   const old=s.units.find(u=>u.id===nu.id||u.title===nu.title);
+   if(old){old.cguCodes=[...new Set([...(old.cguCodes||[]),...(nu.cguCodes||[])])];if(nu.deferred!==undefined)old.deferred=nu.deferred;if(nu.source)old.source=nu.source;}
+   else s.units.push(nu);
+  }
+ }
+ return s;
+}
+function markCguCodes(st,codes,source='auto'){
+ if(!Array.isArray(codes)||!codes.length)return;
+ if(!st.cguCheck||typeof st.cguCheck!=='object')st.cguCheck={version:1,startedAt:CGU_CHECK_START,examDate:'2026-12-13',checked:{}};
+ if(!st.cguCheck.checked||typeof st.cguCheck.checked!=='object')st.cguCheck.checked={};
+ const now=new Date().toISOString();
+ for(const code of codes)st.cguCheck.checked[code]={checked:true,source,at:now};
+}
+
 export function normalizeMethodState(current){
  const st=copy(current);
  st.settings=st.settings||{};
- st.settings.weeklyMinimum=1200;
- st.settings.dailyMinimum=180;
- const dcon=st.subjects?.find(s=>s.id==='dcon');
- if(dcon){
-  dcon.course='Direito Constitucional — Nelma Fontana (Cebraspe) · Art. 5º pelo Estratégia';
-  const untouched=!(st.sessions||[]).some(x=>x.subjectId==='dcon')&&(dcon.units||[]).every(u=>!u.theoryDone&&!u.batteryDone&&!u.generalDone&&!u.materialReady);
-  const legacyShape=(dcon.units||[]).length===21||(dcon.units||[]).length===16;
-  if(legacyShape&&untouched){
-   const unit=(id,order,title,extra={})=>({id,title,order,theoryDone:false,theoryDate:'',batteryDone:false,generalDone:false,materialReady:false,battery:{attempted:0,correct:0},general:{attempted:0,correct:0},legacy:[],marks:[],...extra});
-   dcon.units=[
-    unit('dcon-u-1',1,'Nelma · Aula 01'),
-    unit('dcon-u-2',2,'Art. 5º — Estratégia · 24 blocos de videoaulas',{studyPlan:'Estudar os 24 blocos do Estratégia antes de retomar as aulas da Nelma.',totalBlocks:24,source:'Estratégia Concursos'}),
-    ...Array.from({length:15},(_,i)=>unit('dcon-u-'+(i+3),i+3,'Nelma · Aula '+String(i+2).padStart(2,'0')))
-   ];
-   dcon.checkpoints={};
-  }
+ st.settings.weeklyMinimum=1800;
+ st.settings.dailyMinimum=300;
+ st.settings.focus='CGU';
+ st.settings.secondary='TCU';
+ if(!Array.isArray(st.subjects))st.subjects=[];
+ if(!st.cycle||!Number.isInteger(st.cycle.index))st.cycle={index:0,minutes:0};
+ if(st.cycle.index<0||st.cycle.index>=CYCLE.length)st.cycle={index:0,minutes:0};
+
+ const port=st.subjects.find(s=>s.id==='port');
+ if(port){port.course='Português — Marcello Giullian · curso mantido integralmente';port.slotMinutes=60;}
+
+ const dcon=ensureSubject(st,{id:'dcon',course:'Direito Constitucional — Nelma Fontana (Cebraspe) · Art. 5º pelo Estratégia',minutes:60,replaceUntouched:true,units:[
+  baseUnit('dcon-u-1',1,'Nelma · Aula 01',{source:'Nelma Fontana'}),
+  baseUnit('dcon-u-2',2,'Art. 5º — Estratégia · 24 blocos de videoaulas',{studyPlan:'Estudar os 24 blocos do Estratégia antes de retomar as aulas da Nelma.',totalBlocks:24,source:'Estratégia Concursos',cguCodes:['B1.4']}),
+  ...Array.from({length:15},(_,i)=>baseUnit('dcon-u-'+(i+3),i+3,'Nelma · Aula '+String(i+2).padStart(2,'0'),{source:'Nelma Fontana'}))
+ ]});
+
+ const afoUnits=[
+  ['afo-cgu-01','BizurAFO · Módulo 01 · Conceito, dimensões, tipos de orçamento e intervenção do Estado nas finanças públicas',['A2.1']],
+  ['afo-cgu-02','BizurAFO · Módulo 02 · Instrumentos de planejamento — PPA, LDO e LOA',['B4.4','A2.2']],
+  ['afo-cgu-03','BizurAFO · Módulo 03 · Princípios orçamentários',['A2.2']],
+  ['afo-cgu-04','BizurAFO · Módulo 04 · Créditos adicionais e alterações orçamentárias',['A2.2']],
+  ['afo-cgu-05','BizurAFO · Módulo 05 · Ciclo orçamentário',['A2.2']],
+  ['afo-cgu-06','BizurAFO · Módulo 06 · Técnicas orçamentárias e orçamento-programa',['A2.2']],
+  ['afo-cgu-07','BizurAFO · Módulo 07 · Receita pública',['A2.3']],
+  ['afo-cgu-08','BizurAFO · Módulo 08 · Despesa pública',['A2.3']],
+  ['afo-cgu-09','BizurAFO · Módulo 09 · Execução orçamentária e financeira, programação e descentralização',['A2.3']],
+  ['afo-cgu-10','BizurAFO · Módulo 10 · Restos a pagar, DEA e suprimento de fundos',['A2.3']],
+  ['afo-cgu-11','BizurAFO · Módulo 11 · Lei de Responsabilidade Fiscal',['A2.3']],
+  ['afo-cgu-12','BizurAFO · Módulo 12 · Sistemas de informações',[]],
+  ['afo-cgu-13','BizurAFO · Módulo 13 · Regime de ajustes fiscais',[]],
+  ['afo-cgu-14','BizurAFO · Módulo 14 · Lei 4.320/1964',['A2.2','A2.3']],
+  ['afo-cgu-15','BizurAFO · Módulo 15 · Conta Única do Tesouro Nacional',['A2.3']],
+  ['afo-cgu-16','BizurAFO · Módulo 16 · Questões extras Cebraspe',[]]
+ ].map((x,i)=>baseUnit(x[0],i+1,x[1],{source:'Leandro Ravyelle · BizurAFO',cguCodes:x[2],deferred:x[0]==='afo-cgu-13'}));
+ ensureSubject(st,{id:'afo',course:'AFO — Leandro Ravyelle · BizurAFO',minutes:90,units:afoUnits,replaceUntouched:true});
+
+ const tiUnits=[
+  baseUnit('ti-cgu-fd01',1,'FD01 · Fundamentos de Dados',{source:'Ramon · TI TOTAL',cguCodes:['C4.1']}),
+  baseUnit('ti-cgu-ti60',2,'TI60 · Fluência em dados: conceitos, atributos, métricas e transformação de dados',{source:'Ramon · TI TOTAL',cguCodes:['C4.1']}),
+  baseUnit('ti-cgu-ti63',3,'TI63 · Análise de dados: agrupamentos, tendências, projeções e Analytics',{source:'Ramon · TI TOTAL',cguCodes:['C4.2']}),
+  baseUnit('ti-cgu-ti83',4,'TI83 · módulo da trilha CGU definido no plano Ramon',{source:'Ramon · TI TOTAL',cguCodes:['C4.3']}),
+  baseUnit('ti-cgu-mon36',5,'Monitoria 36 · trilha CGU de Dados',{source:'Ramon · TI TOTAL'}),
+  baseUnit('ti-cgu-ti37',6,'TI37-I · Aprendizado de Máquina e Inteligência Artificial',{source:'Ramon · TI TOTAL',cguCodes:['C4.5']}),
+  baseUnit('ti-cgu-ti36',7,'TI36 · Inteligência Artificial',{source:'Ramon · TI TOTAL',cguCodes:['C4.5']}),
+  baseUnit('ti-cgu-ti61',8,'TI61 · Governança de Dados',{source:'Ramon · TI TOTAL',cguCodes:['C4.4']}),
+  baseUnit('ti-cgu-ti35',9,'TI35 · LGPD',{source:'Ramon · TI TOTAL',cguCodes:['C2.2','C4.4']}),
+  baseUnit('ti-cgu-ti97',10,'TI97 · módulo da trilha CGU definido no plano Ramon',{source:'Ramon · TI TOTAL',cguCodes:['A1.5']}),
+  baseUnit('ti-cgu-ti07',11,'TI07 · Data Mining · reserva',{source:'Ramon · TI TOTAL',cguCodes:['C4.2'],deferred:true}),
+  baseUnit('ti-cgu-ti62',12,'TI62 · Processo de Ciência de Dados · reserva',{source:'Ramon · TI TOTAL',cguCodes:['C4.1'],deferred:true})
+ ];
+ ensureSubject(st,{id:'ti',course:'Dados e IA — Ramon · TI TOTAL · trilha CGU',minutes:60,units:tiUnits,replaceUntouched:true});
+
+ const admTopics=[
+  ['B1.1','Estado e legitimidade'],['B1.2','Democracia e representação'],['B1.3','Federalismo e capacidades estatais'],['B1.5','Valor público e controle'],['B1.6','Corrupção como fenômeno político e social'],['B1.7','Mecanismos de reprodução e captura'],['B1.8','Consequências e respostas à corrupção'],['B1.9','Estado e modelos de desenvolvimento econômico'],
+  ['B3.1','Fundamentos da ética pública'],['B3.2','Deveres profissionais'],['B3.3','Conflitos de interesses e imparcialidade'],['B3.4','Relações de trabalho e atendimento'],['B3.5','Integridade como responsabilidade institucional'],
+  ['B4.1','Organização administrativa'],['B4.2','Modelos de administração'],['B4.3','Políticas públicas'],['B4.4','Planejamento e recursos'],['B4.5','Serviços e transformação digital'],
+  ['C1.1','Governança e responsabilidades'],['C1.2','Riscos e controles essenciais'],['C1.3','Integridade pública'],['C1.4','Integridade privada'],['C1.5','Prevenção e melhoria institucional']
+ ];
+ ensureSubject(st,{id:'adm-publica',course:'Administração Pública e Governança — Estratégia/Direção · plano CGU',minutes:60,units:admTopics.map((x,i)=>baseUnit('adm-cgu-'+String(i+1).padStart(2,'0'),i+1,x[1],{source:'Estratégia/Direção · pacote CGU',cguCodes:[x[0]]}))});
+
+ const diversidadeTopics=[['B2.1','Fundamentos sociológicos'],['B2.2','Formação social e cidadania no Brasil'],['B2.3','População, território e trabalho'],['B2.4','Diversidade e acesso a direitos'],['B2.5','Desenvolvimento e realidade brasileira']];
+ ensureSubject(st,{id:'diversidade',course:'Sociedade Brasileira, Desigualdades e Diversidade — pacote CGU',minutes:60,units:diversidadeTopics.map((x,i)=>baseUnit('div-cgu-'+(i+1),i+1,x[1],{source:'Estratégia/Direção · pacote CGU',cguCodes:[x[0]]}))});
+
+ const dad=st.subjects.find(s=>s.id==='dad');
+ if(dad){
+  dad.course=dad.course||'DAD — Rafael Oliveira';
+  const addCodes=(matcher,codes)=>{for(const u of dad.units||[])if(matcher.test(u.title||''))u.cguCodes=[...new Set([...(u.cguCodes||[]),...codes])];};
+  addCodes(/organiza[cç][aã]o administrativa|administra[cç][aã]o p[uú]blica indireta/i,['B4.1']);
+  addCodes(/atos administrativos/i,['C3.1']);
+  addCodes(/processo administrativo/i,['C3.1','C3.2']);
+  addCodes(/controle da administra[cç][aã]o/i,['C3.3']);
+  addCodes(/improbidade|anticorrup[cç][aã]o/i,['C3.4','A5.5','A5.6']);
+  addCodes(/licita[cç][oõ]es e contratos/i,['A4.1','A4.2']);
  }
+
+ const ppTopics=[
+  ['B4.3','Aula 01 · Ciclo de políticas públicas'],
+  ['A3.3','Aula 02 · Indicadores e métodos'],
+  ['A3.1','Avaliação Ex Ante'],
+  ['A3.3','Avaliação Ex Post'],
+  ['A3.6','CMAP · estudo seletivo e uso de resultados'],
+  ['A3.4','Métodos qualitativos e mistos'],
+  ['A3.5','Identificação causal e análise econômica'],
+  ['A3.6','Conclusões, recomendações e uso dos resultados'],
+  ['A3.7','Ética da investigação']
+ ];
+ ensureSubject(st,{id:'politicas',course:'Políticas Públicas e Avaliação — Estratégia + Marcelo Soares',minutes:60,units:ppTopics.map((x,i)=>baseUnit('pp-cgu-'+(i+1),i+1,x[1],{source:i<2?'Estratégia · curso de Políticas Públicas':'Estratégia / Marcelo Soares · plano CGU',cguCodes:[x[0]]}))});
+
+ const auditTopics=[
+  ['C2.1','Transparência · acesso à informação'],['C2.2','Transparência e proteção de dados'],['C2.3','Ouvidoria e proteção das pessoas'],['C2.4','Participação e melhoria de serviços'],['C2.5','Integridade da informação e comunicação'],
+  ['C3.5','Proteção e encaminhamento'],
+  ['C5.1','Propósito, serviços e papéis'],['C5.2','Ciclo do trabalho de auditoria'],['C5.3','Evidência e conclusão'],['C5.4','Comunicação, recomendações e monitoramento'],['C5.5','Atuação integrada da CGU'],
+  ['A1.1','Avaliação, consultoria e apuração'],['A1.2','Planejamento técnico do trabalho'],['A1.3','Testes e amostragem'],['A1.4','Achados, documentação e revisão'],['A1.5','Auditoria de dados e IA'],['A1.6','Comunicação, monitoramento e qualidade'],
+  ['A4.1','Planejamento e seleção em contratações'],['A4.2','Execução contratual'],['A4.3','Transferências e parcerias'],['A4.4','Testes e sinais de irregularidade'],['A4.5','Encaminhamentos e resultados'],
+  ['A5.1','Direito público aplicado às respostas de controle'],['A5.2','Informação, participação e qualidade dos serviços'],['A5.3','Proteção do denunciante e tratamento seguro'],['A5.4','Avaliação e aperfeiçoamento da integridade'],['A5.5','Admissibilidade, prova e responsabilização'],['A5.6','PAD, PAR, leniência e soluções consensuais'],['A5.7','Resultados, comunicação e aprendizagem institucional']
+ ];
+ ensureSubject(st,{id:'auditoria',course:'Auditoria Governamental — Marcelo Soares · prioridade máxima CGU',minutes:75,units:auditTopics.map((x,i)=>baseUnit('aud-cgu-'+String(i+1).padStart(2,'0'),i+1,x[1],{source:'Marcelo Soares · curso adquirido',cguCodes:[x[0]]}))});
+
  for(const s of st.subjects||[])for(const u of s.units||[]){
   if(u.theoryDone&&Number(u.battery?.attempted||0)>=30)u.batteryDone=true;
  }
@@ -72,12 +185,12 @@ export function normalizeMethodState(current){
   const note=(String(row.title||'')+' '+String(row.notes||'')).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
   if(!/(finalizei|concluid[ao]|totalmente concluid[ao]|pdf concluido|teoria concluida)/.test(note))continue;
   const s=st.subjects?.find(x=>x.id===row.subjectId),u=s?.units?.find(x=>x.id===row.unitId);
-  if(u&&!u.theoryDone){u.theoryDone=true;u.theoryDate=validDay(row.date)?row.date:u.theoryDate;}
+  if(u&&!u.theoryDone){u.theoryDone=true;u.theoryDate=validDay(row.date)?row.date:u.theoryDate;markCguCodes(st,u.cguCodes,'auto-history');}
  }
  const art5=dcon?.units?.find(u=>u.id==='dcon-u-2');
  if(art5&&!art5.theoryDone){
   const hit=(st.sessions||[]).some(row=>row.subjectId==='dcon'&&row.unitId==='dcon-u-2'&&/bloco\s*24\b/i.test(String(row.title||'')+' '+String(row.notes||'')));
-  if(hit){art5.theoryDone=true;art5.theoryDate=(st.sessions||[]).filter(row=>row.subjectId==='dcon'&&row.unitId==='dcon-u-2'&&/bloco\s*24\b/i.test(String(row.title||'')+' '+String(row.notes||''))).map(row=>row.date).sort().at(-1)||art5.theoryDate;}
+  if(hit){art5.theoryDone=true;art5.theoryDate=(st.sessions||[]).filter(row=>row.subjectId==='dcon'&&row.unitId==='dcon-u-2'&&/bloco\s*24\b/i.test(String(row.title||'')+' '+String(row.notes||''))).map(row=>row.date).sort().at(-1)||art5.theoryDate;markCguCodes(st,art5.cguCodes,'auto-history');}
  }
  return st;
 }
@@ -88,7 +201,7 @@ export function validDay(s){return /^\d{4}-\d{2}-\d{2}$/.test(s||'')&&day(new Da
 export function weekStart(s=day()){let d=new Date(s+'T12:00:00');d.setDate(d.getDate()-(d.getDay()+6)%7);return day(d);}
 export function hm(n){n=Math.round(n||0);return Math.floor(n/60)+'h'+String(n%60).padStart(2,'0');}
 export function pct(q){return q?.attempted?Math.round(q.correct/q.attempted*100)+'%':'—';}
-export function emptyState(){return {version:1,settings:{weeklyMinimum:1200,dailyMinimum:180,focus:'CGU',secondary:'TCU'},subjects:[],sessions:[],cycle:{index:0,minutes:0},imports:[],archive:[],updatedAt:null};}
+export function emptyState(){return {version:1,settings:{weeklyMinimum:1800,dailyMinimum:300,focus:'CGU',secondary:'TCU'},subjects:[],sessions:[],cycle:{index:0,minutes:0},imports:[],archive:[],updatedAt:null};}
 const touched=u=>u.legacy.some(e=>e.status!=='Em espera')||u.theoryDone;
 export function checkpoints(s){let result=[],size=RULES[s.id]?.checkpoint||4,route=methodUnits(s);for(let i=0;i<route.length;i+=size){let units=route.slice(i,i+size),id=s.id+'-cp-'+(i/size+1),record=s.checkpoints[id];result.push({id,number:i/size+1,units,partial:units.length<size,record,status:record?.done?'done':units.every(u=>u.theoryDone&&u.batteryDone)?'due':units.every(u=>u.theoryDone)?'battery':units.every(touched)?'audit':'planned'});}return result;}
 export function unitSituation(u){if(u?.deferred&&!u.theoryDone&&!u.batteryDone)return 'Deixar para depois';return u.generalDone&&u.materialReady?'Revisão geral concluída':u.theoryDone&&u.batteryDone?'Bateria concluída':u.theoryDone?'Bateria pendente':touched(u)?'Conferir avanço importado':'Estudar';}
@@ -159,7 +272,7 @@ export function session(current,input){
   entry.cycleApplied=true;
   entry.slotComplete=true;
  }
- st.sessions.push(entry);if(u&&['battery','general'].includes(input.activity)){u[input.activity].attempted+=q;u[input.activity].correct+=correct;if(input.activity==='battery'&&u.theoryDone&&u.battery.attempted>=30)u.batteryDone=true;}return st;
+ st.sessions.push(entry);if(u&&['battery','general'].includes(input.activity)){u[input.activity].attempted+=q;u[input.activity].correct+=correct;if(input.activity==='battery'&&u.theoryDone&&u.battery.attempted>=30)u.batteryDone=true;}if(u&&input.date>=CGU_CHECK_START&&input.activity!=='night'&&(u.theoryDone||['battery','general','checkpoint'].includes(input.activity)))markCguCodes(st,u.cguCodes,'auto-study');return st;
 }
 export function setUnit(current,sid,id,values){let st=copy(current),{s,u}=getUnit(st,sid,id);
  let theory=!!values.theoryDone,battery=!!values.batteryDone,general=!!values.generalDone,material=!!values.materialReady;
@@ -169,7 +282,7 @@ export function setUnit(current,sid,id,values){let st=copy(current),{s,u}=getUni
  if(general&&(!methodUnits(s).every(v=>v.id===u.id?theory&&battery:v.theoryDone&&v.batteryDone)||!checkpoints(s).every(c=>c.status==='done')))throw Error('Conclua teoria, baterias e checkpoints antes da revisão geral.');
  Object.assign(u,{theoryDone:theory,theoryDate:theory?values.theoryDate:'',batteryDone:battery&&theory,generalDone:general&&battery&&theory,materialReady:material});
  if(!theory||!battery){let cp=checkpoints(s).find(c=>c.units.some(v=>v.id===id));if(cp)delete s.checkpoints[cp.id];for(let x of s.units)x.generalDone=false;}
- if(s.phase==='solid'&&!canSolid(s))s.phase='new';return st;
+ if(theory)markCguCodes(st,u.cguCodes,'auto-unit');if(s.phase==='solid'&&!canSolid(s))s.phase='new';return st;
 }
 function checkpointTotals(perUnit){return Object.values(perUnit||{}).reduce((a,r)=>({attempted:a.attempted+(Number(r?.attempted)||0),correct:a.correct+(Number(r?.correct)||0)}),{attempted:0,correct:0});}
 function checkpointSession(st,s,cp,record,minutes){
@@ -202,8 +315,8 @@ export function notebookRound(current,sid,id,attempted,correct){let st=copy(curr
 export function validate(st){
  if(st?.version!==1||!Array.isArray(st.subjects)||!Array.isArray(st.sessions)||!Array.isArray(st.imports)||!Array.isArray(st.archive)||!st.settings||!st.cycle)throw Error('Backup Método ET inválido.');
  if(st.settings.focus!=='CGU'||st.settings.secondary!=='TCU'||!Number.isInteger(st.settings.dailyMinimum)||st.settings.dailyMinimum<60||!Number.isInteger(st.settings.weeklyMinimum)||st.settings.weeklyMinimum<180)throw Error('Planejamento incompatível com a base da Camile.');
- const ids=st.subjects.map(s=>s.id),required=['afo','dad','ti','port','dcon','info'];
- if(new Set(ids).size!==ids.length||!required.every(id=>ids.includes(id)))throw Error('O backup da Camile deve preservar todas as disciplinas-base e Informática e Dados.');
+ const ids=st.subjects.map(s=>s.id),required=['afo','dad','ti','port','dcon'];
+ if(new Set(ids).size!==ids.length||!required.every(id=>ids.includes(id)))throw Error('O backup da Camile deve preservar as disciplinas-base do Método ET.');
  if(!Number.isInteger(st.cycle.index)||st.cycle.index<0||st.cycle.index>=CYCLE.length||!Number.isFinite(st.cycle.minutes)||st.cycle.minutes<0)throw Error('Ciclo inválido.');
  for(let s of st.subjects){
   if(!RULES[s.id]||!['new','solid'].includes(s.phase)||!Array.isArray(s.units)||!s.checkpoints||!Array.isArray(s.notebooks)||!Number.isInteger(s.slotMinutes)||s.slotMinutes<30||s.slotMinutes>120)throw Error('Disciplina inválida.');
