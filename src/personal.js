@@ -1,4 +1,4 @@
-import {copy,day,validDay,uid} from './core.js?v=1.1.1-cgu-progress';
+import {copy,day,validDay,uid} from './core.js?v=1.1.2-cgu-history';
 export const REMINDER_STATUS={todo:'A fazer',done:'Feito',future:'Futuramente'};
 export const LEGISLATION_QUEUE=[
  {id:'cf88',short:'CF/88',title:'Constituição Federal de 1988'},
