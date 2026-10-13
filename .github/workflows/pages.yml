@@ -75,7 +75,7 @@ jobs:
           grep -q "Estratégia · curso de Políticas Públicas" src/cgu-materials.js
           grep -q "Não usar Direção" src/cgu-materials.js
           grep -q "Não adquirir/reabrir curso próprio do Rodrigo Rennó" src/cgu-materials.js
-          grep -q "1.2.0-cgu-metas" index.html
+          grep -q "1.2.1-cgu-metas" index.html
 
       - name: Empacotar site
         uses: actions/upload-pages-artifact@v3
