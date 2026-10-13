@@ -20,6 +20,90 @@ export const GOAL_CYCLES_PER_META=2;
 export const GOAL_META_COUNT=8;
 const GOAL_CORE_MINUTES=CYCLE.reduce((sum,id)=>sum+(RULES[id]?.minutes||60),0)*GOAL_CYCLES_PER_META;
 
+export const GOAL_WINDOWS=Object.freeze([
+ {start:'2026-10-13',end:'2026-10-19',label:'13–19/10'},
+ {start:'2026-10-20',end:'2026-10-26',label:'20–26/10'},
+ {start:'2026-10-27',end:'2026-11-02',label:'27/10–02/11'},
+ {start:'2026-11-03',end:'2026-11-09',label:'03–09/11'},
+ {start:'2026-11-10',end:'2026-11-16',label:'10–16/11'},
+ {start:'2026-11-17',end:'2026-11-23',label:'17–23/11'},
+ {start:'2026-11-24',end:'2026-11-30',label:'24–30/11'},
+ {start:'2026-12-01',end:'2026-12-07',label:'01–07/12'}
+]);
+
+export const GOAL_FOCUS=Object.freeze([
+ [
+  'Português · Marcello em sequência; Andresan entra como bateria Cebraspe, sem substituir a teoria.',
+  'DCON · continuar a ponte do Art. 5º pelo Estratégia a partir do ponto real e preservar Nelma como curso principal.',
+  'AFO · iniciar/avançar BizurAFO dentro dos três slots de AFO; ainda não abrir Celso/Gilmar.',
+  'TI/Dados · começar pela rota Ramon: FD01 → TI60; seguir somente quando a etapa anterior estiver fechada.',
+  'Adm./Diversidade/DAD/Políticas/Auditoria · abrir as fontes principais na primeira ocorrência de cada disciplina e registrar o ponto real.'
+ ],
+ [
+  'AFO · consolidar o primeiro núcleo do BizurAFO e avançar pelos módulos seguintes, sem pular o ciclo.',
+  'TI/Dados · avançar TI60 → TI63 → TI83 conforme o tempo real.',
+  'Políticas Públicas · Estratégia como fonte principal; Aula 01/02 e sequência do plano de avaliação.',
+  'Auditoria · Marcelo Soares continua sozinho como fonte principal; Direção ainda não entra.',
+  'B1/B3/C1 e B2 · Direção apenas nos blocos definidos como fonte/lacuna, sem duplicar Marcelo/Nelma/Rafael.'
+ ],
+ [
+  'AFO · fechar o máximo possível da primeira passagem BizurAFO; Módulo 13 segue fora do primeiro giro e Módulo 16 é diagnóstico/opcional.',
+  'TI/Dados · Monitoria 36 e TI37-I somente quando a rota anterior estiver concluída.',
+  'Políticas Públicas · Ex Ante/Ex Post, CMAP e métodos conforme a sequência do Estratégia.',
+  'Auditoria · continuar Marcelo Soares; nenhuma aula do Direção antes da base principal.',
+  'Ao final da semana, identificar objetivamente as lacunas A2.1 que justificam Celso Natale.'
+ ],
+ [
+  'AFO · depois da base BizurAFO, entrar em Celso Natale somente nas lacunas A2.1 já mapeadas.',
+  'AFO · não iniciar Gilmar antes de concluir o complemento econômico/finanças públicas necessário.',
+  'TI/Dados · TI36 → TI61 conforme a rota Ramon.',
+  'Políticas Públicas · métodos qualitativos/mistos e identificação causal conforme o curso principal.',
+  'Demais disciplinas · continuar a próxima etapa real do Método ET, priorizando baterias/checkpoints quando liberados.'
+ ],
+ [
+  'AFO · Gilmar Possati entra seletivamente em A2.4–A2.6 após BizurAFO/Celso: CASP/MCASP/NBC TSP, custos e estatais.',
+  'TI/Dados · TI35 → TI97 e diagnóstico das lacunas C4/A1.5.',
+  'Auditoria · objetivo é concluir a base Marcelo Soares; Direção só pode entrar depois dessa condição.',
+  'Políticas/DAD/DCON/Português · avançar teoria e começar consolidação onde já houver revisão geral/material prontos.',
+  'A2.7 · manter como lacuna controlada; não inventar material antes do mapeamento pós-edital.'
+ ],
+ [
+  'Auditoria · após Marcelo, usar Direção/TSE para papéis, testes, amostragem, execução, evidências e achados.',
+  'Auditoria · comunicação/relatório/monitoramento e NBC TA 230/500/505-520/320-330 só se a lacuna persistir; IPPF/riscos/três linhas também seletivos.',
+  'A4/A5 · tratar como lacunas controladas do pós-edital, usando base jurídica e mapeamento interno do Direção sem atribuir aula inexistente.',
+  'Adm./Diversidade/DAD/Políticas · fechar lacunas teóricas e transformar cobertura concluída em revisão/questões.',
+  'AFO/TI · fechar os complementos necessários; evitar abrir conteúdo amplo fora do recorte CGU.'
+ ],
+ [
+  'Fechamento de teoria prioritária: nenhuma duplicação de curso; lacuna comprovada primeiro.',
+  'Disciplinas concluídas migram para Estudo Sólido com cadernos, erros e favoritas.',
+  'Baterias e checkpoints ganham prioridade crescente, sem abandonar as matérias ainda em Estudo Novo.',
+  'Legislação Seca continua 30 min/dia no rodízio CF+LAI / Leg. CGU+LGPD.',
+  'Usar o Check do Edital para localizar os últimos buracos de cobertura e atacar apenas o que é material para a prova.'
+ ],
+ [
+  'Consolidação final: revisão geral, erros/favoritas, checkpoints pendentes e questões Cebraspe.',
+  'Nenhuma teoria ampla nova: somente correção de lacuna curta e de alto valor.',
+  'Revisar Auditoria, AFO/A2, Políticas Públicas e os blocos transversais C1–C5 com base nos próprios materiais.',
+  'Manter Português/DCON/DAD ativos por questões e revisão, sem reabrir cursos inteiros.',
+  'Fechar a Meta até 07/12 para liberar cinco dias exclusivamente de revisão final antes da prova.'
+ ]
+]);
+
+export const FINAL_SPRINT=Object.freeze({
+ start:'2026-12-08',
+ end:'2026-12-12',
+ label:'08–12/12',
+ title:'Sprint Final · 5 dias',
+ actions:[
+  'Sem curso novo e sem teoria ampla nova.',
+  'Erros, favoritas, revisões gerais e pontos marcados como lacuna no Check do Edital.',
+  'Legislação Seca e normas de alta incidência em leitura direcionada.',
+  'Questões/simulados e revisão das justificativas dos erros.',
+  'Na véspera, reduzir carga e priorizar recuperação, material curto e logística da prova.'
+ ]
+});
+
 function buildCycleGoalTasks(metaNumber){
  let step=0;
  return Array.from({length:GOAL_CYCLES_PER_META},(_,round)=>CYCLE.map((sid,index)=>{
@@ -37,15 +121,21 @@ function buildCycleGoalTasks(metaNumber){
  })).flat();
 }
 export const GOAL_TEMPLATES=Array.from({length:GOAL_META_COUNT},(_,i)=>{
- const number=i+1;
+ const number=i+1,window=GOAL_WINDOWS[i];
  return {
   id:'meta-'+String(number).padStart(2,'0'),
   number,
-  title:'Meta '+String(number).padStart(2,'0')+' · 30h · 2 voltas do ciclo',
+  title:'Meta '+String(number).padStart(2,'0')+' · 30h · '+window.label,
   subtitle:'Duas voltas completas na ordem Port → DCON → AFO → TI → Adm. Pública → Diversidade → AFO → DAD → Políticas Públicas → Auditoria → AFO.',
   targetMinutes:1800,
   coreMinutes:GOAL_CORE_MINUTES,
   marginMinutes:1800-GOAL_CORE_MINUTES,
+  targetStart:window.start,
+  targetEnd:window.end,
+  targetLabel:window.label,
+  dailyReferenceMinutes:300,
+  weeklyReferenceMinutes:1800,
+  focus:GOAL_FOCUS[i],
   tasks:buildCycleGoalTasks(number)
  };
 });
@@ -59,8 +149,8 @@ export const BIZURAFO_MODULES=Object.freeze([
  {id:'biz-06',number:6,title:'Técnicas orçamentárias e orçamento-programa',status:'core',note:'Núcleo de AFO/Finanças Públicas para a CGU: evolução conceitual, técnicas e orçamento-programa.'},
  {id:'biz-07',number:7,title:'Receita pública',status:'core',note:'Núcleo CGU: classificações, estágios, fontes e dívida ativa.'},
  {id:'biz-08',number:8,title:'Despesa pública',status:'core',note:'Núcleo CGU: classificações e estágios. Restos a pagar e temas correlatos reaparecem nos módulos seguintes.'},
- {id:'biz-09',number:9,title:'Execução orçamentária e financeira, programação e descentralização',status:'core',note:'Execução e programação são núcleo TCU. Descentralização é muito recorrente em editais recentes de controle e fica mantida por segurança.'},
- {id:'biz-10',number:10,title:'Restos a pagar, despesas de exercícios anteriores e suprimento de fundos',status:'core',note:'ESTUDAR. Restos a pagar e DEA decorrem do recorte da Lei 4.320/1964 cobrado pelo TCU, e o suprimento de fundos/regime de adiantamento está nos arts. 68–69, dentro do Título VI — expressamente incluído no edital.'},
+ {id:'biz-09',number:9,title:'Execução orçamentária e financeira, programação e descentralização',status:'core',note:'Execução, programação e descentralização são mantidas pelo recorte CGU de orçamento/execução e pelo valor transversal para controle.'},
+ {id:'biz-10',number:10,title:'Restos a pagar, despesas de exercícios anteriores e suprimento de fundos',status:'core',note:'ESTUDAR. Restos a pagar, DEA e suprimento de fundos permanecem no plano por integrarem a execução orçamentária/financeira e a Lei 4.320/1964 relevante ao recorte CGU.'},
  {id:'biz-11',number:11,title:'Lei de Responsabilidade Fiscal — LRF',status:'cut',note:'ESTUDAR COM CORTES: priorize conceitos/RCL, planejamento, LDO/LOA, renúncia, geração de despesas, transferências voluntárias, destinação ao setor privado, transparência, prestação de contas e fiscalização. Adie, neste intensivão, pessoal, seguridade, endividamento, gestão patrimonial e relatórios RREO/RGF quando tratados só como aprofundamento de LRF.'},
  {id:'biz-12',number:12,title:'Sistemas de informações',status:'cut',note:'ESTUDAR COM CORTES: priorize os sistemas diretamente úteis à execução orçamentária, financeira e ao controle; detalhes periféricos ficam para lacunas do pacote atualizado.'},
  {id:'biz-13',number:13,title:'Regime de ajustes fiscais',status:'pause',note:'NÃO ESTUDAR NESTE INTENSIVÃO. Fica fora do primeiro giro definido para a Camile; preservar para segunda volta se o pacote atualizado indicar necessidade.'},
