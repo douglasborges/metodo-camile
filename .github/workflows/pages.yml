@@ -29,6 +29,38 @@ jobs:
         with:
           enablement: true
 
+      - name: Validar Método Camile · CGU pós-edital
+        run: |
+          cp src/app.js /tmp/app.mjs
+          cp src/core.js /tmp/core.mjs
+          cp src/personal.js /tmp/personal.mjs
+          cp src/progress.js /tmp/progress.mjs
+          cp src/analytics.js /tmp/analytics.mjs
+          cp src/achievements.js /tmp/achievements.mjs
+          cp src/cgu-syllabus.js /tmp/cgu-syllabus.mjs
+          node --check /tmp/app.mjs
+          node --check /tmp/core.mjs
+          node --check /tmp/personal.mjs
+          node --check /tmp/progress.mjs
+          node --check /tmp/analytics.mjs
+          node --check /tmp/achievements.mjs
+          node --check /tmp/cgu-syllabus.mjs
+          node --check drive-sync.js
+          node --check drive-sync-ui.js
+          grep -q "PÓS-EDITAL · CGU 2026" index.html
+          grep -q "Check - Edital da CGU" index.html
+          grep -q "Camile, Auditora Federal da Controladoria-Geral da União" index.html
+          grep -q "CGU_OFFICIAL_TOTAL=266" src/cgu-syllabus.js
+          grep -q "CGU_OPERATIONAL_TOTAL" src/cgu-syllabus.js
+          grep -q "weeklyMinimum=1800" src/core.js
+          grep -q "dailyMinimum=300" src/core.js
+          grep -Fq "['port','dcon','afo','ti','adm-publica','diversidade','afo','dad','politicas','auditoria','afo']" src/core.js
+          grep -q "Ramon · TI TOTAL" src/core.js
+          grep -q "Marcello Giullian" src/core.js
+          grep -q "legislationPair" src/personal.js
+          grep -q "CF/88" src/personal.js
+          grep -q "Leg. CGU" src/personal.js
+
       - name: Empacotar site
         uses: actions/upload-pages-artifact@v3
         with:
