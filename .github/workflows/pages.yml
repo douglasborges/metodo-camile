@@ -60,6 +60,9 @@ jobs:
           grep -q "legislationPair" src/personal.js
           grep -q "CF/88" src/personal.js
           grep -q "Leg. CGU" src/personal.js
+          grep -q "historical-camile" src/core.js
+          grep -q "blocksCompleted" src/core.js
+          grep -q "cobertura parcial" src/app.js
 
       - name: Empacotar site
         uses: actions/upload-pages-artifact@v3
