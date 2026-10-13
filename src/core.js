@@ -128,7 +128,7 @@ export function normalizeMethodState(current){
  if(oldInfo&&subjectUntouched(st,oldInfo))st.subjects=st.subjects.filter(s=>s.id!=='info');
 
  const port=st.subjects.find(s=>s.id==='port');
- if(port){port.course='Português — Marcello Giullian · curso mantido integralmente';port.slotMinutes=60;}
+ if(port){port.course='Português — Marcello Giulian · curso mantido integralmente';port.slotMinutes=60;}
 
  const dcon=ensureSubject(st,{id:'dcon',course:'Direito Constitucional — Nelma Fontana (Cebraspe) · Art. 5º pelo Estratégia',minutes:60,replaceUntouched:true,units:[
   baseUnit('dcon-u-1',1,'Nelma · Aula 01 · Princípios Fundamentais',{source:'Nelma Fontana'}),
