@@ -1,5 +1,5 @@
-import * as M from './core.js?v=1.1.1-cgu-progress';
-import {streaks} from './progress.js?v=1.1.1-cgu-progress';
+import * as M from './core.js?v=1.1.2-cgu-history';
+import {streaks} from './progress.js?v=1.1.2-cgu-history';
 
 export const CATEGORY_META={
   hours:{icon:'⏱',title:'Horas líquidas',description:'Tempo efetivo de estudo principal, sem revisão noturna e sem Legislação Seca.'},
