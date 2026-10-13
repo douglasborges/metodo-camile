@@ -69,10 +69,48 @@ function ensureSubject(st,{id,course,minutes,units,replaceUntouched=false}){
 }
 function markCguCodes(st,codes,source='auto'){
  if(!Array.isArray(codes)||!codes.length)return;
- if(!st.cguCheck||typeof st.cguCheck!=='object')st.cguCheck={version:1,startedAt:CGU_CHECK_START,examDate:'2026-12-13',checked:{}};
+ if(!st.cguCheck||typeof st.cguCheck!=='object')st.cguCheck={version:2,startedAt:CGU_CHECK_START,examDate:'2026-12-13',checked:{}};
  if(!st.cguCheck.checked||typeof st.cguCheck.checked!=='object')st.cguCheck.checked={};
  const now=new Date().toISOString();
- for(const code of codes)st.cguCheck.checked[code]={checked:true,source,at:now};
+ for(const code of codes){
+  const previous=st.cguCheck.checked[code]||{};
+  st.cguCheck.checked[code]={...previous,checked:true,progress:1,source,at:now};
+ }
+}
+function dconHistoricalProgress(st,dcon){
+ if(!dcon)return;
+ const u1=dcon.units?.find(u=>u.id==='dcon-u-1');
+ const art5=dcon.units?.find(u=>u.id==='dcon-u-2');
+ const u3=dcon.units?.find(u=>u.id==='dcon-u-4');
+ // Histórico confirmado pelo usuário em 12/10/2026: Aula 01 concluída, Aula 03 estudada,
+ // e 1ª videoaula do Art. 5º concluída. Não importamos horas/progresso do Douglas.
+ if(u1&&!u1.theoryDone){u1.theoryDone=true;u1.theoryDate='2026-10-12';u1.historical=true;u1.historicalNote='Conclusão confirmada pelo usuário em 12/10/2026 · dois blocos da Aula 01.';}
+ if(u3&&!u3.theoryDone){u3.theoryDone=true;u3.theoryDate='2026-10-12';u3.historical=true;u3.historicalNote='Estudo da Aula 03 confirmado pelo usuário em 12/10/2026 · Direitos Sociais.';}
+ if(art5){
+  art5.blocksCompleted=Math.max(Number(art5.blocksCompleted)||0,1);
+  art5.historical=true;
+  art5.historicalNote='Art. 5º · Estratégia: 1 de 24 videoaulas concluída; exercícios pendentes.';
+ }
+ // B1.4.1 possui seis núcleos operacionais na descrição oficial.
+ // Aula 01 cobre fundamentos/objetivos; Aula 03 cobre direitos sociais.
+ // A videoaula 1/24 do Art. 5º acrescenta progresso proporcional sem declarar o tópico concluído.
+ if(!st.cguCheck||typeof st.cguCheck!=='object')st.cguCheck={version:2,startedAt:CGU_CHECK_START,examDate:'2026-12-13',checked:{}};
+ if(!st.cguCheck.checked||typeof st.cguCheck.checked!=='object')st.cguCheck.checked={};
+ const completedSegments=(u1?.theoryDone?1:0)+(u3?.theoryDone?1:0);
+ const art5Fraction=Math.min(1,(Number(art5?.blocksCompleted)||0)/24);
+ const progress=Math.min(0.99,(completedSegments+(art5Fraction*2))/6);
+ const previous=st.cguCheck.checked['B1.4']||{};
+ if(!previous.checked){
+  st.cguCheck.checked['B1.4']={
+   ...previous,checked:false,progress,baselineProgress:progress,source:'historical-camile',
+   at:'2026-10-12T21:14:57-03:00',
+   evidence:[
+    {id:'nelma-a01',status:'done',label:'✓ Nelma · Aula 01 · Princípios Fundamentais · dois blocos concluídos'},
+    {id:'nelma-a03',status:'done',label:'✓ Nelma · Aula 03 · Direitos Sociais · estudada'},
+    {id:'art5-estrategia',status:'partial',label:'◐ Art. 5º · Estratégia · 1/24 videoaulas concluída · exercícios pendentes'}
+   ]
+  };
+ }
 }
 
 export function normalizeMethodState(current){
@@ -92,10 +130,11 @@ export function normalizeMethodState(current){
  if(port){port.course='Português — Marcello Giullian · curso mantido integralmente';port.slotMinutes=60;}
 
  const dcon=ensureSubject(st,{id:'dcon',course:'Direito Constitucional — Nelma Fontana (Cebraspe) · Art. 5º pelo Estratégia',minutes:60,replaceUntouched:true,units:[
-  baseUnit('dcon-u-1',1,'Nelma · Aula 01',{source:'Nelma Fontana'}),
-  baseUnit('dcon-u-2',2,'Art. 5º — Estratégia · 24 blocos de videoaulas',{studyPlan:'Estudar os 24 blocos do Estratégia antes de retomar as aulas da Nelma.',totalBlocks:24,source:'Estratégia Concursos',cguCodes:['B1.4']}),
+  baseUnit('dcon-u-1',1,'Nelma · Aula 01 · Princípios Fundamentais',{source:'Nelma Fontana'}),
+  baseUnit('dcon-u-2',2,'Art. 5º — Estratégia · 24 blocos de videoaulas',{studyPlan:'Estudar os 24 blocos do Estratégia antes de retomar as aulas da Nelma.',totalBlocks:24,source:'Estratégia Concursos'}),
   ...Array.from({length:15},(_,i)=>baseUnit('dcon-u-'+(i+3),i+3,'Nelma · Aula '+String(i+2).padStart(2,'0'),{source:'Nelma Fontana'}))
  ]});
+ dconHistoricalProgress(st,dcon);
 
  const afoUnits=[
   ['afo-cgu-01','BizurAFO · Módulo 01 · Conceito, dimensões, tipos de orçamento e intervenção do Estado nas finanças públicas',['A2.1']],
@@ -193,8 +232,9 @@ export function normalizeMethodState(current){
  const art5=dcon?.units?.find(u=>u.id==='dcon-u-2');
  if(art5&&!art5.theoryDone){
   const hit=(st.sessions||[]).some(row=>row.subjectId==='dcon'&&row.unitId==='dcon-u-2'&&/bloco\s*24\b/i.test(String(row.title||'')+' '+String(row.notes||'')));
-  if(hit){art5.theoryDone=true;art5.theoryDate=(st.sessions||[]).filter(row=>row.subjectId==='dcon'&&row.unitId==='dcon-u-2'&&/bloco\s*24\b/i.test(String(row.title||'')+' '+String(row.notes||''))).map(row=>row.date).sort().at(-1)||art5.theoryDate;markCguCodes(st,art5.cguCodes,'auto-history');}
+  if(hit){art5.theoryDone=true;art5.blocksCompleted=24;art5.theoryDate=(st.sessions||[]).filter(row=>row.subjectId==='dcon'&&row.unitId==='dcon-u-2'&&/bloco\s*24\b/i.test(String(row.title||'')+' '+String(row.notes||''))).map(row=>row.date).sort().at(-1)||art5.theoryDate;}
  }
+ dconHistoricalProgress(st,dcon);
  return st;
 }
 export const copy=v=>JSON.parse(JSON.stringify(v));
@@ -269,13 +309,17 @@ export function session(current,input){
  let start=input.start===''||input.start==null?null:Number(input.start),end=input.end===''||input.end==null?null:Number(input.end);
  if((start!==null||end!==null)&&(!Number.isFinite(start)||!Number.isFinite(end)||start<0||end<start))throw Error('Preencha início e fim válidos do conteúdo.');
  const entry={id:uid(),subjectId:s.id,unitId:u?.id||'',title:String(input.title||'').trim()||u?.title||'',date:input.date,createdAt:new Date().toISOString(),activity:input.activity,minutes,questions:q,correct,medium:input.medium||'',start,end,notes:String(input.notes||''),legacy:false,cycleApplied:false};
+ if(s.id==='dcon'&&u?.id==='dcon-u-2'){
+  const match=(String(input.title||'')+' '+String(input.notes||'')).match(/bloco\s*(\d+)/i);
+  if(match)u.blocksCompleted=Math.max(Number(u.blocksCompleted)||0,Math.min(24,Number(match[1])||0));
+ }
  if(input.applyCycle&&!['night','andresan'].includes(input.activity)&&input.date===day()&&CYCLE[st.cycle.index]===s.id){
   st.cycle.minutes=0;
   st.cycle.index=(st.cycle.index+1)%CYCLE.length;
   entry.cycleApplied=true;
   entry.slotComplete=true;
  }
- st.sessions.push(entry);if(u&&['battery','general'].includes(input.activity)){u[input.activity].attempted+=q;u[input.activity].correct+=correct;if(input.activity==='battery'&&u.theoryDone&&u.battery.attempted>=30)u.batteryDone=true;}if(u&&input.date>=CGU_CHECK_START&&input.activity!=='night'&&(u.theoryDone||['battery','general','checkpoint'].includes(input.activity)))markCguCodes(st,u.cguCodes,'auto-study');return st;
+ st.sessions.push(entry);if(u&&['battery','general'].includes(input.activity)){u[input.activity].attempted+=q;u[input.activity].correct+=correct;if(input.activity==='battery'&&u.theoryDone&&u.battery.attempted>=30)u.batteryDone=true;}if(u&&input.date>=CGU_CHECK_START&&input.activity!=='night'&&(u.theoryDone||['battery','general','checkpoint'].includes(input.activity)))markCguCodes(st,u.cguCodes,'auto-study');if(s.id==='dcon')dconHistoricalProgress(st,s);return st;
 }
 export function setUnit(current,sid,id,values){let st=copy(current),{s,u}=getUnit(st,sid,id);
  let theory=!!values.theoryDone,battery=!!values.batteryDone,general=!!values.generalDone,material=!!values.materialReady;
@@ -285,7 +329,7 @@ export function setUnit(current,sid,id,values){let st=copy(current),{s,u}=getUni
  if(general&&(!methodUnits(s).every(v=>v.id===u.id?theory&&battery:v.theoryDone&&v.batteryDone)||!checkpoints(s).every(c=>c.status==='done')))throw Error('Conclua teoria, baterias e checkpoints antes da revisão geral.');
  Object.assign(u,{theoryDone:theory,theoryDate:theory?values.theoryDate:'',batteryDone:battery&&theory,generalDone:general&&battery&&theory,materialReady:material});
  if(!theory||!battery){let cp=checkpoints(s).find(c=>c.units.some(v=>v.id===id));if(cp)delete s.checkpoints[cp.id];for(let x of s.units)x.generalDone=false;}
- if(theory)markCguCodes(st,u.cguCodes,'auto-unit');if(s.phase==='solid'&&!canSolid(s))s.phase='new';return st;
+ if(theory)markCguCodes(st,u.cguCodes,'auto-unit');if(s.id==='dcon')dconHistoricalProgress(st,s);if(s.phase==='solid'&&!canSolid(s))s.phase='new';return st;
 }
 function checkpointTotals(perUnit){return Object.values(perUnit||{}).reduce((a,r)=>({attempted:a.attempted+(Number(r?.attempted)||0),correct:a.correct+(Number(r?.correct)||0)}),{attempted:0,correct:0});}
 function checkpointSession(st,s,cp,record,minutes){
