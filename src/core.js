@@ -155,7 +155,14 @@ export function normalizeMethodState(current){
   ['afo-cgu-15','BizurAFO · Módulo 15 · Conta Única do Tesouro Nacional',['A2.3']],
   ['afo-cgu-16','BizurAFO · Módulo 16 · Questões extras Cebraspe',[]]
  ].map((x,i)=>baseUnit(x[0],i+1,x[1],{source:'Leandro Ravyelle · BizurAFO',cguCodes:x[2],deferred:x[0]==='afo-cgu-13'}));
- ensureSubject(st,{id:'afo',course:'AFO — Leandro Ravyelle · BizurAFO',minutes:90,units:afoUnits,replaceUntouched:true});
+ afoUnits.push(
+  baseUnit('afo-cgu-celso-01',17,'Celso Natale · A2.1 · bens públicos, externalidades, monopólios e federalismo fiscal',{source:'Celso Natale · complemento seletivo após BizurAFO',cguCodes:['A2.1'],stage:'gap'}),
+  baseUnit('afo-cgu-celso-02',18,'Celso Natale · A2.1 · progressividade/regressividade, resultado primário/nominal e déficit',{source:'Celso Natale · complemento seletivo após BizurAFO',cguCodes:['A2.1'],stage:'gap'}),
+  baseUnit('afo-cgu-gilmar-01',19,'Gilmar Possati · A2.4 · CASP, MCASP, NBC TSP e base legal',{source:'Gilmar Possati · Contabilidade Pública/estatais',cguCodes:['A2.4'],stage:'gap'}),
+  baseUnit('afo-cgu-gilmar-02',20,'Gilmar Possati · A2.5 · NBC TSP 34, MIC e custos no setor público',{source:'Gilmar Possati · Contabilidade Pública/estatais',cguCodes:['A2.5'],stage:'gap'}),
+  baseUnit('afo-cgu-gilmar-03',21,'Gilmar Possati · A2.6 · informação societária de estatais',{source:'Gilmar Possati · Contabilidade Pública/estatais',cguCodes:['A2.6'],stage:'gap'})
+ );
+ ensureSubject(st,{id:'afo',course:'AFO / Finanças Públicas / Contabilidade Pública — BizurAFO → Celso Natale seletivo → Gilmar Possati seletivo',minutes:90,units:afoUnits,replaceUntouched:true});
 
  const tiUnits=[
   baseUnit('ti-cgu-fd01',1,'FD01 · Fundamentos de Dados',{source:'Ramon · TI TOTAL',cguCodes:['C4.1']}),
@@ -179,10 +186,22 @@ export function normalizeMethodState(current){
   ['B4.1','Organização administrativa'],['B4.2','Modelos de administração'],['B4.3','Políticas públicas'],['B4.4','Planejamento e recursos'],['B4.5','Serviços e transformação digital'],
   ['C1.1','Governança e responsabilidades'],['C1.2','Riscos e controles essenciais'],['C1.3','Integridade pública'],['C1.4','Integridade privada'],['C1.5','Prevenção e melhoria institucional']
  ];
- ensureSubject(st,{id:'adm-publica',course:'Administração Pública e Governança — Marcelo · curso principal + pacote CGU para lacunas',minutes:60,units:admTopics.map((x,i)=>baseUnit('adm-cgu-'+String(i+1).padStart(2,'0'),i+1,x[1],{source:['B4.1','B4.2'].includes(x[0])?'Marcelo · Administração Pública':'Estratégia/Direção · complemento/lacuna CGU',cguCodes:[x[0]]}))});
+ const admSource=code=>{
+  if(code==='B4.1')return 'Rafael Oliveira · organização administrativa';
+  if(code==='B4.2'||code==='B4.4'||code==='B4.5')return 'Marcelo · Administração Pública';
+  if(code==='B4.3')return 'Estratégia · Políticas Públicas';
+  if(code.startsWith('B3.'))return 'Estratégia + normas CGU/Rafael + Direção seletivo · ética';
+  if(code==='B1.1')return 'Nelma/Rafael · base constitucional-administrativa · Direção apenas lacuna';
+  if(code==='B1.2')return 'Nelma + Direção seletivo · democracia e representação';
+  if(code==='B1.3')return 'Nelma + Direção seletivo · federalismo, capacidades e coordenação';
+  if(code.startsWith('B1.'))return 'Direção · lacunas específicas de Estado, valor público, corrupção e desenvolvimento';
+  if(code.startsWith('C1.'))return 'Marcelo + Direção seletivo · governança, riscos e integridade';
+  return 'Plano mestre CGU · fonte seletiva';
+ };
+ ensureSubject(st,{id:'adm-publica',course:'Administração Pública, Estado, Ética, Governança e Integridade — Marcelo + Direção seletivo + bases Nelma/Rafael/Estratégia',minutes:60,units:admTopics.map((x,i)=>baseUnit('adm-cgu-'+String(i+1).padStart(2,'0'),i+1,x[1],{source:admSource(x[0]),cguCodes:[x[0]]}))});
 
  const diversidadeTopics=[['B2.1','Fundamentos sociológicos'],['B2.2','Formação social e cidadania no Brasil'],['B2.3','População, território e trabalho'],['B2.4','Diversidade e acesso a direitos'],['B2.5','Desenvolvimento e realidade brasileira']];
- ensureSubject(st,{id:'diversidade',course:'Sociedade Brasileira, Desigualdades e Diversidade — pacote CGU',minutes:60,units:diversidadeTopics.map((x,i)=>baseUnit('div-cgu-'+(i+1),i+1,x[1],{source:'Estratégia/Direção · pacote CGU',cguCodes:[x[0]]}))});
+ ensureSubject(st,{id:'diversidade',course:'Sociedade Brasileira, Desigualdades e Diversidade — Direção · bloco B2 integral',minutes:60,units:diversidadeTopics.map((x,i)=>baseUnit('div-cgu-'+(i+1),i+1,x[1],{source:'Direção · bloco B2 integral',cguCodes:[x[0]]}))});
 
  const dad=st.subjects.find(s=>s.id==='dad');
  if(dad){
@@ -217,7 +236,17 @@ export function normalizeMethodState(current){
   ['A4.1','Planejamento e seleção em contratações'],['A4.2','Execução contratual'],['A4.3','Transferências e parcerias'],['A4.4','Testes e sinais de irregularidade'],['A4.5','Encaminhamentos e resultados'],
   ['A5.1','Direito público aplicado às respostas de controle'],['A5.2','Informação, participação e qualidade dos serviços'],['A5.3','Proteção do denunciante e tratamento seguro'],['A5.4','Avaliação e aperfeiçoamento da integridade'],['A5.5','Admissibilidade, prova e responsabilização'],['A5.6','PAD, PAR, leniência e soluções consensuais'],['A5.7','Resultados, comunicação e aprendizagem institucional']
  ];
- ensureSubject(st,{id:'auditoria',course:'Auditoria Governamental — Marcelo Soares · prioridade máxima CGU',minutes:75,units:auditTopics.map((x,i)=>baseUnit('aud-cgu-'+String(i+1).padStart(2,'0'),i+1,x[1],{source:'Marcelo Soares · curso adquirido',cguCodes:[x[0]]}))});
+ const auditSource=code=>{
+  if(code.startsWith('C5.'))return 'Marcelo Soares · Auditoria Governamental';
+  if(code==='A1.5')return 'Marcelo Soares + Ramon TI TOTAL · auditoria de dados/IA';
+  if(code.startsWith('A1.'))return 'Marcelo Soares · base principal; Direção somente depois para lacunas';
+  if(code.startsWith('C2.'))return 'Direção/CGU · transparência, ouvidoria e participação · após a base principal';
+  if(code==='C3.5')return 'Base jurídica + Direção pós-edital · proteção e encaminhamento';
+  if(code.startsWith('A4.'))return 'Base jurídica definida + Direção pós-edital · mapeamento interno controlado';
+  if(code.startsWith('A5.'))return 'Base jurídica definida + Direção pós-edital · mapeamento interno controlado';
+  return 'Plano mestre CGU · fonte seletiva';
+ };
+ ensureSubject(st,{id:'auditoria',course:'Auditoria Governamental — Marcelo Soares primeiro → Direção/TSE e Direção/CGU somente depois, seletivamente',minutes:75,units:auditTopics.map((x,i)=>baseUnit('aud-cgu-'+String(i+1).padStart(2,'0'),i+1,x[1],{source:auditSource(x[0]),cguCodes:[x[0]]}))});
 
  for(const s of st.subjects||[])for(const u of s.units||[]){
   if(u.theoryDone&&Number(u.battery?.attempted||0)>=30)u.batteryDone=true;
