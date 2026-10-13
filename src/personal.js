@@ -15,7 +15,7 @@ export function legislationPair(date=day()){
  return LEGISLATION_PAIRS[index].map(id=>LEGISLATION_QUEUE.find(x=>x.id===id));
 }
 export const GOAL_PLAN_VERSION=3;
-export const GOAL_PLAN_START='2026-10-12T00:00:00-03:00';
+export const GOAL_PLAN_START='2026-10-13T00:00:00-03:00';
 export const GOAL_CYCLES_PER_META=2;
 export const GOAL_META_COUNT=8;
 const GOAL_CORE_MINUTES=CYCLE.reduce((sum,id)=>sum+(RULES[id]?.minutes||60),0)*GOAL_CYCLES_PER_META;
