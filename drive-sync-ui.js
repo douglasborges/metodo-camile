@@ -1,5 +1,33 @@
 (() => {
   'use strict';
+
+  // PWA self-heal: if this script updates before a stale Home Screen shell, reload the shell too.
+  async function ensureLatestInstalledBuild() {
+    try {
+      const pageBuild = document.querySelector('meta[name="metodo-et-build"]')?.content || '';
+      const response = await fetch('./version.json?t=' + Date.now(), { cache: 'no-store' });
+      if (!response.ok) return;
+      const latest = String((await response.json())?.build || '');
+      if (!latest || pageBuild === latest) return;
+      const attemptKey = 'metodo-et:script-update-attempt:' + latest;
+      if (sessionStorage.getItem(attemptKey)) return;
+      sessionStorage.setItem(attemptKey, '1');
+      if ('serviceWorker' in navigator) {
+        const regs = await navigator.serviceWorker.getRegistrations();
+        await Promise.all(regs.filter(reg => reg.scope.includes('/metodo-camile/')).map(reg => reg.unregister()));
+      }
+      if ('caches' in window) {
+        const keys = await caches.keys();
+        await Promise.all(keys.filter(key => key.startsWith('studyos-metodo-et-')).map(key => caches.delete(key)));
+      }
+      const url = new URL(location.href);
+      url.searchParams.set('build', latest);
+      url.searchParams.set('refresh', Date.now().toString());
+      location.replace(url.toString());
+    } catch {}
+  }
+  window.addEventListener('pageshow', ensureLatestInstalledBuild, { once: true });
+
   const META_KEY='metodo-et-camile-drive-sync-meta-v1';
   let open=false,manage=null,panel=null,lastRaw='';
 
