@@ -1,7 +1,8 @@
 export const KEY='metodo-et:camile:v1';
 export const LEGACY_CYCLE_V13=Object.freeze(['port','dcon','afo','ti','adm-publica','diversidade','afo','dad','politicas','auditoria','afo']);
-export const CYCLE_PLAN_VERSION=4;
-export const CYCLE=['afo','auditoria','adm-publica','dcon','dad','afo','politicas','port','ti','afo'];
+export const INTERIM_CYCLE_V14=Object.freeze(['afo','auditoria','adm-publica','dcon','dad','afo','politicas','port','ti','afo']);
+export const CYCLE_PLAN_VERSION=5;
+export const CYCLE=['afo','auditoria','adm-publica','dcon','dad'];
 export const RULES=Object.freeze({
  afo:{label:'AFO',minutes:90,checkpoint:3,unit:'módulo'},
  cpu:{label:'Contabilidade Pública',minutes:120,checkpoint:3,unit:'módulo'},
@@ -126,7 +127,7 @@ export function normalizeMethodState(current){
  if(!Array.isArray(st.subjects))st.subjects=[];
  if(!st.cycle||!Number.isInteger(st.cycle.index))st.cycle={index:0,minutes:0};
  if(st.cyclePlanVersion!==CYCLE_PLAN_VERSION){
-  const previousCycle=st.cyclePlanVersion?CYCLE:LEGACY_CYCLE_V13;
+  const previousCycle=st.cyclePlanVersion===4?INTERIM_CYCLE_V14:LEGACY_CYCLE_V13;
   const previousSubject=previousCycle[Math.max(0,Math.min(previousCycle.length-1,Number(st.cycle.index)||0))];
   let nextIndex=CYCLE.indexOf(previousSubject);
   if(nextIndex<0)nextIndex=0;
