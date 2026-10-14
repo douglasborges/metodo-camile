@@ -1,8 +1,8 @@
 {
   "name": "Método ET · Estudos da Camile · CGU · v1.4",
   "short_name": "Camile ET",
-  "description": "Método ET pós-edital da Camile para CGU 2026 Auditoria — ciclo prioritário, livros dirigidos e atualização automática.",
-  "start_url": "./?build=1.4.0-cgu-books",
+  "description": "Método ET pós-edital da Camile para a CGU 2026 — Auditoria, v1.5, com livros rastreáveis, metas semanais e atualização automática.",
+  "start_url": "./?build=1.5.0-cgu-books-final",
   "scope": "./",
   "display": "standalone",
   "display_override": [
@@ -31,17 +31,17 @@
     {
       "name": "Hoje",
       "short_name": "Hoje",
-      "url": "./?build=1.4.0-cgu-books#today"
+      "url": "./?build=1.5.0-cgu-books-final#today"
     },
     {
       "name": "Progresso",
       "short_name": "Progresso",
-      "url": "./?build=1.4.0-cgu-books#progress"
+      "url": "./?build=1.5.0-cgu-books-final#progress"
     },
     {
       "name": "Dados",
       "short_name": "Dados",
-      "url": "./?build=1.4.0-cgu-books#data"
+      "url": "./?build=1.5.0-cgu-books-final#data"
     }
   ]
 }
