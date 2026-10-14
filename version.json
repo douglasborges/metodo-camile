@@ -1,6 +1,6 @@
 {
-  "build": "1.4.0-cgu-books",
-  "family": "v1.4",
-  "publishedAt": "2026-10-13",
-  "channel": "cgu-books-priority-cycle"
+  "build": "1.5.0-cgu-books-final",
+  "family": "v1.5",
+  "publishedAt": "2026-10-14",
+  "channel": "cgu-books-final"
 }
