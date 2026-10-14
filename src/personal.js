@@ -16,9 +16,15 @@ export function legislationPair(date=day()){
 }
 export const GOAL_PLAN_VERSION=3;
 export const GOAL_PLAN_START='2026-10-13T00:00:00-03:00';
-export const GOAL_CYCLES_PER_META=2;
+export const GOAL_CYCLES_PER_META=4;
 export const GOAL_META_COUNT=8;
+export const WEEKLY_MAINTENANCE=Object.freeze([
+ {subjectId:'politicas',label:'Políticas Públicas',referenceMinutes:60,source:'Estratégia PP/Avaliação · próxima etapa'},
+ {subjectId:'ti',label:'TI / Dados',referenceMinutes:60,source:'Ramon TI TOTAL · próxima etapa'},
+ {subjectId:'port',label:'Português',referenceMinutes:60,source:'Marcello Giulian + Andresan'}
+]);
 const GOAL_CORE_MINUTES=CYCLE.reduce((sum,id)=>sum+(RULES[id]?.minutes||60),0)*GOAL_CYCLES_PER_META;
+const GOAL_MAINTENANCE_MINUTES=WEEKLY_MAINTENANCE.reduce((sum,x)=>sum+x.referenceMinutes,0);
 
 export const GOAL_WINDOWS=Object.freeze([
  {start:'2026-10-13',end:'2026-10-19',label:'13–19/10'},
@@ -33,62 +39,62 @@ export const GOAL_WINDOWS=Object.freeze([
 
 export const GOAL_FOCUS=Object.freeze([
  [
-  'Português · Marcello em sequência; Andresan entra como bateria Cebraspe, sem substituir a teoria.',
-  'DCON · continuar a ponte do Art. 5º pelo Estratégia a partir do ponto real e preservar Nelma como curso principal.',
-  'AFO · iniciar/avançar BizurAFO dentro dos três slots de AFO; ainda não abrir Celso/Gilmar.',
-  'TI/Dados · começar pela rota Ramon: FD01 → TI60; seguir somente quando a etapa anterior estiver fechada.',
-  'Adm./Diversidade/DAD/Políticas/Auditoria · abrir as fontes principais na primeira ocorrência de cada disciplina e registrar o ponto real.'
+  'Ciclo prioritário · 4 voltas: AFO/Finanças → Auditoria → Administração Pública → DCON → DAD. Tempo real prevalece sobre a referência.',
+  'AFO · BizurAFO primeiro; avance a primeira passagem antes de liberar Celso/Gilmar.',
+  'Auditoria · Marcelo Soares é a base. Direção ainda não entra.',
+  'Administração Pública · Marcelo primeiro; iniciar a leitura dirigida de Pacelli/Francisco Netto apenas nos capítulos já aderentes à base estudada.',
+  'DCON/DAD · continuar Art. 5º pelo Estratégia + Nelma; Rafael Oliveira na sequência real. Manutenção semanal: 1 ocorrência de Políticas, TI/Dados e Português.'
  ],
  [
-  'AFO · consolidar o primeiro núcleo do BizurAFO e avançar pelos módulos seguintes, sem pular o ciclo.',
-  'TI/Dados · avançar TI60 → TI63 → TI83 conforme o tempo real.',
-  'Políticas Públicas · Estratégia como fonte principal; Aula 01/02 e sequência do plano de avaliação.',
-  'Auditoria · Marcelo Soares continua sozinho como fonte principal; Direção ainda não entra.',
-  'B1/B3/C1 e B2 · Direção apenas nos blocos definidos como fonte/lacuna, sem duplicar Marcelo/Nelma/Rafael.'
+  'AFO · continuar BizurAFO, com foco em fechar orçamento/planejamento/execução antes de complementos.',
+  'Auditoria · avançar Marcelo Soares. Sem Auditoria do Estratégia; Direção só depois da base Marcelo.',
+  'Livro Pacelli/Francisco Netto · trilha comum dirigida: capítulos 2 → 5 → 6 → 7, sem reler conteúdo já fechado.',
+  'DAD · Rafael em sequência; Herbert/Estratégia entram apenas para LAI, LIA, LGPD, Lei 9.784, Lei 12.813 e LINDB/Decreto 9.830 quando o item exigir.',
+  'Manutenção · Estratégia Políticas Públicas, Ramon TI/Dados e Marcello/Andresan em uma ocorrência semanal cada.'
  ],
  [
-  'AFO · fechar o máximo possível da primeira passagem BizurAFO; Módulo 13 segue fora do primeiro giro e Módulo 16 é diagnóstico/opcional.',
-  'TI/Dados · Monitoria 36 e TI37-I somente quando a rota anterior estiver concluída.',
-  'Políticas Públicas · Ex Ante/Ex Post, CMAP e métodos conforme a sequência do Estratégia.',
-  'Auditoria · continuar Marcelo Soares; nenhuma aula do Direção antes da base principal.',
-  'Ao final da semana, identificar objetivamente as lacunas A2.1 que justificam Celso Natale.'
+  'AFO · fechar o máximo possível da base BizurAFO; só então mapear A2.1 para Celso Natale e A2.4–A2.6 para Gilmar Possati.',
+  'Livro Pacelli/Francisco Netto · capítulos 8 → 9 → 10 → 15, seguindo apenas o recorte CGU.',
+  'Auditoria · continuar Marcelo; registrar exatamente o ponto em A1/C5 já coberto.',
+  'DAD · priorizar a chegada à U12 Licitações/Contratos; U8 PPP é seletivo para a Camile.',
+  'DCON/Adm. Pública · seguir fonte principal sem duplicação; manutenção transversal permanece 1x/semana.'
  ],
  [
-  'AFO · depois da base BizurAFO, entrar em Celso Natale somente nas lacunas A2.1 já mapeadas.',
-  'AFO · não iniciar Gilmar antes de concluir o complemento econômico/finanças públicas necessário.',
-  'TI/Dados · TI36 → TI61 conforme a rota Ramon.',
-  'Políticas Públicas · métodos qualitativos/mistos e identificação causal conforme o curso principal.',
-  'Demais disciplinas · continuar a próxima etapa real do Método ET, priorizando baterias/checkpoints quando liberados.'
+  'AFO · Celso Natale somente nas lacunas A2.1 comprovadas; Gilmar Possati entra depois em A2.4–A2.6.',
+  'Livro Pacelli/Francisco Netto · capítulos 16 → 17 → 24 → 26 → 28; começar extras da Camile 12 → 13 quando a base correspondente estiver pronta.',
+  'Licitações · depois de Rafael U12 e da base correspondente de Marcelo, liberar Como Combater a Corrupção em Licitações na ordem 2 → 3 → 6.',
+  'Auditoria · capítulo 4 do livro de licitações continua bloqueado até a base Marcelo estar concluída.',
+  'Políticas/TI/Português · manter uma ocorrência semanal, sem roubar prioridade das cinco matérias centrais.'
  ],
  [
-  'AFO · Gilmar Possati entra seletivamente em A2.4–A2.6 após BizurAFO/Celso: CASP/MCASP/NBC TSP, custos e estatais.',
-  'TI/Dados · TI35 → TI97 e diagnóstico das lacunas C4/A1.5.',
-  'Auditoria · objetivo é concluir a base Marcelo Soares; Direção só pode entrar depois dessa condição.',
-  'Políticas/DAD/DCON/Português · avançar teoria e começar consolidação onde já houver revisão geral/material prontos.',
-  'A2.7 · manter como lacuna controlada; não inventar material antes do mapeamento pós-edital.'
+  'Auditoria/A5 · Pacelli/Francisco Netto extras da Camile: 19 → 20 → 25 → 27, de forma dirigida e sem leitura integral do livro.',
+  'Licitações · após cumprir os pré-requisitos, continuar Como Combater a Corrupção em Licitações: capítulo 4 → capítulo 5.',
+  'Auditoria · objetivo é concluir a base Marcelo; somente depois entram Direção/TSE e NBC/IPPF seletivos.',
+  'AFO · concluir Celso/Gilmar necessários; A2.7 permanece lacuna controlada para fechamento pós-edital.',
+  'Administração/DCON/DAD · avançar teoria e iniciar baterias/checkpoints no que já estiver fechado.'
  ],
  [
-  'Auditoria · após Marcelo, usar Direção/TSE para papéis, testes, amostragem, execução, evidências e achados.',
-  'Auditoria · comunicação/relatório/monitoramento e NBC TA 230/500/505-520/320-330 só se a lacuna persistir; IPPF/riscos/três linhas também seletivos.',
-  'A4/A5 · tratar como lacunas controladas do pós-edital, usando base jurídica e mapeamento interno do Direção sem atribuir aula inexistente.',
-  'Adm./Diversidade/DAD/Políticas · fechar lacunas teóricas e transformar cobertura concluída em revisão/questões.',
-  'AFO/TI · fechar os complementos necessários; evitar abrir conteúdo amplo fora do recorte CGU.'
+  'Auditoria · depois de Marcelo: Direção/TSE para papéis, testes, amostragem, execução, evidências e achados; comunicação/relatório/monitoramento apenas se lacuna persistir.',
+  'NBC TA 230, 500, 505/520 e 320/330; IPPF, riscos e três linhas: somente se o Check do Edital indicar lacuna concreta.',
+  'A4/A5 · usar livro de licitações + Pacelli/Netto + base jurídica Rafael/Herbert/Estratégia; não criar segunda teoria.',
+  'AFO/Adm./DCON/DAD · fechar lacunas prioritárias e migrar conteúdo concluído para revisão/questões.',
+  'Manutenção transversal segue curta: Políticas, TI e Português 1x/semana.'
  ],
  [
-  'Fechamento de teoria prioritária: nenhuma duplicação de curso; lacuna comprovada primeiro.',
-  'Disciplinas concluídas migram para Estudo Sólido com cadernos, erros e favoritas.',
-  'Baterias e checkpoints ganham prioridade crescente, sem abandonar as matérias ainda em Estudo Novo.',
-  'Legislação Seca continua 30 min/dia no rodízio CF+LAI / Leg. CGU+LGPD.',
-  'Usar o Check do Edital para localizar os últimos buracos de cobertura e atacar apenas o que é material para a prova.'
+  'Fechamento das cinco prioridades: AFO, Auditoria, Administração Pública, DCON e DAD. Nenhum curso novo por completude.',
+  'Disciplinas fechadas migram para Estudo Sólido, erros, favoritas e checkpoints.',
+  'Sociedade Brasileira/Diversidade permanece Fase 4 e só é ativada quando as prioridades estiverem sob controle; então usar Direção B2 integral.',
+  'Check do Edital passa a comandar lacunas finais. Os códigos B/C/A/CD são internos da matriz; priorize sempre o nome do conteúdo.',
+  'Legislação Seca continua 30 min/dia; Políticas, TI e Português seguem em manutenção.'
  ],
  [
-  'Consolidação final: revisão geral, erros/favoritas, checkpoints pendentes e questões Cebraspe.',
-  'Nenhuma teoria ampla nova: somente correção de lacuna curta e de alto valor.',
-  'Revisar Auditoria, AFO/A2, Políticas Públicas e os blocos transversais C1–C5 com base nos próprios materiais.',
-  'Manter Português/DCON/DAD ativos por questões e revisão, sem reabrir cursos inteiros.',
-  'Fechar a Meta até 07/12 para liberar cinco dias exclusivamente de revisão final antes da prova.'
+  'Consolidação final até 07/12: erros, favoritas, revisões gerais, checkpoints e questões Cebraspe.',
+  'Nenhuma teoria ampla nova; apenas lacuna curta e de alto valor indicada no Check do Edital.',
+  'Revisar AFO/A2, Auditoria A1/A4/A5, Administração/Integridade, DCON e DAD com os próprios materiais e livros dirigidos.',
+  'Sociedade Brasileira/Diversidade entra apenas se ainda houver espaço real e prioridade concluída; nunca desloca os cinco blocos centrais.',
+  'Fechar a Meta 08 em 07/12 para liberar 08–12/12 exclusivamente ao Sprint Final.'
  ]
-]);
+])
 
 export const FINAL_SPRINT=Object.freeze({
  start:'2026-12-08',
@@ -106,19 +112,31 @@ export const FINAL_SPRINT=Object.freeze({
 
 function buildCycleGoalTasks(metaNumber){
  let step=0;
- return Array.from({length:GOAL_CYCLES_PER_META},(_,round)=>CYCLE.map((sid,index)=>{
+ const perSubject={};
+ const core=Array.from({length:GOAL_CYCLES_PER_META},(_,round)=>CYCLE.map((sid,index)=>{
   step++;
+  perSubject[sid]=(perSubject[sid]||0)+1;
   return {
    id:'meta-'+String(metaNumber).padStart(2,'0')+'-c'+(round+1)+'-'+String(index+1).padStart(2,'0'),
    title:'Volta '+(round+1)+' · '+(RULES[sid]?.label||sid)+' · '+cycleSourceLabel(sid),
-   hint:'Ocorrência '+step+'/'+(CYCLE.length*GOAL_CYCLES_PER_META)+' · referência '+Math.round((RULES[sid]?.minutes||60)/15)*15+' min · conclua a etapa real prevista, não uma cota artificial.',
+   hint:'Ciclo prioritário · ocorrência '+step+'/'+(CYCLE.length*GOAL_CYCLES_PER_META)+' · referência '+Math.round((RULES[sid]?.minutes||60)/15)*15+' min · conclua a etapa real prevista.',
    subjectId:sid,
    cycleRound:round+1,
    cyclePosition:index+1,
    referenceMinutes:RULES[sid]?.minutes||60,
-   check:['cycleStep',sid,'',step]
+   check:['cycleSubjectCount',sid,'',perSubject[sid]]
   };
  })).flat();
+ const maintenance=WEEKLY_MAINTENANCE.map((m,index)=>({
+  id:'meta-'+String(metaNumber).padStart(2,'0')+'-m'+String(index+1).padStart(2,'0'),
+  title:'Manutenção · '+m.label+' · '+m.source,
+  hint:'1 ocorrência na semana · referência '+m.referenceMinutes+' min · fora do ciclo prioritário, sem avançar a ordem central.',
+  subjectId:m.subjectId,
+  maintenance:true,
+  referenceMinutes:m.referenceMinutes,
+  check:['goalSubjectCount',m.subjectId,'',1]
+ }));
+ return [...core,...maintenance];
 }
 export const GOAL_TEMPLATES=Array.from({length:GOAL_META_COUNT},(_,i)=>{
  const number=i+1,window=GOAL_WINDOWS[i];
@@ -126,10 +144,11 @@ export const GOAL_TEMPLATES=Array.from({length:GOAL_META_COUNT},(_,i)=>{
   id:'meta-'+String(number).padStart(2,'0'),
   number,
   title:'Meta '+String(number).padStart(2,'0')+' · 30h · '+window.label,
-  subtitle:'Duas voltas completas na ordem Port → DCON → AFO → TI → Adm. Pública → Diversidade → AFO → DAD → Políticas Públicas → Auditoria → AFO.',
+  subtitle:'4 voltas do ciclo prioritário AFO/Finanças → Auditoria → Administração Pública → DCON → DAD + manutenção semanal de Políticas Públicas, TI/Dados e Português.',
   targetMinutes:1800,
   coreMinutes:GOAL_CORE_MINUTES,
-  marginMinutes:1800-GOAL_CORE_MINUTES,
+  maintenanceMinutes:GOAL_MAINTENANCE_MINUTES,
+  marginMinutes:1800-GOAL_CORE_MINUTES-GOAL_MAINTENANCE_MINUTES,
   targetStart:window.start,
   targetEnd:window.end,
   targetLabel:window.label,
@@ -226,6 +245,14 @@ function normalizeGoalState(st){
 export function goalTaskDone(current,task,goalRows=[]){
  if(!task?.check)return false;
  const [kind,sid,id,a,b]=task.check,s=current.subjects?.find(x=>x.id===sid);
+ if(kind==='cycleSubjectCount'){
+  const count=Number(a)||1;
+  return goalRows.filter(v=>v.legacy!==true&&v.cycleApplied===true&&v.subjectId===sid).length>=count;
+ }
+ if(kind==='goalSubjectCount'){
+  const count=Number(a)||1;
+  return goalRows.filter(v=>v.legacy!==true&&v.subjectId===sid&&v.activity!=='night').length>=count;
+ }
  if(kind==='cycleStep'){
   const target=Number(a)||0;
   const cycleRows=[...goalRows].filter(v=>v.legacy!==true&&v.cycleApplied===true).sort((x,y)=>String(x.createdAt||x.date).localeCompare(String(y.createdAt||y.date)));
@@ -275,7 +302,7 @@ export function completeGoal(current,id){
  if(item.status==='done')return st;
  const snap=goalSnapshot(st,index);
  if(!snap.hoursReady)throw Error('A meta fecha apenas com 30 horas reais registradas. Faltam '+Math.max(0,snap.remaining)+' minutos.');
- if(!snap.routeReady)throw Error('Antes de fechar a meta, conclua as duas voltas completas do ciclo. Faltam '+(snap.tasks.length-snap.doneTasks)+' ocorrências.');
+ if(!snap.routeReady)throw Error('Antes de fechar a meta, conclua as ocorrências previstas do ciclo prioritário e da manutenção semanal. Faltam '+(snap.tasks.length-snap.doneTasks)+' ocorrências.');
  const now=new Date().toISOString();item.status='done';item.completedAt=now;
  const next=GOAL_TEMPLATES[index+1];
  if(next){
