@@ -1,6 +1,6 @@
 # Método ET · Camile · CGU 2026
 
-Build atual: **1.4.0-cgu-books** (família v1.4).
+Build atual: **1.5.0-cgu-books-final** (família v1.5).
 
 Aplicação independente da Camile para o pós-edital da **CGU — Auditor Federal de Finanças e Controle · Especialidade Auditoria**, sem apagar o histórico anterior e preservando o TCU como objetivo secundário de longo prazo.
 
@@ -13,7 +13,7 @@ Aplicação independente da Camile para o pós-edital da **CGU — Auditor Feder
 - **Sprint final:** 08/12 a 12/12.
 - Tempo real sempre prevalece: a duração de referência não é uma cota artificial.
 
-## Arquitetura de prioridades v1.4
+## Arquitetura de prioridades v1.5
 
 ### Ciclo prioritário
 **AFO/Finanças → Auditoria → Administração Pública → DCON → DAD**
@@ -107,6 +107,12 @@ Dependências:
 ### Sociedade Brasileira / Diversidade
 - **Direção · bloco B2 integral**.
 - Fase 4, prioridade FINAL, fora do ciclo prioritário enquanto as cinco matérias centrais ainda exigirem avanço.
+
+### Rastreio dos livros na app
+- Os dois livros agora aparecem como rotas estruturadas dentro de **Disciplinas**, com capítulo, tema e códigos da matriz.
+- Cada capítulo possui **Registrar leitura**, que abre o registro de estudo sem criar uma segunda disciplina.
+- As **Metas ET** mostram também os alvos de materiais de cada semana, respeitando as dependências já definidas.
+- A leitura dos livros acontece dentro das 30h semanais, nas ocorrências correspondentes; não cria carga extra.
 
 ## Check do edital
 
