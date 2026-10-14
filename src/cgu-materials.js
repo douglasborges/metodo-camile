@@ -1,5 +1,5 @@
 // Plano mestre de materiais · Camile · CGU 2026 · Auditoria
-// Versão v1.4 · livros + prioridades pós-edital.
+// Versão v1.5 · livros rastreáveis + prioridades pós-edital.
 // Regra central: FONTE PRINCIPAL → COMPLEMENTO SELETIVO → NÃO DUPLICAR.
 // Prioridade atual: AFO/Finanças → Auditoria → Administração Pública/DCON/DAD.
 // Sociedade Brasileira/Diversidade fica para a fase final e não integra o ciclo principal.
@@ -14,6 +14,57 @@ export const PHASE_PLAN=Object.freeze([
 
 const COMMON_COMPLIANCE_CHAPTERS='2, 5, 6, 7, 8, 9, 10, 15, 16, 17, 24, 26 e 28';
 const CAMILE_EXTRA_COMPLIANCE_CHAPTERS='12, 13, 19, 20, 25 e 27';
+
+export const BOOK_ROUTES=Object.freeze([
+ {
+  id:'compliance-integridade-2026',
+  title:'Compliance e Integridade no Setor Público e Privado',
+  authors:'Giovanni Pacelli + Francisco Netto',
+  edition:'3ª ed. · 2026',
+  subjects:['adm-publica','auditoria'],
+  rule:'Leitura dirigida; não ler linearmente como novo curso. Os capítulos comuns vêm antes dos extras exclusivos da Camile.',
+  chapters:[
+   {number:2,topic:'Conceitos essenciais dos programas de compliance e integridade',track:'comum',codes:['B3','C1']},
+   {number:5,topic:'Instâncias responsáveis pelas funções de integridade',track:'comum',codes:['B3','C1','C5.5']},
+   {number:6,topic:'Promoção da ética nas organizações',track:'comum',codes:['B3']},
+   {number:7,topic:'Ouvidoria e tratamento de denúncias',track:'comum',codes:['C2','A5']},
+   {number:8,topic:'Acesso à informação',track:'comum',codes:['C2','A5']},
+   {number:9,topic:'Promoção da transparência ativa',track:'comum',codes:['C2','A5']},
+   {number:10,topic:'Prevenção do conflito de interesses',track:'comum',codes:['B3','A5']},
+   {number:15,topic:'Unidade de Gestão da Integridade e seu papel matricial',track:'comum',codes:['C1','C5.5']},
+   {number:16,topic:'Elaboração e implementação de programa de integridade no setor público',track:'comum',codes:['C1','A5']},
+   {number:17,topic:'Monitoramento de programa de integridade no setor público',track:'comum',codes:['C1','A5']},
+   {number:24,topic:'Assédio, discriminação e tratamento organizacional',track:'comum',codes:['B3','C1','C3.5','A5']},
+   {number:26,topic:'Proteção aos dados pessoais · LGPD e LAI',track:'comum',codes:['C2','C4.4','A5']},
+   {number:28,topic:'Participação social e organizações da sociedade civil na promoção da integridade',track:'comum',codes:['C2','C5.5']},
+   {number:12,topic:'Procedimentos de responsabilização',track:'camile',codes:['C3','A5']},
+   {number:13,topic:'Controle interno e auditoria interna sob a perspectiva da integridade',track:'camile',codes:['C5','A1','A5']},
+   {number:19,topic:'Programas de integridade em empresas com relações negociais com o poder público',track:'camile',codes:['C1.4','A5']},
+   {number:20,topic:'Programa de integridade privado · elaboração, implementação e monitoramento',track:'camile',codes:['C1.4','A5']},
+   {number:25,topic:'Liderança organizacional e comprometimento da alta administração',track:'camile',codes:['C1','A5']},
+   {number:27,topic:'Due diligence e sua importância para ética e integridade',track:'camile',codes:['C1.4','A5']}
+  ]
+ },
+ {
+  id:'corrupcao-licitacoes-2024',
+  title:'Como Combater a Corrupção em Licitações',
+  authors:'Franklin Brasil Santos + Kleberson Roberto de Souza',
+  edition:'4ª ed. · 2024',
+  subjects:['auditoria'],
+  rule:'Só iniciar após Rafael U12 e a base correspondente de Auditoria. Capítulo 4 exige base Marcelo em achados/evidências.',
+  chapters:[
+   {number:2,topic:'Tipologia de fraudes em licitação',track:'camile',codes:['A4.1','A4.2','A4.4']},
+   {number:3,topic:'Técnicas de detecção de fraudes',track:'camile',codes:['A4.4','A1.3','A1.4']},
+   {number:6,topic:'Prevenção de fraudes em licitação',track:'camile',codes:['A4.1','A4.2','A5']},
+   {number:4,topic:'Elaboração dos achados',track:'camile',codes:['A1.4','A4.4','A4.5']},
+   {number:5,topic:'Responsabilização',track:'camile',codes:['A4.5','A5']}
+  ]
+ }
+]);
+
+export function bookRoutesFor(subjectId){
+ return BOOK_ROUTES.filter(book=>book.subjects.includes(subjectId));
+}
 
 export const MATERIAL_PLAN=Object.freeze({
  port:{
