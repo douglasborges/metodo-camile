@@ -1,108 +1,157 @@
 // Plano mestre de materiais · Camile · CGU 2026 · Auditoria
-// Consolidado a partir das decisões finais do chat “Análise De Cursos para a CGU [2026] e para o TCU”.
+// Versão v1.4 · livros + prioridades pós-edital.
 // Regra central: FONTE PRINCIPAL → COMPLEMENTO SELETIVO → NÃO DUPLICAR.
-// O ciclo permanece: Port → DCON → AFO → TI → Adm. Pública → Diversidade → AFO → DAD → Políticas Públicas → Auditoria → AFO.
+// Prioridade atual: AFO/Finanças → Auditoria → Administração Pública/DCON/DAD.
+// Sociedade Brasileira/Diversidade fica para a fase final e não integra o ciclo principal.
+
+export const PHASE_PLAN=Object.freeze([
+ {id:'fase-1',label:'Fase 1 · AFO / Finanças Públicas',subjects:['afo'],priority:'MÁXIMA',active:true},
+ {id:'fase-2',label:'Fase 2 · Auditoria',subjects:['auditoria'],priority:'MÁXIMA',active:true},
+ {id:'fase-3',label:'Fase 3 · Administração Pública + DCON + DAD',subjects:['adm-publica','dcon','dad'],priority:'ALTA',active:true},
+ {id:'manutencao',label:'Manutenção transversal',subjects:['politicas','port','ti'],priority:'MANUTENÇÃO',active:true},
+ {id:'fase-4',label:'Fase 4 · Sociedade Brasileira / Diversidade',subjects:['diversidade'],priority:'FINAL',active:false}
+]);
+
+const COMMON_COMPLIANCE_CHAPTERS='2, 5, 6, 7, 8, 9, 10, 15, 16, 17, 24, 26 e 28';
+const CAMILE_EXTRA_COMPLIANCE_CHAPTERS='12, 13, 19, 20, 25 e 27';
 
 export const MATERIAL_PLAN=Object.freeze({
  port:{
   label:'Português',
-  principal:['Marcello Giulian · curso integral · manter em sequência até concluir'],
-  complement:['Andresan · resolução de questões Cebraspe por assunto'],
-  avoid:['Não reabrir teoria equivalente do Estratégia/Direção enquanto o mesmo assunto estiver sendo coberto pelo Marcello.'],
-  order:'Marcello → questões Andresan → pacote somente se surgir lacuna objetiva do edital.'
+  phase:'Manutenção transversal',priority:'MANUTENÇÃO',active:true,
+  principal:['Marcello Giulian · curso principal · continuar do ponto real, sem reiniciar'],
+  complement:['Andresan · questões Cebraspe por assunto'],
+  books:[],
+  avoid:['Não reabrir teoria equivalente do Estratégia/Direção enquanto o mesmo assunto estiver coberto pelo Marcello.'],
+  order:'Marcello → questões Andresan → lacuna objetiva somente se aparecer.'
  },
  dcon:{
   label:'Direito Constitucional',
+  phase:'Fase 3',priority:'ALTA',active:true,
   principal:['Nelma Fontana · curso principal'],
-  complement:['Estratégia · Art. 5º em 24 videoaulas, como ponte específica','Estratégia/Direção · somente atualização ou lacuna comprovada que a Nelma não cubra'],
-  avoid:['Não duplicar no pacote geral assuntos já concluídos pela Nelma.','Não considerar Art. 5º concluído antes de terminar a ponte específica e os exercícios previstos.'],
-  order:'Nelma Aula 01 → ponte do Art. 5º pelo Estratégia → retomar Nelma → lacunas pontuais do edital.'
+  complement:['Estratégia · Art. 5º em 24 videoaulas, como ponte específica','Atualização pontual somente onde a Nelma não fechar o edital'],
+  books:[],
+  avoid:['Não duplicar em pacote geral assunto já concluído pela Nelma.','Não considerar Art. 5º concluído antes de terminar a ponte específica + exercícios.'],
+  order:'Nelma A01 → Art. 5º pelo Estratégia → retomar Nelma na ordem definida → lacunas pontuais.'
  },
  afo:{
   label:'AFO / Finanças Públicas / Contabilidade Pública',
+  phase:'Fase 1',priority:'MÁXIMA',active:true,
   principal:['Leandro Ravyelle · BizurAFO · primeira passagem e eixo dos três slots de AFO do ciclo'],
   complement:[
    'Celso Natale · somente lacunas A2.1: bens públicos, externalidades, monopólios, federalismo fiscal, progressividade/regressividade, resultado primário/nominal e déficit',
-   'Gilmar Possati · Contabilidade Pública/estatais · A2.4–A2.6: CASP/MCASP/NBC TSP, NBC TSP 34/MIC/custos e informação societária de estatais',
-   'Pacote pós-edital · somente A2.7 e eventual lacuna residual depois de BizurAFO + Celso + Gilmar'
+   'Gilmar Possati · A2.4–A2.6: CASP/MCASP/NBC TSP, NBC TSP 34/MIC/custos e informação societária de estatais',
+   'Pacote pós-edital · apenas A2.7 e lacuna residual comprovada'
   ],
+  books:[],
   avoid:[
-   'Não estudar Celso ou Gilmar como cursos paralelos completos: entram apenas depois da base BizurAFO e nos tópicos de lacuna definidos.',
-   'Não repetir em pacote aula equivalente já coberta pelo BizurAFO/Celso/Gilmar sem necessidade objetiva.',
-   'BizurAFO Módulo 13 · Regime de Ajustes Fiscais permanece fora do primeiro giro.'
+   'Celso/Gilmar não viram cursos paralelos completos: entram só depois da base BizurAFO e na lacuna definida.',
+   'Não repetir em pacote aula equivalente já coberta.',
+   'BizurAFO M13 permanece fora do primeiro giro; M16 é diagnóstico/opcional.'
   ],
-  order:'BizurAFO em sequência → Celso Natale nas lacunas A2.1 → Gilmar Possati em A2.4–A2.6 → A2.7/lacunas residuais pós-edital.'
+  order:'BizurAFO → Celso A2.1 se necessário → Gilmar A2.4–A2.6 → A2.7/lacunas residuais.'
  },
  ti:{
   label:'Dados e IA',
-  principal:['Ramon · TI TOTAL · trilha CGU'],
-  complement:['Pacote pós-edital somente se aparecer lacuna específica depois da trilha Ramon'],
-  avoid:['Não transformar a trilha da Camile em um curso completo de TI sem relação com o edital.','TI07 e TI62 ficam como reserva neste primeiro giro.','Banco de Dados/SQL/Python/R/Big Data não entram no caminho principal da Camile só por estarem disponíveis em outras trilhas.'],
+  phase:'Manutenção transversal',priority:'MANUTENÇÃO',active:true,
+  principal:['Ramon · TI TOTAL · trilha CGU da Camile'],
+  complement:['Pacote pós-edital somente se surgir lacuna específica depois da trilha Ramon'],
+  books:[],
+  avoid:['Não transformar a trilha da Camile em curso completo de TI.','TI07 e TI62 ficam em reserva no primeiro giro.','Não abrir BD/SQL/Python/R/Big Data amplo sem relação direta com o recorte da Camile.'],
   order:'FD01 → TI60 → TI63 → TI83 → Monitoria 36 → TI37-I → TI36 → TI61 → TI35 → TI97 → lacunas.'
  },
  'adm-publica':{
-  label:'Administração Pública / Governança / Ética',
+  label:'Administração Pública / Governança / Ética / Integridade',
+  phase:'Fase 3',priority:'ALTA',active:true,
   principal:[
-   'Marcelo · Administração Pública · modelos, planejamento e serviços',
-   'Direção · blocos específicos de Estado/capacidades, valor público, corrupção/captura, ética, governança, riscos e integridade'
+   'Marcelo · Administração Pública · modelos, planejamento, governança, resultados, excelência, transparência/accountability',
+   'Pacelli + Francisco Netto · Compliance e Integridade no Setor Público e Privado (2026) · leitura dirigida'
   ],
   complement:[
-   'Nelma/Rafael/Estratégia quando o próprio tópico já pertence à trilha principal dessas disciplinas',
-   'Código de Conduta da CGU e Lei 12.813/2013 nos pontos de ética/conflito de interesses'
+   'Direção · somente blocos específicos de Estado/capacidades, valor público, corrupção/captura, governança, riscos e integridade',
+   'Herbert/Estratégia · LAI, LIA, LGPD, Lei 9.784/1999, Lei 12.813/2013 e LINDB/Decreto 9.830 quando o item exigir',
+   'Nelma/Rafael/Estratégia quando o próprio tópico já pertence à trilha principal dessas disciplinas'
   ],
-  avoid:['Não assistir no pacote a mesma teoria já concluída em Marcelo, Nelma ou Rafael.','Não usar pacote genérico como reinício integral de Administração Pública.'],
-  order:'Marcelo no núcleo de Administração Pública → Direção apenas nos blocos B1/B3/C1 definidos como lacuna → normas específicas → revisão por questões.'
+  books:[
+   'Livro: Compliance e Integridade no Setor Público e Privado · Pacelli/Francisco Netto · 2026.',
+   'Trilha comum do livro: capítulos '+COMMON_COMPLIANCE_CHAPTERS+'.',
+   'Os capítulos extras exclusivos da Camile ('+CAMILE_EXTRA_COMPLIANCE_CHAPTERS+') entram no aprofundamento de Auditoria/A5, não como duplicação aqui.'
+  ],
+  avoid:['Não assistir no pacote a mesma teoria já concluída em Marcelo, Nelma ou Rafael.','Não usar o livro para reler integralmente conteúdo já fechado; leitura é dirigida aos capítulos selecionados.','Não reiniciar Administração Pública por pacote genérico.'],
+  order:'Marcelo → Pacelli/Netto capítulos comuns → Direção/Herbert/Estratégia apenas nas lacunas nominais → questões.'
  },
  diversidade:{
-  label:'Sociedade, Desigualdades e Diversidade',
-  principal:['Direção · bloco B2 integral'],
+  label:'Sociedade Brasileira, Desigualdades, Diversidade e Desenvolvimento',
+  phase:'Fase 4',priority:'FINAL',active:false,
+  principal:['Direção · bloco B2 integral, somente quando a fase final for ativada'],
   complement:['Questões Cebraspe e revisão do próprio material'],
-  avoid:['Não abrir material paralelo enquanto o curso do Direção estiver cobrindo integralmente o bloco B2.'],
-  order:'Direção B2 integral → questões → revisão/checkpoint.'
+  books:[],
+  avoid:['Não consumir horas do ciclo principal enquanto AFO, Auditoria, Administração Pública, DCON e DAD ainda tiverem prioridade.','Não abrir material paralelo enquanto o Direção cobrir B2.'],
+  order:'FASE FINAL / active=false → Direção B2 → questões → revisão.'
  },
  dad:{
   label:'Direito Administrativo',
+  phase:'Fase 3',priority:'ALTA',active:true,
   principal:['Rafael Oliveira · curso principal'],
-  complement:['Herbert Almeida · atualização, legislação e lacunas pontuais','Pacote pós-edital apenas no que continuar faltando após Rafael + Herbert'],
-  avoid:['Não duplicar no pacote geral tema já estudado pelo Rafael.','Usar Herbert como complemento, não como reinício integral da disciplina.'],
-  order:'Rafael Oliveira → Herbert seletivo → lacunas finais do edital.'
+  complement:[
+   'Herbert Almeida · atualização, legislação e lacunas pontuais',
+   'Estratégia/Herbert · leitura/aula dirigida para LAI, LIA, LGPD, Lei 9.784/1999, Lei 12.813/2013 e LINDB + Decreto 9.830',
+   'Rafael U12 · Licitações e Contratos; U8 PPP apenas seletivo para a Camile'
+  ],
+  books:[],
+  avoid:['Não duplicar no pacote geral tema já estudado pelo Rafael.','Herbert é complemento, não reinício integral da disciplina.'],
+  order:'Rafael → U12 Licitações/Contratos + U8 PPP seletivo quando chegar → Herbert/Estratégia na legislação/lacuna → revisão.'
  },
  politicas:{
   label:'Políticas Públicas e Avaliação',
-  principal:['Estratégia · curso de Políticas Públicas/Avaliação · fonte principal'],
-  complement:['Marcelo Soares · material já adquirido · uso seletivo apenas onde acrescentar método/avaliação ao que o Estratégia não fechou'],
-  avoid:['Não usar Direção como fonte desta disciplina neste plano.','Não adquirir/reabrir curso do site próprio do Rodrigo Rennó.','Não repetir no Marcelo Soares tópico já plenamente fechado pelo Estratégia sem ganho metodológico.'],
-  order:'Estratégia PP/Avaliação → Marcelo Soares seletivo → questões e lacunas.'
+  phase:'Manutenção transversal',priority:'MANUTENÇÃO',active:true,
+  principal:['Estratégia · Políticas Públicas/Avaliação · fonte principal'],
+  complement:['Marcelo Soares · seletivo somente onde acrescentar método/avaliação'],
+  books:[],
+  avoid:['Não usar Direção nesta disciplina.','Não adquirir/reabrir curso do site próprio do Rodrigo Rennó.','Não repetir no Marcelo tópico plenamente fechado pelo Estratégia.'],
+  order:'Estratégia PP Aula 01 → Aula 02 → Ex Ante → Ex Post → CMAP seletivo → Passo → Marcelo seletivo/lacunas.'
  },
  auditoria:{
-  label:'Auditoria Governamental',
-  principal:['Marcelo Soares · curso principal · concluir antes de qualquer complemento de Auditoria'],
+  label:'Auditoria Governamental / Contratações / Integridade aplicada',
+  phase:'Fase 2',priority:'MÁXIMA',active:true,
+  principal:[
+   'Marcelo Soares · Auditoria Governamental · base principal antes de complementos',
+   'Pacelli + Francisco Netto · Compliance e Integridade no Setor Público e Privado (2026) · capítulos selecionados',
+   'Livro Como Combater a Corrupção em Licitações (2024) · leitura dirigida para A4 e conexões A1/A5'
+  ],
   complement:[
-   'Direção/TSE · Papéis de trabalho + Testes + Amostragem + Execução + Evidências + Achados',
-   'Direção/TSE · Comunicação + Relatório + Monitoramento, se a lacuna permanecer após Marcelo',
-   'Direção/CGU · NBC TA 230, 500, 505/520 e 320/330 apenas seletivamente',
-   'Direção/CGU · IPPF, riscos e três linhas somente se ainda houver lacuna concreta',
-   'Ramon · Dados/IA para o recorte A1.5'
+   'Direção/TSE · papéis de trabalho + testes + amostragem + execução + evidências + achados, somente após Marcelo',
+   'Direção/TSE · comunicação + relatório + monitoramento se a lacuna persistir',
+   'Direção/CGU · NBC TA 230, 500, 505/520 e 320/330 seletivamente; IPPF/riscos/três linhas apenas se lacuna concreta',
+   'Ramon · Dados/IA para A1.5',
+   'Base jurídica Rafael/Herbert/Estratégia para Lei 14.133, LAI, LIA, LGPD, Lei 9.784, Lei 12.813 e LINDB/Decreto 9.830'
+  ],
+  books:[
+   'Compliance e Integridade no Setor Público e Privado · trilha comum: capítulos '+COMMON_COMPLIANCE_CHAPTERS+'.',
+   'Camile acrescenta no mesmo livro: capítulos '+CAMILE_EXTRA_COMPLIANCE_CHAPTERS+'.',
+   'Como Combater a Corrupção em Licitações · ordem Camile: capítulos 2 → 3 → 6 → 4 → 5.',
+   'Dependência do livro de licitações: entrar depois de Rafael U12 (Licitações/Contratos) e da base correspondente com Marcelo.'
   ],
   avoid:[
-   'NÃO USAR Auditoria Governamental do Estratégia neste plano.',
-   'Não começar Direção antes de concluir a base de Auditoria com Marcelo.',
-   'Não assistir NBC TA/IPPF por completude se o conteúdo já estiver fechado pelo Marcelo.'
+   'NÃO USAR Auditoria Governamental do Estratégia.',
+   'Não começar Direção antes de concluir a base Marcelo.',
+   'Não ler os livros de ponta a ponta: seguir apenas os capítulos mapeados.',
+   'Sociedade Brasileira não entra como substituto de nenhuma lacuna de Auditoria.'
   ],
-  order:'Marcelo Soares → Direção/TSE papéis/testes/amostragem/evidências/achados → comunicação/relatório/monitoramento se necessário → NBC TA/IPPF seletivos → lacunas A4/A5 pós-edital.'
+  order:'Marcelo → Pacelli/Netto dirigido → Rafael U12/base jurídica → livro de licitações 2→3→6→4→5 → Direção técnico seletivo → NBC/IPPF/lacunas.'
  }
 });
 
 export const CYCLE_SOURCE_LABEL=Object.freeze({
- port:'Marcello · próxima etapa sequencial',
- dcon:'Nelma / ponte Art. 5º · próxima etapa do Método ET',
- afo:'Trilha A2 · BizurAFO primeiro; depois Celso/Gilmar somente nas lacunas',
- ti:'Ramon TI TOTAL · próxima aula da trilha CGU',
- 'adm-publica':'Marcelo + Direção seletivo · próxima etapa sem duplicação',
- diversidade:'Direção · bloco B2 integral · próxima etapa',
- dad:'Rafael Oliveira · próxima etapa · Herbert só complemento',
- politicas:'Estratégia PP/Avaliação · próxima etapa · Marcelo Soares seletivo',
- auditoria:'Marcelo Soares primeiro · Direção somente depois'
+ afo:'Fase 1 · BizurAFO primeiro; Celso/Gilmar só na lacuna',
+ auditoria:'Fase 2 · Marcelo primeiro · livros dirigidos · Direção depois',
+ 'adm-publica':'Fase 3 · Marcelo + Pacelli/Netto · complementos seletivos',
+ dcon:'Fase 3 · Nelma / ponte Art. 5º',
+ dad:'Fase 3 · Rafael · Herbert/Estratégia seletivos',
+ politicas:'Manutenção · Estratégia PP/Avaliação',
+ port:'Manutenção · Marcello + Andresan',
+ ti:'Manutenção · Ramon TI TOTAL',
+ diversidade:'Fase 4 FINAL · fora do ciclo principal'
 });
 
 export function materialPlanFor(id){return MATERIAL_PLAN[id]||null;}
