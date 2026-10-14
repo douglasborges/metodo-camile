@@ -73,7 +73,7 @@ export const MATERIAL_PLAN=Object.freeze({
    'Nelma/Rafael/Estratégia quando o próprio tópico já pertence à trilha principal dessas disciplinas'
   ],
   books:[
-   'Livro: Compliance e Integridade no Setor Público e Privado · Pacelli/Francisco Netto · 2026.',
+   'Livro: Compliance e Integridade no Setor Público e Privado · Pacelli/Francisco Netto · 2026 · cobertura dirigida: B3, C1, C2, C3, C5.5 e A5.',
    'Trilha comum do livro: capítulos '+COMMON_COMPLIANCE_CHAPTERS+'.',
    'Os capítulos extras exclusivos da Camile ('+CAMILE_EXTRA_COMPLIANCE_CHAPTERS+') entram no aprofundamento de Auditoria/A5, não como duplicação aqui.'
   ],
@@ -127,7 +127,7 @@ export const MATERIAL_PLAN=Object.freeze({
    'Base jurídica Rafael/Herbert/Estratégia para Lei 14.133, LAI, LIA, LGPD, Lei 9.784, Lei 12.813 e LINDB/Decreto 9.830'
   ],
   books:[
-   'Compliance e Integridade no Setor Público e Privado · trilha comum: capítulos '+COMMON_COMPLIANCE_CHAPTERS+'.',
+   'Compliance e Integridade no Setor Público e Privado · cobertura dirigida B3/C1/C2/C3/C5.5/A5 · trilha comum: capítulos '+COMMON_COMPLIANCE_CHAPTERS+'.',
    'Camile acrescenta no mesmo livro: capítulos '+CAMILE_EXTRA_COMPLIANCE_CHAPTERS+'.',
    'Como Combater a Corrupção em Licitações · ordem Camile: capítulos 2 → 3 → 6 → 4 → 5.',
    'Dependência do livro de licitações: entrar depois de Rafael U12 (Licitações/Contratos) e da base correspondente com Marcelo.'
