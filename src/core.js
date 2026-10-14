@@ -1,5 +1,7 @@
 export const KEY='metodo-et:camile:v1';
-export const CYCLE=['port','dcon','afo','ti','adm-publica','diversidade','afo','dad','politicas','auditoria','afo'];
+export const LEGACY_CYCLE_V13=Object.freeze(['port','dcon','afo','ti','adm-publica','diversidade','afo','dad','politicas','auditoria','afo']);
+export const CYCLE_PLAN_VERSION=4;
+export const CYCLE=['afo','auditoria','adm-publica','dcon','dad','afo','politicas','port','ti','afo'];
 export const RULES=Object.freeze({
  afo:{label:'AFO',minutes:90,checkpoint:3,unit:'módulo'},
  cpu:{label:'Contabilidade Pública',minutes:120,checkpoint:3,unit:'módulo'},
@@ -123,12 +125,20 @@ export function normalizeMethodState(current){
  st.settings.secondary='TCU';
  if(!Array.isArray(st.subjects))st.subjects=[];
  if(!st.cycle||!Number.isInteger(st.cycle.index))st.cycle={index:0,minutes:0};
+ if(st.cyclePlanVersion!==CYCLE_PLAN_VERSION){
+  const previousCycle=st.cyclePlanVersion?CYCLE:LEGACY_CYCLE_V13;
+  const previousSubject=previousCycle[Math.max(0,Math.min(previousCycle.length-1,Number(st.cycle.index)||0))];
+  let nextIndex=CYCLE.indexOf(previousSubject);
+  if(nextIndex<0)nextIndex=0;
+  st.cycle={...st.cycle,index:nextIndex,minutes:0};
+  st.cyclePlanVersion=CYCLE_PLAN_VERSION;
+ }
  if(st.cycle.index<0||st.cycle.index>=CYCLE.length)st.cycle={index:0,minutes:0};
  const oldInfo=st.subjects.find(s=>s.id==='info');
  if(oldInfo&&subjectUntouched(st,oldInfo))st.subjects=st.subjects.filter(s=>s.id!=='info');
 
  const port=st.subjects.find(s=>s.id==='port');
- if(port){port.course='Português — Marcello Giulian · curso mantido integralmente';port.slotMinutes=60;}
+ if(port){port.course='Português — Marcello Giulian · curso mantido integralmente';port.slotMinutes=60;Object.assign(port,{studyPhase:'manutencao',priority:'MANUTENÇÃO',active:true});}
 
  const dcon=ensureSubject(st,{id:'dcon',course:'Direito Constitucional — Nelma Fontana (Cebraspe) · Art. 5º pelo Estratégia',minutes:60,replaceUntouched:true,units:[
   baseUnit('dcon-u-1',1,'Nelma · Aula 01 · Princípios Fundamentais',{source:'Nelma Fontana'}),
@@ -136,6 +146,7 @@ export function normalizeMethodState(current){
   ...Array.from({length:15},(_,i)=>baseUnit('dcon-u-'+(i+3),i+3,'Nelma · Aula '+String(i+2).padStart(2,'0'),{source:'Nelma Fontana'}))
  ]});
  dconHistoricalProgress(st,dcon);
+ Object.assign(dcon,{studyPhase:3,priority:'ALTA',active:true});
 
  const afoUnits=[
   ['afo-cgu-01','BizurAFO · Módulo 01 · Conceito, dimensões, tipos de orçamento e intervenção do Estado nas finanças públicas',['A2.1']],
@@ -162,7 +173,8 @@ export function normalizeMethodState(current){
   baseUnit('afo-cgu-gilmar-02',20,'Gilmar Possati · A2.5 · NBC TSP 34, MIC e custos no setor público',{source:'Gilmar Possati · Contabilidade Pública/estatais',cguCodes:['A2.5'],stage:'gap'}),
   baseUnit('afo-cgu-gilmar-03',21,'Gilmar Possati · A2.6 · informação societária de estatais',{source:'Gilmar Possati · Contabilidade Pública/estatais',cguCodes:['A2.6'],stage:'gap'})
  );
- ensureSubject(st,{id:'afo',course:'AFO / Finanças Públicas / Contabilidade Pública — BizurAFO → Celso Natale seletivo → Gilmar Possati seletivo',minutes:90,units:afoUnits,replaceUntouched:true});
+ const afo=ensureSubject(st,{id:'afo',course:'AFO / Finanças Públicas / Contabilidade Pública — BizurAFO → Celso Natale seletivo → Gilmar Possati seletivo',minutes:90,units:afoUnits,replaceUntouched:true});
+ Object.assign(afo,{studyPhase:1,priority:'MÁXIMA',active:true});
 
  const tiUnits=[
   baseUnit('ti-cgu-fd01',1,'FD01 · Fundamentos de Dados',{source:'Ramon · TI TOTAL',cguCodes:['C4.1']}),
@@ -178,7 +190,8 @@ export function normalizeMethodState(current){
   baseUnit('ti-cgu-ti07',11,'TI07 · Data Mining · reserva',{source:'Ramon · TI TOTAL',cguCodes:['C4.2'],deferred:true}),
   baseUnit('ti-cgu-ti62',12,'TI62 · Processo de Ciência de Dados · reserva',{source:'Ramon · TI TOTAL',cguCodes:['C4.1'],deferred:true})
  ];
- ensureSubject(st,{id:'ti',course:'Dados e IA — Ramon · TI TOTAL · trilha CGU',minutes:60,units:tiUnits,replaceUntouched:true});
+ const ti=ensureSubject(st,{id:'ti',course:'Dados e IA — Ramon · TI TOTAL · trilha CGU',minutes:60,units:tiUnits,replaceUntouched:true});
+ Object.assign(ti,{studyPhase:'manutencao',priority:'MANUTENÇÃO',active:true});
 
  const admTopics=[
   ['B1.1','Estado e legitimidade'],['B1.2','Democracia e representação'],['B1.3','Federalismo e capacidades estatais'],['B1.5','Valor público e controle'],['B1.6','Corrupção como fenômeno político e social'],['B1.7','Mecanismos de reprodução e captura'],['B1.8','Consequências e respostas à corrupção'],['B1.9','Estado e modelos de desenvolvimento econômico'],
@@ -190,22 +203,25 @@ export function normalizeMethodState(current){
   if(code==='B4.1')return 'Rafael Oliveira · organização administrativa';
   if(code==='B4.2'||code==='B4.4'||code==='B4.5')return 'Marcelo · Administração Pública';
   if(code==='B4.3')return 'Estratégia · Políticas Públicas';
-  if(code.startsWith('B3.'))return 'Estratégia + normas CGU/Rafael + Direção seletivo · ética';
+  if(code.startsWith('B3.'))return 'Pacelli/Francisco Netto + normas CGU/Rafael/Herbert/Estratégia · ética e integridade';
   if(code==='B1.1')return 'Nelma/Rafael · base constitucional-administrativa · Direção apenas lacuna';
   if(code==='B1.2')return 'Nelma + Direção seletivo · democracia e representação';
   if(code==='B1.3')return 'Nelma + Direção seletivo · federalismo, capacidades e coordenação';
   if(code.startsWith('B1.'))return 'Direção · lacunas específicas de Estado, valor público, corrupção e desenvolvimento';
-  if(code.startsWith('C1.'))return 'Marcelo + Direção seletivo · governança, riscos e integridade';
+  if(code.startsWith('C1.'))return 'Marcelo + Pacelli/Francisco Netto + Direção seletivo · governança, riscos e integridade';
   return 'Plano mestre CGU · fonte seletiva';
  };
- ensureSubject(st,{id:'adm-publica',course:'Administração Pública, Estado, Ética, Governança e Integridade — Marcelo + Direção seletivo + bases Nelma/Rafael/Estratégia',minutes:60,units:admTopics.map((x,i)=>baseUnit('adm-cgu-'+String(i+1).padStart(2,'0'),i+1,x[1],{source:admSource(x[0]),cguCodes:[x[0]]}))});
+ const adm=ensureSubject(st,{id:'adm-publica',course:'Administração Pública, Estado, Ética, Governança e Integridade — Marcelo + Pacelli/Netto + complementos seletivos',minutes:60,units:admTopics.map((x,i)=>baseUnit('adm-cgu-'+String(i+1).padStart(2,'0'),i+1,x[1],{source:admSource(x[0]),cguCodes:[x[0]]}))});
+ Object.assign(adm,{studyPhase:3,priority:'ALTA',active:true});
 
  const diversidadeTopics=[['B2.1','Fundamentos sociológicos'],['B2.2','Formação social e cidadania no Brasil'],['B2.3','População, território e trabalho'],['B2.4','Diversidade e acesso a direitos'],['B2.5','Desenvolvimento e realidade brasileira']];
- ensureSubject(st,{id:'diversidade',course:'Sociedade Brasileira, Desigualdades e Diversidade — Direção · bloco B2 integral',minutes:60,units:diversidadeTopics.map((x,i)=>baseUnit('div-cgu-'+(i+1),i+1,x[1],{source:'Direção · bloco B2 integral',cguCodes:[x[0]]}))});
+ const diversidade=ensureSubject(st,{id:'diversidade',course:'Sociedade Brasileira, Desigualdades e Diversidade — Direção · fase final',minutes:60,units:diversidadeTopics.map((x,i)=>baseUnit('div-cgu-'+(i+1),i+1,x[1],{source:'Direção · bloco B2 integral · fase final',cguCodes:[x[0]]}))});
+ Object.assign(diversidade,{studyPhase:4,priority:'FINAL',active:false});
 
  const dad=st.subjects.find(s=>s.id==='dad');
  if(dad){
-  dad.course='DAD — Rafael Oliveira · Herbert Almeida seletivo para atualização/lacunas';
+  dad.course='DAD — Rafael Oliveira · U12 Licitações/Contratos · Herbert/Estratégia seletivos';
+  Object.assign(dad,{studyPhase:3,priority:'ALTA',active:true});
   const addCodes=(matcher,codes)=>{for(const u of dad.units||[])if(matcher.test(u.title||''))u.cguCodes=[...new Set([...(u.cguCodes||[]),...codes])];};
   addCodes(/organiza[cç][aã]o administrativa|administra[cç][aã]o p[uú]blica indireta/i,['B4.1']);
   addCodes(/atos administrativos/i,['C3.1']);
@@ -226,7 +242,8 @@ export function normalizeMethodState(current){
   ['A3.6','Conclusões, recomendações e uso dos resultados'],
   ['A3.7','Ética da investigação']
  ];
- ensureSubject(st,{id:'politicas',course:'Políticas Públicas e Avaliação — Estratégia + Marcelo Soares',minutes:60,units:ppTopics.map((x,i)=>baseUnit('pp-cgu-'+(i+1),i+1,x[1],{source:i<2?'Estratégia · curso de Políticas Públicas':'Estratégia / Marcelo Soares · plano CGU',cguCodes:[x[0]]}))});
+ const politicas=ensureSubject(st,{id:'politicas',course:'Políticas Públicas e Avaliação — Estratégia + Marcelo Soares seletivo',minutes:60,units:ppTopics.map((x,i)=>baseUnit('pp-cgu-'+(i+1),i+1,x[1],{source:i<2?'Estratégia · curso de Políticas Públicas':'Estratégia / Marcelo Soares · plano CGU',cguCodes:[x[0]]}))});
+ Object.assign(politicas,{studyPhase:'manutencao',priority:'MANUTENÇÃO',active:true});
 
  const auditTopics=[
   ['C2.1','Transparência · acesso à informação'],['C2.2','Transparência e proteção de dados'],['C2.3','Ouvidoria e proteção das pessoas'],['C2.4','Participação e melhoria de serviços'],['C2.5','Integridade da informação e comunicação'],
@@ -242,11 +259,12 @@ export function normalizeMethodState(current){
   if(code.startsWith('A1.'))return 'Marcelo Soares · base principal; Direção somente depois para lacunas';
   if(code.startsWith('C2.'))return 'Direção/CGU · transparência, ouvidoria e participação · após a base principal';
   if(code==='C3.5')return 'Base jurídica + Direção pós-edital · proteção e encaminhamento';
-  if(code.startsWith('A4.'))return 'Base jurídica definida + Direção pós-edital · mapeamento interno controlado';
-  if(code.startsWith('A5.'))return 'Base jurídica definida + Direção pós-edital · mapeamento interno controlado';
+  if(code.startsWith('A4.'))return 'Rafael U12 + livro Como Combater a Corrupção em Licitações + Direção seletivo';
+  if(code.startsWith('A5.'))return 'Pacelli/Francisco Netto + base jurídica definida + Direção pós-edital · mapeamento interno controlado';
   return 'Plano mestre CGU · fonte seletiva';
  };
- ensureSubject(st,{id:'auditoria',course:'Auditoria Governamental — Marcelo Soares primeiro → Direção/TSE e Direção/CGU somente depois, seletivamente',minutes:75,units:auditTopics.map((x,i)=>baseUnit('aud-cgu-'+String(i+1).padStart(2,'0'),i+1,x[1],{source:auditSource(x[0]),cguCodes:[x[0]]}))});
+ const auditoria=ensureSubject(st,{id:'auditoria',course:'Auditoria Governamental — Marcelo Soares primeiro → Direção/TSE e Direção/CGU somente depois, seletivamente',minutes:75,units:auditTopics.map((x,i)=>baseUnit('aud-cgu-'+String(i+1).padStart(2,'0'),i+1,x[1],{source:auditSource(x[0]),cguCodes:[x[0]]}))});
+ Object.assign(auditoria,{studyPhase:2,priority:'MÁXIMA',active:true});
 
  for(const s of st.subjects||[])for(const u of s.units||[]){
   if(u.theoryDone&&Number(u.battery?.attempted||0)>=30)u.batteryDone=true;
