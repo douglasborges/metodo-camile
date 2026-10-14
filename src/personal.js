@@ -37,6 +37,57 @@ export const GOAL_WINDOWS=Object.freeze([
  {start:'2026-12-01',end:'2026-12-07',label:'01–07/12'}
 ]);
 
+export const GOAL_MATERIAL_TARGETS=Object.freeze([
+ [
+  'AFO: BizurAFO na ordem real da Camile; sem liberar Celso/Gilmar antes da base.',
+  'Auditoria: Marcelo Soares; mapear A1/C5 já coberto.',
+  'Administração: Marcelo; livro Pacelli/Netto apenas se o capítulo corresponder ao ponto estudado.',
+  'DCON: continuar a ponte do Art. 5º; DAD: seguir Rafael sem saltos.'
+ ],
+ [
+  'Pacelli/Netto: capítulos 2 → 5 → 6 → 7.',
+  'AFO: continuar primeira passagem BizurAFO.',
+  'Auditoria: Marcelo; sem Direção.',
+  'Manutenção: 1 ocorrência de Políticas, TI/Dados e Português.'
+ ],
+ [
+  'Pacelli/Netto: capítulos 8 → 9 → 10 → 15.',
+  'DAD: avançar em direção à U12 Licitações/Contratos; U8 PPP seletivo.',
+  'AFO: concluir a maior parte possível do BizurAFO antes dos complementos.',
+  'Auditoria: continuar Marcelo e consolidar evidências/achados conforme a base.'
+ ],
+ [
+  'Pacelli/Netto: capítulos 16 → 17 → 24 → 26 → 28; extras Camile 12 → 13 quando houver base.',
+  'Como Combater a Corrupção em Licitações: 2 → 3 → 6 somente depois de Rafael U12 e base correspondente.',
+  'AFO: Celso A2.1 e Gilmar A2.4–A2.6 apenas nas lacunas efetivas.',
+  'Capítulo 4 do livro de licitações continua bloqueado até a base Marcelo de achados/evidências.'
+ ],
+ [
+  'Pacelli/Netto extras Camile: 19 → 20 → 25 → 27.',
+  'Como Combater a Corrupção em Licitações: 4 → 5 após os pré-requisitos.',
+  'Auditoria: fechar base Marcelo e só então liberar complementos Direção/NBC/IPPF.',
+  'Iniciar baterias/checkpoints nas prioridades já fechadas.'
+ ],
+ [
+  'Direção/TSE apenas nos pontos técnicos ainda faltantes depois de Marcelo.',
+  'A4/A5: consolidar livro de licitações + Pacelli/Netto + base jurídica Rafael/Herbert/Estratégia.',
+  'AFO/Adm./DCON/DAD: fechar lacunas e migrar o que estiver concluído para revisão/questões.',
+  'Nenhuma segunda teoria para conteúdo já fechado.'
+ ],
+ [
+  'Fechar as cinco prioridades e atacar somente lacunas do Check do Edital.',
+  'Estudo Sólido: erros, favoritas, checkpoints e revisões.',
+  'Sociedade Brasileira/Diversidade só entra se as prioridades centrais estiverem sob controle.',
+  'Manutenção transversal permanece curta e semanal.'
+ ],
+ [
+  'Consolidação total até 07/12: nada de curso amplo novo.',
+  'Livros: apenas releitura dirigida dos capítulos marcados e pontos errados.',
+  'Questões Cebraspe, erros, favoritas, legislação e checkpoints.',
+  'Preparar o Sprint Final de 08–12/12.'
+ ]
+]);
+
 export const GOAL_FOCUS=Object.freeze([
  [
   'Ciclo prioritário · 4 voltas: AFO/Finanças → Auditoria → Administração Pública → DCON → DAD. Tempo real prevalece sobre a referência.',
@@ -155,6 +206,7 @@ export const GOAL_TEMPLATES=Array.from({length:GOAL_META_COUNT},(_,i)=>{
   dailyReferenceMinutes:300,
   weeklyReferenceMinutes:1800,
   focus:GOAL_FOCUS[i],
+  materialTargets:GOAL_MATERIAL_TARGETS[i],
   tasks:buildCycleGoalTasks(number)
  };
 });
