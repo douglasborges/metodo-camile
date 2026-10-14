@@ -1,4 +1,4 @@
-import * as M from './core.js?v=1.4.0-cgu-books';
+import * as M from './core.js?v=1.5.0-cgu-books-final';
 
 const ACTIVE=['port','dcon','afo','ti','adm-publica','diversidade','dad','politicas','auditoria'];
 const shift=(date,days)=>{const d=new Date(date+'T12:00:00');d.setDate(d.getDate()+days);return M.day(d);};
