@@ -74,13 +74,16 @@ jobs:
           grep -q "Rafael Oliveira" src/cgu-materials.js
           grep -q "Compliance e Integridade no Setor Público e Privado" src/cgu-materials.js
           grep -q "Como Combater a Corrupção em Licitações" src/cgu-materials.js
+          grep -q "BOOK_ROUTES" src/cgu-materials.js
+          grep -q "GOAL_MATERIAL_TARGETS" src/personal.js
+          grep -q "Registrar leitura" src/app.js
           grep -q "Fase 4" src/cgu-materials.js
           grep -q "active:false" src/cgu-materials.js
           grep -q "Ramon · TI TOTAL" src/cgu-materials.js
           grep -q "Estratégia · Políticas Públicas/Avaliação" src/cgu-materials.js
           grep -q "Não usar Direção" src/cgu-materials.js
           grep -q "Não adquirir/reabrir curso do site próprio do Rodrigo Rennó" src/cgu-materials.js
-          grep -q "1.4.0-cgu-books" index.html
+          grep -q "1.5.0-cgu-books-final" index.html
           grep -q "VERSÃO EM USO" src/app.js
           grep -q "códigos internos da nossa matriz" src/app.js
           grep -q "version.json" index.html
