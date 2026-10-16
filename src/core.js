@@ -299,25 +299,52 @@ export function normalizeMethodState(current){
  Object.assign(politicas,{studyPhase:2,priority:'MANUTENÇÃO ALTA',active:true});
 
  const auditTopics=[
-  ['C2.1','Transparência · acesso à informação'],['C2.2','Transparência e proteção de dados'],['C2.3','Ouvidoria e proteção das pessoas'],['C2.4','Participação e melhoria de serviços'],['C2.5','Integridade da informação e comunicação'],
-  ['C3.5','Proteção e encaminhamento'],
-  ['C5.1','Propósito, serviços e papéis'],['C5.2','Ciclo do trabalho de auditoria'],['C5.3','Evidência e conclusão'],['C5.4','Comunicação, recomendações e monitoramento'],['C5.5','Atuação integrada da CGU'],
-  ['A1.1','Avaliação, consultoria e apuração'],['A1.2','Planejamento técnico do trabalho'],['A1.3','Testes e amostragem'],['A1.4','Achados, documentação e revisão'],['A1.5','Auditoria de dados e IA'],['A1.6','Comunicação, monitoramento e qualidade'],
-  ['A4.1','Planejamento e seleção em contratações'],['A4.2','Execução contratual'],['A4.3','Transferências e parcerias'],['A4.4','Testes e sinais de irregularidade'],['A4.5','Encaminhamentos e resultados'],
-  ['A5.1','Direito público aplicado às respostas de controle'],['A5.2','Informação, participação e qualidade dos serviços'],['A5.3','Proteção do denunciante e tratamento seguro'],['A5.4','Avaliação e aperfeiçoamento da integridade'],['A5.5','Admissibilidade, prova e responsabilização'],['A5.6','PAD, PAR, leniência e soluções consensuais'],['A5.7','Resultados, comunicação e aprendizagem institucional']
+  ['C2.1','Transparência · LAI e transparência ativa'],['C2.2','Transparência e proteção de dados'],['C2.3','Ouvidoria e proteção do denunciante'],['C2.4','Participação, dados abertos e governo aberto'],['C2.5','Integridade da informação, desinformação e liberdade de expressão'],
+  ['C3.5','Proteção e encaminhamento · apuração x sanção'],
+  ['C5.1','Propósito, serviços e papéis'],['C5.2','Ciclo do trabalho de auditoria'],['C5.3','Evidência, achados e conclusão'],['C5.4','Comunicação, recomendações e monitoramento'],['C5.5','Atuação integrada da CGU'],
+  ['A1.1','Avaliação, consultoria e apuração'],['A1.2','Planejamento técnico do trabalho'],['A1.3','Testes, técnicas e amostragem'],['A1.4','Evidências, achados, documentação e revisão'],['A1.5','Auditoria de dados e IA'],['A1.6','Relatório, recomendações, monitoramento e qualidade'],
+  ['A4.1','Planejamento, seleção e risco em contratações'],['A4.2','Execução contratual'],['A4.3','Transferências e parcerias'],['A4.4','Sinais, padrões, cruzamentos e detecção de fraude'],['A4.5','Achados, dano, responsabilização e encaminhamentos'],
+  ['A5.1','Integração institucional e decisão no controle'],['A5.2','Transparência e ouvidoria'],['A5.3','Proteção do denunciante'],['A5.4','Integridade pública e privada'],['A5.5','Admissibilidade, prova e responsabilização'],['A5.6','PAD/PAR, prescrição, dosimetria, leniência e TAC'],['A5.7','Aprendizado institucional e resultados']
  ];
  const auditSource=code=>{
-  if(code.startsWith('C5.'))return 'Marcelo Soares · Auditoria Governamental';
-  if(code==='A1.5')return 'Marcelo Soares + Ramon TI TOTAL · auditoria de dados/IA';
-  if(code.startsWith('A1.'))return 'Marcelo Soares · base principal; Direção somente depois para lacunas';
-  if(code.startsWith('C2.'))return 'Direção/CGU · transparência, ouvidoria e participação · após a base principal';
-  if(code==='C3.5')return 'Base jurídica + Direção pós-edital · proteção e encaminhamento';
-  if(code.startsWith('A4.'))return 'Rafael U12 + livro Como Combater a Corrupção em Licitações + Direção seletivo';
-  if(code.startsWith('A5.'))return 'Pacelli/Francisco Netto + base jurídica definida + Direção pós-edital · mapeamento interno controlado';
-  return 'Plano mestre CGU · fonte seletiva';
+  if(code==='C5.1')return 'Marcelo: AIG → Avaliação → Consultoria → Apuração → Objetividade';
+  if(code==='C5.2')return 'Marcelo: PAINT → Planejamento Individual T1/T2';
+  if(code==='C5.3')return 'Marcelo base; depois Direção/TSE Evidências/Achados + NBC TA 230/500 e 505/520 seletivo';
+  if(code==='C5.4')return 'Marcelo + PGMQ; Direção/TSE Comunicação/Relatório/Monitoramento só se faltar';
+  if(code==='C5.5')return 'Estratégia Organização A04-A06 + Pacelli 5/7-9/12/13/15-17 + Marcelo AIG/Apuração';
+  if(code==='A1.1')return 'Marcelo: Avaliação → Consultoria → Apuração';
+  if(code==='A1.2')return 'Marcelo: PAINT + Planejamento Individual T1/T2; Direção 320/330 apenas se faltar materialidade/testes';
+  if(code==='A1.3')return 'Marcelo técnicas/testes; depois Direção/TSE Papéis + Testes + Amostragem + Execução + Evidências + Achados';
+  if(code==='A1.4')return 'Marcelo; depois Direção/TSE + Direção/CGU NBC TA 230/500; 505/520 seletivo';
+  if(code==='A1.5')return 'Ramon TI TOTAL · base técnica da Camile + Marcelo para aplicação auditorial';
+  if(code==='A1.6')return 'Marcelo + PGMQ; Direção/TSE Comunicação/Relatório/Monitoramento/Qualidade se faltar';
+  if(code==='C2.1')return 'Estratégia/Herbert LAI + Dados Abertos → Pacelli caps. 8/9';
+  if(code==='C2.2')return 'Estratégia/Herbert LGPD → Pacelli cap. 26';
+  if(code==='C2.3')return 'Estratégia Organização A05 → Pacelli cap. 7';
+  if(code==='C2.4')return 'Herbert LAI/Dados Abertos + Pacelli caps. 9/28; Direção C2 só se gap';
+  if(code==='C2.5')return 'GAP · localizar aula pós-edital específica; não presumir cobertura';
+  if(code==='C3.5')return 'Pacelli caps. 7/12/24 + Marcelo Apuração; jurídico pós-edital se necessário';
+  if(code==='A4.1')return 'Rafael U12 + livro Corrupção em Licitações caps. 2 e 6';
+  if(code==='A4.2')return 'Rafael U12; Direção A4 pós-edital somente execução contratual que faltar';
+  if(code==='A4.3')return 'Rafael U4/U8 seletivo; Direção A4 pós-edital somente transferências/parcerias';
+  if(code==='A4.4')return 'Livro Corrupção em Licitações caps. 2/3/6 + Ramon/ferramentas de dados quando aplicável';
+  if(code==='A4.5')return 'Livro Corrupção em Licitações caps. 4/5 + Marcelo; Direção só detalhe jurídico faltante';
+  if(code==='A5.1')return 'Marcelo + Estratégia Organização + Pacelli caps. 5/13/17';
+  if(code==='A5.2'||code==='A5.3')return 'Herbert LAI/LGPD + Pacelli caps. 7/8/9/24/26/28 + Estratégia Organização A05';
+  if(code==='A5.4')return 'Pacelli caps. 2/15-20/25/27 + Estratégia A06; Rafael U22/Herbert lei especial';
+  if(code==='A5.5')return 'Pacelli cap. 12 + Rafael U17/U20/U22 + Herbert 8.429/9.784/Conflito; Direção só requisito jurídico fino';
+  if(code==='A5.6')return 'GAP JURÍDICO PRIORITÁRIO · Rafael/Herbert base legal + complemento pós-edital para prescrição/dosimetria/TAC/leniência/coordenação';
+  if(code==='A5.7')return 'Pacelli caps. 13/17 + Marcelo Recomendações/Monitoramento';
+  return 'Plano Mestre Final CGU · fonte seletiva';
  };
- const auditoria=ensureSubject(st,{id:'auditoria',course:'Auditoria Governamental — Marcelo Soares primeiro → Direção/TSE e Direção/CGU somente depois, seletivamente',minutes:75,units:auditTopics.map((x,i)=>baseUnit('aud-cgu-'+String(i+1).padStart(2,'0'),i+1,x[1],{source:auditSource(x[0]),cguCodes:[x[0]]}))});
- Object.assign(auditoria,{studyPhase:2,priority:'MÁXIMA',active:true});
+ const auditOrder=code=>({
+  'C5.1':1,'A1.1':2,'C5.2':3,'A1.2':4,'A1.3':5,'C5.3':6,'A1.4':7,'A1.5':8,'A1.6':9,'C5.4':10,
+  'C5.5':11,'C3.5':12,'C2.1':13,'C2.2':14,'C2.3':15,'C2.4':16,'C2.5':17,
+  'A4.1':18,'A4.4':19,'A4.2':20,'A4.3':21,'A4.5':22,
+  'A5.1':23,'A5.2':24,'A5.3':25,'A5.4':26,'A5.5':27,'A5.6':28,'A5.7':29
+ }[code]||80);
+ const auditoria=ensureSubject(st,{id:'auditoria',course:'Auditoria Governamental — Marcelo Soares rota final → Direção/TSE/NBC somente depois → A4/A5 dirigidos',minutes:75,units:auditTopics.map((x,i)=>baseUnit('aud-cgu-'+String(i+1).padStart(2,'0'),auditOrder(x[0]),x[1],{source:auditSource(x[0]),cguCodes:[x[0]],deferred:['C2.5','A5.6'].includes(x[0])}))});
+ Object.assign(auditoria,{studyPhase:1,priority:'MÁXIMA',active:true});
 
  for(const s of st.subjects||[])for(const u of s.units||[]){
   if(u.theoryDone&&Number(u.battery?.attempted||0)>=30)u.batteryDone=true;
