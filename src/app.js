@@ -2,7 +2,7 @@ import * as M from './core.js?v=1.5.0-cgu-books-final';
 import {durationMinutes,progressMetrics} from './progress.js?v=1.5.0-cgu-books-final';
 import { motivationForDay, saveReminder, normalizeExtras, LEGISLATION_QUEUE, legislationPair, goalSnapshot, completeGoal, FINAL_SPRINT, BIZURAFO_MODULES, bizurSnapshot, bizurStatusLabel, recordBizurAFO, setBizurModuleDone, endBizurFocus, resumeBizurFocus } from './personal.js?v=1.5.0-cgu-books-final';
 import {CGU_SYLLABUS,CGU_CHECK_TOPICS,CGU_OPERATIONAL_TOTAL,CGU_OFFICIAL_TOTAL,CGU_CHECK_START,cguDaysRemaining} from './cgu-syllabus.js?v=1.5.0-cgu-books-final';
-import {materialPlanFor,PHASE_PLAN,bookRoutesFor,GAP_REGISTER,SPECIAL_LAWS,INSTITUTIONAL_ROUTES} from './cgu-materials.js?v=1.5.0-cgu-books-final';
+import {materialPlanFor,PHASE_PLAN,bookRoutesFor,GAP_REGISTER,SPECIAL_LAWS,INSTITUTIONAL_ROUTES,DEFERRED_MATERIALS} from './cgu-materials.js?v=1.5.0-cgu-books-final';
 import {achievementSnapshot,progressText,CATEGORY_META} from './achievements.js?v=1.5.0-cgu-books-final';
 import {analyticsSnapshot} from './analytics.js?v=1.5.0-cgu-books-final';
 const APP_VERSION='1.5.0-cgu-books-final';
@@ -228,6 +228,7 @@ function materialPlanPanel(id){
  const list=(title,rows,cls)=>rows?.length?`<div class="material-column ${cls}"><span class="eyebrow">${title}</span>${rows.map(x=>`<p>• ${esc(x)}</p>`).join('')}</div>`:'';
  const phase=`<span class="badge">${esc(p.phase||'Plano CGU')} · ${esc(p.priority||'')}</span>`;
  const inactive=p.active===false?'<div class="warning"><b>FASE FINAL:</b> esta disciplina permanece fora do ciclo prioritário atual. Só deve ser ativada depois do núcleo de maior retorno.</div>':'';
+ const deferred=id==='afo'?DEFERRED_MATERIALS.map(x=>`<div class="warning"><b>CPU / MATERIAL DEFERIDO:</b> ${esc(x.code)} · ${esc(x.label)} — ${esc(x.rule)} <small>Fonte futura: ${esc(x.futureSource)}</small></div>`).join(''):'';
  const trackLabel=track=>track==='principal'?'Rota principal':track==='camile'?'Extra Camile':track==='reserva'?'Reserva':track==='rápida'?'Leitura rápida':track;
  const bookCards=bookRoutesFor(id).map(book=>{
   const chapters=book.chapters.map(ch=>{
@@ -236,7 +237,7 @@ function materialPlanPanel(id){
   }).join('');
   return `<section class="card section-title"><div class="page-head"><div><span class="eyebrow">ROTA DE LIVRO · V1.6</span><h3>${esc(book.title)}</h3><p>${esc(book.authors)} · ${esc(book.edition)}</p></div><span class="badge">LEITURA DIRIGIDA</span></div><div class="warning">${esc(book.rule)}</div><div class="goal-task-list">${chapters}</div></section>`;
  }).join('');
- return `<section class="card material-plan"><div class="page-head"><div><span class="eyebrow">PLANO MESTRE FINAL · V1.6</span><h2>${esc(p.label)}</h2><p>Um tópico do edital = uma fonte principal. Complemento somente depois; sem repetir teoria já coberta.</p></div>${phase}</div>${inactive}<div class="material-grid">${list('FONTE PRINCIPAL',p.principal,'principal')}${list('LIVROS / LEITURA DIRIGIDA',p.books,'books')}${list('COMPLEMENTO',p.complement,'complement')}${list('NÃO ESTUDAR / DUPLICADO',p.avoid,'avoid')}</div><div class="material-order"><b>Ordem:</b> ${esc(p.order)}</div></section>${supportRoutesPanel(id)}${bookCards}`;
+ return `<section class="card material-plan"><div class="page-head"><div><span class="eyebrow">PLANO MESTRE FINAL · V1.6</span><h2>${esc(p.label)}</h2><p>Um tópico do edital = uma fonte principal. Complemento somente depois; sem repetir teoria já coberta.</p></div>${phase}</div>${inactive}${deferred}<div class="material-grid">${list('FONTE PRINCIPAL',p.principal,'principal')}${list('LIVROS / LEITURA DIRIGIDA',p.books,'books')}${list('COMPLEMENTO',p.complement,'complement')}${list('NÃO ESTUDAR / DUPLICADO',p.avoid,'avoid')}</div><div class="material-order"><b>Ordem:</b> ${esc(p.order)}</div></section>${supportRoutesPanel(id)}${bookCards}`;
 }
 function subjectsPage(){
  let s=subject(),units=M.methodUnits(s),cps=M.checkpoints(s);
