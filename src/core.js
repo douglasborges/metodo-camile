@@ -150,60 +150,72 @@ export function normalizeMethodState(current){
  const port=st.subjects.find(s=>s.id==='port');
  if(port){port.course='Português — Marcello Giulian · curso mantido integralmente';port.slotMinutes=60;Object.assign(port,{studyPhase:'manutencao',priority:'MANUTENÇÃO',active:true});}
 
- const dcon=ensureSubject(st,{id:'dcon',course:'Direito Constitucional — Nelma Fontana (Cebraspe) · Art. 5º pelo Estratégia',minutes:60,replaceUntouched:true,units:[
-  baseUnit('dcon-u-1',1,'Nelma · Aula 01 · Princípios Fundamentais',{source:'Nelma Fontana'}),
-  baseUnit('dcon-u-2',2,'Art. 5º — Estratégia · 24 blocos de videoaulas',{studyPlan:'Estudar os 24 blocos do Estratégia antes de retomar as aulas da Nelma.',totalBlocks:24,source:'Estratégia Concursos'}),
-  ...Array.from({length:15},(_,i)=>baseUnit('dcon-u-'+(i+3),i+3,'Nelma · Aula '+String(i+2).padStart(2,'0'),{source:'Nelma Fontana'}))
+ const dcon=ensureSubject(st,{id:'dcon',course:'Direito Constitucional — Nelma Fontana + Estratégia · rota CGU final',minutes:60,replaceUntouched:true,units:[
+  baseUnit('dcon-u-1',1,'Nelma · A01 · Princípios Fundamentais',{source:'Nelma Fontana',cguCodes:['B1.4']}),
+  baseUnit('dcon-u-3',2,'Estratégia/Nelma · A03 · Teoria dos Direitos',{source:'Estratégia/Nelma · ponte de Direitos Fundamentais',cguCodes:['B1.4']}),
+  baseUnit('dcon-u-2',3,'Estratégia · A04 · Art. 5º · 24 videoaulas + exercícios',{studyPlan:'Concluir os 24 vídeos e os exercícios antes de considerar o Art. 5º fechado.',totalBlocks:24,source:'Estratégia Concursos',cguCodes:['B1.4']}),
+  baseUnit('dcon-u-4',4,'Nelma Cebraspe · A03 · Direitos Sociais',{source:'Nelma Fontana',cguCodes:['B1.4']}),
+  baseUnit('dcon-u-5',5,'Nelma · A04 · Direitos Políticos',{source:'Nelma Fontana',cguCodes:['B1.4']}),
+  baseUnit('dcon-u-6',6,'Nelma · A05 · Organização do Estado',{source:'Nelma Fontana',cguCodes:['B1.3']}),
+  baseUnit('dcon-u-7',7,'Nelma · A06 · seletivo · relações entre Poderes/representação',{source:'Nelma Fontana · seletivo',cguCodes:['B1.2']}),
+  baseUnit('dcon-u-8',8,'Nelma · A08 · Fiscalização e Executivo',{source:'Nelma Fontana',cguCodes:['B1.2','C3.3']}),
+  baseUnit('dcon-u-9',9,'Nelma · A09 · seletivo · relações entre Poderes',{source:'Nelma Fontana · seletivo',cguCodes:['B1.2']}),
+  baseUnit('dcon-u-10',10,'Nelma · A15 · Ordem Econômica',{source:'Nelma Fontana',cguCodes:['B1.9','A2.7']}),
+  ...Array.from({length:7},(_,i)=>baseUnit('dcon-u-'+(i+11),100+i,'Nelma · conteúdo fora da rota CGU atual',{source:'Reserva · histórico preservado',hiddenFromRoute:true,deferred:true}))
  ]});
  dconHistoricalProgress(st,dcon);
- Object.assign(dcon,{studyPhase:3,priority:'ALTA',active:true});
+ Object.assign(dcon,{studyPhase:1,priority:'ALTA',active:true});
 
- const afoUnits=[
-  ['afo-cgu-01','BizurAFO · Módulo 01 · Conceito, dimensões, tipos de orçamento e intervenção do Estado nas finanças públicas',['A2.1']],
-  ['afo-cgu-02','BizurAFO · Módulo 02 · Instrumentos de planejamento — PPA, LDO e LOA',['B4.4','A2.2']],
-  ['afo-cgu-03','BizurAFO · Módulo 03 · Princípios orçamentários',['A2.2']],
-  ['afo-cgu-04','BizurAFO · Módulo 04 · Créditos adicionais e alterações orçamentárias',['A2.2']],
-  ['afo-cgu-05','BizurAFO · Módulo 05 · Ciclo orçamentário',['A2.2']],
-  ['afo-cgu-06','BizurAFO · Módulo 06 · Técnicas orçamentárias e orçamento-programa',['A2.2']],
-  ['afo-cgu-07','BizurAFO · Módulo 07 · Receita pública',['A2.3']],
-  ['afo-cgu-08','BizurAFO · Módulo 08 · Despesa pública',['A2.3']],
-  ['afo-cgu-09','BizurAFO · Módulo 09 · Execução orçamentária e financeira, programação e descentralização',['A2.3']],
-  ['afo-cgu-10','BizurAFO · Módulo 10 · Restos a pagar, DEA e suprimento de fundos',['A2.3']],
-  ['afo-cgu-11','BizurAFO · Módulo 11 · Lei de Responsabilidade Fiscal',['A2.3']],
-  ['afo-cgu-12','BizurAFO · Módulo 12 · Sistemas de informações',[]],
-  ['afo-cgu-13','BizurAFO · Módulo 13 · Regime de ajustes fiscais',[]],
-  ['afo-cgu-14','BizurAFO · Módulo 14 · Lei 4.320/1964',['A2.2','A2.3']],
-  ['afo-cgu-15','BizurAFO · Módulo 15 · Conta Única do Tesouro Nacional',['A2.3']],
-  ['afo-cgu-16','BizurAFO · Módulo 16 · Questões extras Cebraspe',[]]
- ].map((x,i)=>baseUnit(x[0],i+1,x[1],{source:'Leandro Ravyelle · BizurAFO',cguCodes:x[2],deferred:x[0]==='afo-cgu-13'}));
- afoUnits.push(
-  baseUnit('afo-cgu-celso-01',17,'Celso Natale · A2.1 · bens públicos, externalidades, monopólios e federalismo fiscal',{source:'Celso Natale · complemento seletivo após BizurAFO',cguCodes:['A2.1'],stage:'gap'}),
-  baseUnit('afo-cgu-celso-02',18,'Celso Natale · A2.1 · progressividade/regressividade, resultado primário/nominal e déficit',{source:'Celso Natale · complemento seletivo após BizurAFO',cguCodes:['A2.1'],stage:'gap'}),
-  baseUnit('afo-cgu-gilmar-01',19,'Gilmar Possati · A2.4 · CASP, MCASP, NBC TSP e base legal',{source:'Gilmar Possati · Contabilidade Pública/estatais',cguCodes:['A2.4'],stage:'gap'}),
-  baseUnit('afo-cgu-gilmar-02',20,'Gilmar Possati · A2.5 · NBC TSP 34, MIC e custos no setor público',{source:'Gilmar Possati · Contabilidade Pública/estatais',cguCodes:['A2.5'],stage:'gap'}),
-  baseUnit('afo-cgu-gilmar-03',21,'Gilmar Possati · A2.6 · informação societária de estatais',{source:'Gilmar Possati · Contabilidade Pública/estatais',cguCodes:['A2.6'],stage:'gap'})
- );
- const afo=ensureSubject(st,{id:'afo',course:'AFO / Finanças Públicas / Contabilidade Pública — BizurAFO → Celso Natale seletivo → Gilmar Possati seletivo',minutes:90,units:afoUnits,replaceUntouched:true});
+  const afoUnits=[
+  baseUnit('afo-cgu-01',1,'BizurAFO · M01 · base A2.1 · economia/finanças públicas e intervenção do Estado',{source:'Leandro Ravyelle · BizurAFO',cguCodes:['A2.1']}),
+  baseUnit('afo-cgu-celso-01',2,'Celso Natale · A2.1 · bens públicos, externalidades, monopólios e federalismo fiscal',{source:'Celso Natale · pós-edital · A2.1',cguCodes:['A2.1'],stage:'fase-2'}),
+  baseUnit('afo-cgu-celso-02',3,'Celso Natale · A2.1 · progressividade/regressividade/neutralidade, resultado primário/nominal e NFSP',{source:'Celso Natale · pós-edital · A2.1',cguCodes:['A2.1'],stage:'fase-2'}),
+  baseUnit('afo-cgu-02',4,'BizurAFO · M02 · PPA, LDO e LOA',{source:'Leandro Ravyelle · BizurAFO',cguCodes:['B4.4','A2.2']}),
+  baseUnit('afo-cgu-03',5,'BizurAFO · M03 · Princípios orçamentários',{source:'Leandro Ravyelle · BizurAFO',cguCodes:['A2.2']}),
+  baseUnit('afo-cgu-04',6,'BizurAFO · M04 · Créditos adicionais',{source:'Leandro Ravyelle · BizurAFO',cguCodes:['A2.2']}),
+  baseUnit('afo-cgu-05',90,'BizurAFO · M05 · fora da rota final da Camile',{source:'Não estudar nesta rota',hiddenFromRoute:true,deferred:true}),
+  baseUnit('afo-cgu-06',7,'BizurAFO · M06 · Técnicas orçamentárias / orçamento-programa',{source:'Leandro Ravyelle · BizurAFO',cguCodes:['A2.2']}),
+  baseUnit('afo-cgu-07',8,'BizurAFO · M07 · Receita pública',{source:'Leandro Ravyelle · BizurAFO',cguCodes:['A2.3']}),
+  baseUnit('afo-cgu-08',9,'BizurAFO · M08 · Despesa pública',{source:'Leandro Ravyelle · BizurAFO',cguCodes:['A2.3']}),
+  baseUnit('afo-cgu-09',10,'BizurAFO · M09 · Execução orçamentária e financeira',{source:'Leandro Ravyelle · BizurAFO',cguCodes:['A2.3']}),
+  baseUnit('afo-cgu-10',11,'BizurAFO · M10 · SOMENTE Restos a Pagar (RAP)',{source:'Leandro Ravyelle · BizurAFO · recorte',cguCodes:['A2.3']}),
+  baseUnit('afo-cgu-11',12,'BizurAFO · M11 · Lei de Responsabilidade Fiscal',{source:'Leandro Ravyelle · BizurAFO',cguCodes:['A2.3']}),
+  baseUnit('afo-cgu-12',91,'BizurAFO · M12 · fora da rota final da Camile',{source:'Não estudar nesta rota',hiddenFromRoute:true,deferred:true}),
+  baseUnit('afo-cgu-13',13,'BizurAFO · M13 · Regimes/ajustes fiscais · recorte da rota final',{source:'Leandro Ravyelle · BizurAFO',cguCodes:['A2.2','A2.3']}),
+  baseUnit('afo-cgu-14',14,'BizurAFO · M14 · Lei 4.320/1964 · SELETIVO',{source:'Leandro Ravyelle · BizurAFO · seletivo',cguCodes:['A2.2','A2.3'],stage:'seletivo'}),
+  baseUnit('afo-cgu-15',15,'BizurAFO · M15 · Conta Única do Tesouro Nacional',{source:'Leandro Ravyelle · BizurAFO',cguCodes:['A2.3']}),
+  baseUnit('afo-cgu-16',92,'BizurAFO · M16 · questões extras · usar como bateria/diagnóstico',{source:'Questões · não é teoria obrigatória',hiddenFromRoute:true,deferred:true}),
+  baseUnit('afo-cgu-gilmar-01',16,'Gilmar Possati · A2.4 · DCASP / Contabilidade Pública',{source:'Gilmar Possati · pós-edital',cguCodes:['A2.4'],stage:'fase-2'}),
+  baseUnit('afo-cgu-gilmar-02',17,'Gilmar Possati · A2.5 · NBC TSP 34 / MIC',{source:'Gilmar Possati · pós-edital',cguCodes:['A2.5'],stage:'fase-2'}),
+  baseUnit('afo-cgu-gilmar-03',18,'Gilmar Possati · A2.5 · Custos no setor público',{source:'Gilmar Possati · pós-edital',cguCodes:['A2.5'],stage:'fase-2'}),
+  baseUnit('afo-cgu-gilmar-04',19,'Gilmar Possati · A2.6 · Estatais I · informação societária',{source:'Gilmar Possati · pós-edital',cguCodes:['A2.6'],stage:'fase-2'}),
+  baseUnit('afo-cgu-gilmar-05',20,'Gilmar Possati · A2.6/A2.7 · Estatais II · governança/finalidade pública',{source:'Gilmar Possati + Nelma A15; Direção só se faltar enfoque',cguCodes:['A2.6','A2.7'],stage:'fase-2'})
+ ];
+ const afo=ensureSubject(st,{id:'afo',course:'AFO / Finanças Públicas / Contabilidade Pública — BizurAFO rota final → Celso A2.1 → Gilmar A2.4–A2.7',minutes:90,units:afoUnits,replaceUntouched:true});
  Object.assign(afo,{studyPhase:1,priority:'MÁXIMA',active:true});
 
- const tiUnits=[
-  baseUnit('ti-cgu-fd01',1,'FD01 · Fundamentos de Dados',{source:'Ramon · TI TOTAL',cguCodes:['C4.1']}),
-  baseUnit('ti-cgu-ti60',2,'TI60 · Fluência em dados: conceitos, atributos, métricas e transformação de dados',{source:'Ramon · TI TOTAL',cguCodes:['C4.1']}),
-  baseUnit('ti-cgu-ti63',3,'TI63 · Análise de dados: agrupamentos, tendências, projeções e Analytics',{source:'Ramon · TI TOTAL',cguCodes:['C4.2']}),
-  baseUnit('ti-cgu-ti83',4,'TI83 · módulo da trilha CGU definido no plano Ramon',{source:'Ramon · TI TOTAL',cguCodes:['C4.3']}),
-  baseUnit('ti-cgu-mon36',5,'Monitoria 36 · trilha CGU de Dados',{source:'Ramon · TI TOTAL'}),
-  baseUnit('ti-cgu-ti37',6,'TI37-I · Aprendizado de Máquina e Inteligência Artificial',{source:'Ramon · TI TOTAL',cguCodes:['C4.5']}),
-  baseUnit('ti-cgu-ti36',7,'TI36 · Inteligência Artificial',{source:'Ramon · TI TOTAL',cguCodes:['C4.5']}),
-  baseUnit('ti-cgu-ti61',8,'TI61 · Governança de Dados',{source:'Ramon · TI TOTAL',cguCodes:['C4.4']}),
-  baseUnit('ti-cgu-ti35',9,'TI35 · LGPD',{source:'Ramon · TI TOTAL',cguCodes:['C2.2','C4.4']}),
-  baseUnit('ti-cgu-ti97',10,'TI97 · módulo da trilha CGU definido no plano Ramon',{source:'Ramon · TI TOTAL',cguCodes:['A1.5']}),
-  baseUnit('ti-cgu-ti07',11,'TI07 · Data Mining · reserva',{source:'Ramon · TI TOTAL',cguCodes:['C4.2'],deferred:true}),
-  baseUnit('ti-cgu-ti62',12,'TI62 · Processo de Ciência de Dados · reserva',{source:'Ramon · TI TOTAL',cguCodes:['C4.1'],deferred:true})
+  const tiUnits=[
+  baseUnit('ti-cgu-lucas-01',1,'Lucas Ianni · C4.1 · perguntas, fontes, dado x evidência',{source:'Estratégia · Fundamentos de Evidência, Dados e IA',cguCodes:['C4.1']}),
+  baseUnit('ti-cgu-fd01',2,'FD01 · Fundamentos de Dados',{source:'Ramon · TI TOTAL',cguCodes:['C4.1','C4.2']}),
+  baseUnit('ti-cgu-ti60',3,'TI60 · Fluência em dados: conceitos, atributos, métricas e transformação',{source:'Ramon · TI TOTAL',cguCodes:['C4.2']}),
+  baseUnit('ti-cgu-ti63',4,'TI63 · análise de dados, agrupamentos, tendências e projeções',{source:'Ramon · TI TOTAL',cguCodes:['C4.2','C4.3']}),
+  baseUnit('ti-cgu-ti83',5,'TI83 · trilha técnica CGU',{source:'Ramon · TI TOTAL',cguCodes:['C4.3']}),
+  baseUnit('ti-cgu-mon36',6,'Monitoria 36 · trilha CGU de Dados',{source:'Ramon · TI TOTAL',cguCodes:['C4.2','C4.3']}),
+  baseUnit('ti-cgu-lucas-02',7,'Lucas Ianni · C4.2/C4.3 · indicadores, inferências e erros · recorte comum',{source:'Estratégia · Fundamentos de Evidência, Dados e IA',cguCodes:['C4.2','C4.3']}),
+  baseUnit('ti-cgu-ti37',8,'TI37-I · Aprendizado de Máquina e Inteligência Artificial',{source:'Ramon · TI TOTAL',cguCodes:['C4.5','A1.5']}),
+  baseUnit('ti-cgu-ti36',9,'TI36 · Inteligência Artificial',{source:'Ramon · TI TOTAL',cguCodes:['C4.5','A1.5']}),
+  baseUnit('ti-cgu-ti61',10,'TI61 · Governança de Dados',{source:'Ramon · TI TOTAL',cguCodes:['C4.4']}),
+  baseUnit('ti-cgu-ti35',11,'TI35 · LGPD',{source:'Ramon · TI TOTAL',cguCodes:['C2.2','C4.4']}),
+  baseUnit('ti-cgu-lucas-03',12,'Lucas Ianni · C4.4 · rastreabilidade, confidencialidade e proteção',{source:'Lucas Ianni + Herbert LGPD + Pacelli cap. 26',cguCodes:['C4.4']}),
+  baseUnit('ti-cgu-ti97',13,'TI97 · auditoria/dados · recorte A1.5',{source:'Ramon · TI TOTAL',cguCodes:['A1.5']}),
+  baseUnit('ti-cgu-lucas-04',14,'Lucas Ianni · C4.5 · direitos, limites e revisão humana em IA',{source:'Estratégia · complemento ao Ramon',cguCodes:['C4.5']}),
+  baseUnit('ti-cgu-ti07',90,'TI07 · Data Mining · reserva',{source:'Ramon · TI TOTAL',cguCodes:['C4.2'],hiddenFromRoute:true,deferred:true}),
+  baseUnit('ti-cgu-ti62',91,'TI62 · Processo de Ciência de Dados · reserva',{source:'Ramon · TI TOTAL',cguCodes:['C4.1'],hiddenFromRoute:true,deferred:true})
  ];
- const ti=ensureSubject(st,{id:'ti',course:'Dados e IA — Ramon · TI TOTAL · trilha CGU',minutes:60,units:tiUnits,replaceUntouched:true});
- Object.assign(ti,{studyPhase:'manutencao',priority:'MANUTENÇÃO',active:true});
+ const ti=ensureSubject(st,{id:'ti',course:'Fundamentos de Evidências, Dados e IA — Lucas Ianni (comum) + Ramon TI TOTAL (técnico Camile)',minutes:60,units:tiUnits,replaceUntouched:true});
+ Object.assign(ti,{studyPhase:2,priority:'MANUTENÇÃO ALTA',active:true});
 
- const admTopics=[
+  const admTopics=[
   ['B1.1','Estado e legitimidade'],['B1.2','Democracia e representação'],['B1.3','Federalismo e capacidades estatais'],['B1.5','Valor público e controle'],['B1.6','Corrupção como fenômeno político e social'],['B1.7','Mecanismos de reprodução e captura'],['B1.8','Consequências e respostas à corrupção'],['B1.9','Estado e modelos de desenvolvimento econômico'],
   ['B3.1','Fundamentos da ética pública'],['B3.2','Deveres profissionais'],['B3.3','Conflitos de interesses e imparcialidade'],['B3.4','Relações de trabalho e atendimento'],['B3.5','Integridade como responsabilidade institucional'],
   ['B4.1','Organização administrativa'],['B4.2','Modelos de administração'],['B4.3','Políticas públicas'],['B4.4','Planejamento e recursos'],['B4.5','Serviços e transformação digital'],
