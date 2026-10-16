@@ -92,12 +92,13 @@ export function bookRoutesFor(subjectId){
 }
 
 export const GAP_REGISTER=Object.freeze([
- {code:'C2.5',gap:'Integridade da informação, desinformação e liberdade de expressão',action:'Localizar aula pós-edital específica.',priority:'GAP'},
- {code:'A2.7',gap:'Governança/finalidade pública das estatais',action:'Gilmar estatais + Nelma A15; Direção/curso pós-edital apenas se faltar enfoque de governança/finalidade.',priority:'PARCIAL'},
- {code:'A3.6-A3.7',gap:'Sensibilidade/heterogeneidade/resultados nulos + ética da investigação',action:'Complemento pós-edital específico; não inventar cobertura.',priority:'GAP CONTROLADO'},
- {code:'A4.2-A4.3',gap:'Execução contratual e transferências/parcerias',action:'Rafael como base + Direção pós-edital somente nessas lacunas.',priority:'PARCIAL'},
- {code:'A5.6',gap:'Prescrição, dosimetria, TAC, leniência e coordenação de instâncias',action:'Complemento jurídico pós-edital prioritário.',priority:'GAP JURÍDICO PRIORITÁRIO'}
+ {code:'A3.7',gap:'Ética da investigação',action:'Permanece pendente; usar somente material pós-edital específico quando localizado.',priority:'GAP CONTROLADO'},
+ {code:'A5.6',gap:'PAD/PAR, prescrição, dosimetria, leniência, TAC e coordenação de instâncias',action:'Permanece pendente; fechamento jurídico pós-edital prioritário, sem inventar cobertura.',priority:'GAP JURÍDICO PRIORITÁRIO'}
 ]);
+
+export const DEFERRED_MATERIALS=Object.freeze([
+ {code:'A2.4-A2.6',label:'Contabilidade Pública / CPU',status:'DEFERIDA',futureSource:'Giovanni Pacelli',rule:'Camile não estudará CPU agora. Manter fora da rota atual e preservar qualquer histórico; estudar futuramente com Pacelli.'}
+])
 
 export const MATERIAL_PLAN=Object.freeze({
  port:{
@@ -121,28 +122,34 @@ export const MATERIAL_PLAN=Object.freeze({
   order:'Seguir a rota acima; Art. 5º só fecha após 24 vídeos + exercícios.'
  },
  afo:{
-  label:'AFO / Finanças Públicas / Contabilidade Pública',
-  phase:'Fase 1 + Fase 2',priority:'MÁXIMA',active:true,
+  label:'AFO / Finanças Públicas',
+  phase:'Fase 1 + fechamento pós-BizurAFO',priority:'MÁXIMA',active:true,
   principal:[
-   'Leandro Ravyelle · BizurAFO: M1 → M2 → M3 → M4 → M6 → M7 → M8/M9 → M10 apenas RAP → M11 → M13 → M14 seletivo → M15 → questões',
-   'Celso Natale pós-edital · A2.1, depois da base M1',
-   'Gilmar Possati pós-edital · A2.4–A2.7, depois do núcleo orçamentário'
+   'Leandro Ravyelle · BizurAFO: M1 → M2 → M3 → M4 → M6 → M7 → M8/M9 → M10 somente RAP → M11 → M13 → M14 seletivo → M15 → questões.',
+   'André Luís · Receita Pública · ponte/consolidação a partir do vídeo 17: 17–19 → 36–40 → 41–45 → 47 → 48–49.',
+   'Giovanni Pacelli · AFO regular atualizado · entra depois do intensivão/BizurAFO para consolidação e atualização normativa, sem reiniciar o que já estiver sólido.'
   ],
   complement:[
-   'Celso A2.1: bens públicos, externalidades, monopólios, federalismo fiscal, progressividade/regressividade/neutralidade, resultado primário/nominal e NFSP.',
-   'Gilmar: DCASP; NBC TSP 34/MIC; custos; estatais I/II. A2.7 combina Gilmar estatais + Nelma A15; Direção só se faltar enfoque de governança/finalidade.',
-   'Passo/questões depois da base A2.2-A2.3.'
+   'Celso Natale / Estratégia · somente A2.1: bens públicos, externalidades, monopólios, federalismo fiscal, progressividade/regressividade/neutralidade, resultado primário/nominal e NFSP.',
+   'Estratégia pós-edital · Finanças Públicas A2.1 apenas para fechar lacunas nominais.',
+   'Estratégia pós-edital · Estatais / Lei 13.303 somente para A2.7, sem abrir Contabilidade Pública.'
   ],
   books:[],
-  avoid:['Não estudar outro curso completo de AFO/Orçamento do Direção/Estratégia.','M5 e M12 não integram a rota atual; M10 é somente RAP; M14 é seletivo.'],
-  order:'BizurAFO na rota final → Celso A2.1 → Gilmar A2.4–A2.7 → lacunas residuais.'
+  avoid:[
+   'Não estudar outro curso completo de AFO/Orçamento do Direção/Estratégia.',
+   'M5 e M12 não integram a rota atual; M10 é somente RAP; M14 é seletivo.',
+   'Contabilidade Pública A2.4–A2.6 está DEFERIDA/BLOQUEADA nesta preparação; Gilmar Possati sai da rota atual.',
+   'CPU será estudada futuramente com Giovanni Pacelli; não consumir horas atuais da CGU com esse bloco.'
+  ],
+  order:'BizurAFO rota final → André Luís somente na ponte de Receita → Pacelli AFO atualizado → Celso/Estratégia apenas A2.1 se lacuna → Estatais/Lei 13.303 apenas A2.7.'
  },
  ti:{
   label:'Fundamentos de Evidências, Dados e IA',
   phase:'Fase 2',priority:'MANUTENÇÃO ALTA',active:true,
   principal:[
    'Estratégia · Lucas Ianni · Fundamentos de Evidência, Dados e IA para C4.1 e recorte comum C4.2-C4.5.',
-   'Ramon · TI TOTAL · fonte técnica individual da Camile, sobretudo C4.2-C4.3, C4.5 e A1.5.'
+   'Ramon · TI TOTAL · fonte técnica individual da Camile, sobretudo C4.2-C4.3, C4.5 e A1.5.',
+   'Estratégia pós-edital · Integridade da Informação para C2.5/C4.4 quando aderente ao item.'
   ],
   complement:[
    'Herbert LGPD + Pacelli cap. 26 em C4.4.',
@@ -163,7 +170,7 @@ export const MATERIAL_PLAN=Object.freeze({
   ],
   complement:[
    'B1/Estado/Democracia: Direção apenas nas lacunas nominais; Nelma/PP conforme item.',
-   'Transformação digital/simplificação/acessibilidade somente onde indicado.',
+   'Estratégia pós-edital · Serviços Públicos, Transformação Digital e IA para B4.5, somente no recorte do edital.',
    'Organização/Competências CGU: A02 → A03 seletivo → A05 → A06 → A00/A01 → A04 seletivo.'
   ],
   books:['Pacelli/Netto · capítulos rastreados na app, ativados pela base normativa correspondente.'],
@@ -198,11 +205,15 @@ export const MATERIAL_PLAN=Object.freeze({
  politicas:{
   label:'Políticas Públicas e Avaliação',
   phase:'Fase 2',priority:'MANUTENÇÃO ALTA',active:true,
-  principal:['Estratégia · Rodrigo Rennó · PP Aula 01 → PP Aula 02 → Ex Ante → Ex Post → CMAP seletivo → Passo A01/A02 + simulados.'],
-  complement:['Aulas PP 03/04 apenas como reaproveitamento em B1 (intermediação/corrupção), não como segunda teoria de PP.'],
+  principal:[
+   'Estratégia · Rodrigo Rennó · PP Aula 01 → PP Aula 02.',
+   'Estratégia pós-edital · Arranjos Institucionais → Intersetorialidade → Instrumentos → Avaliação Ex Ante → Avaliação de Políticas Públicas/Comissão (2 aulas) → Avaliação Ex Post.',
+   'Depois: CMAP seletivo → Passo A01/A02 → simulados.'
+  ],
+  complement:['PP A03/A04 apenas como reaproveitamento em B1 (intermediação/corrupção), não como segunda teoria de Políticas Públicas.'],
   books:[],
-  avoid:['Não usar curso do site próprio do Rodrigo Rennó.','Não usar Direção PP se o conteúdo já estiver coberto.'],
-  order:'PP A01 → A02 → Ex Ante → Ex Post → CMAP seletivo → Passo A01/A02 → simulados.'
+  avoid:['Políticas Públicas é exclusivamente Estratégia na rota atual.','Não usar curso do site próprio do Rodrigo Rennó.','Não usar Direção PP se o conteúdo já estiver coberto.'],
+  order:'PP A01 → A02 → Arranjos Institucionais → Intersetorialidade → Instrumentos → Ex Ante → Avaliação Comissão 1/2 → Ex Post → CMAP seletivo → Passo A01/A02 → simulados.'
  },
  auditoria:{
   label:'Auditoria Governamental / Contratações / Integridade aplicada',
@@ -217,27 +228,28 @@ export const MATERIAL_PLAN=Object.freeze({
    'Depois do Marcelo: Direção/TSE · Papéis de trabalho + Testes + Amostragem + Execução + Evidências + Achados.',
    'Direção/CGU · NBC TA 230, 500, 505/520 e 320/330 somente em lacunas documentais/evidenciais/materialidade/testes.',
    'Direção/TSE · Comunicação + Relatório + Monitoramento apenas se o módulo equivalente do Marcelo não estiver liberado.',
-   'A4.2 execução contratual e A4.3 transferências/parcerias: Direção pós-edital somente no que faltar.',
+   'A4.2 execução contratual: Estratégia pós-edital específico; Direção somente se ainda restar lacuna.',
+   'A4.3 transferências/parcerias: Estratégia pós-edital específico; Direção somente se ainda restar lacuna.',
    'A5.6: complemento jurídico pós-edital prioritário.'
   ],
   books:[
    'Compliance e Integridade no Setor Público e Privado · capítulos rastreados na app.',
    'Como Combater a Corrupção em Licitações · cap. 1 rápido → 2 → 3 → 6 → 4 → 5; o livro NÃO fecha A4.2/A4.3.'
   ],
-  avoid:['ESTRATÉGIA · Auditoria Governamental e Controle pré-edital: REMOVIDO / NÃO ESTUDAR.','Não começar Direção antes da base Marcelo.','Não ler os livros de ponta a ponta.'],
+  avoid:['ESTRATÉGIA · Auditoria Governamental e Controle pré-edital: REMOVIDO / NÃO ESTUDAR. O pós-edital geral fica em RESERVA; usar apenas aulas específicas de lacunas mapeadas.','Não começar Direção antes da base Marcelo.','Não ler os livros de ponta a ponta.'],
   order:'Marcelo completo na ordem final → Direção/TSE técnico → NBC TA seletivas → Comunicação/Monitoramento se faltar; livros entram pelas dependências A4/A5.'
  }
 });
 
 export const CYCLE_SOURCE_LABEL=Object.freeze({
- afo:'Fase 1 · BizurAFO rota final + Celso A2.1; Gilmar na Fase 2',
+ afo:'Fase 1 · BizurAFO + André Receita + Pacelli AFO atualizado; CPU deferida',
  auditoria:'Fase 1 · Marcelo AIG→Planejamento; Direção só depois',
  'adm-publica':'Fase 1 · Marcelo Faixa Preta; ética/integridade depois',
  dcon:'Fase 1 · Nelma + ponte Estratégia Art. 5º',
  dad:'Fase 1 · Rafael rota final + U12/U8 seletivos',
  politicas:'Fase 2 · Estratégia Rodrigo PP/Avaliação',
  port:'Manutenção · Marcello + Andresan',
- ti:'Fase 2 · Lucas Ianni comum + Ramon técnico',
+ ti:'Fase 2 · Lucas Ianni comum + Ramon técnico + Integridade da Informação seletiva',
  diversidade:'Fase 4 FINAL · fora do ciclo principal'
 });
 
