@@ -227,7 +227,7 @@ export function normalizeMethodState(current){
  const admSource=code=>{
   if(code==='B4.2')return 'Marcelo Faixa Preta · Evolução APU T01-T03 + Q Reforma → Governança T01/T02 → Gestão para Resultados';
   if(code==='B4.4')return 'Marcelo Faixa Preta · Planejamento (conceito/princípios + tipos) + BizurAFO recorte';
-  if(code==='B4.5')return 'Marcelo · Excelência T01/T02 + Rafael U6; Direção Governo Digital só se faltar';
+  if(code==='B4.5')return 'Marcelo · Excelência T01/T02 + Rafael U6 + Estratégia pós-edital Serviços Públicos/Transformação Digital/IA no recorte';
   if(code==='B4.1')return 'Rafael U2/U3/U4/U7/U17 · Direção só função específica se necessária';
   if(code==='B4.3')return 'Estratégia Rodrigo Rennó · PP A01/A02 · estudar na disciplina Políticas Públicas';
   if(code==='B3.1'||code==='B3.2')return 'Estratégia Ética A01/A02 + Código de Conduta CGU · depois Pacelli cap. 6';
@@ -289,16 +289,26 @@ export function normalizeMethodState(current){
 
  const ppTopics=[
   ['B4.3','Estratégia Rodrigo Rennó · PP Aula 01 · ciclo, atores e implementação'],
-  ['A3.1','Estratégia Rodrigo Rennó · PP Aula 02 · métodos/avaliação'],
-  ['A3.1','Avaliação Ex Ante · COMPLETA para Camile'],
-  ['A3.2','Avaliação Ex Post'],
-  ['A3.3','CMAP · seletivo'],
-  ['A3.6','Passo · Aula 01/Aula 02'],
-  ['A3.6','Simulados / questões de Políticas Públicas'],
-  ['B1.6','PP A03/A04 · reaproveitamento apenas em B1 · não é segunda teoria de PP'],
-  ['A3.7','Ética da investigação · aguardar/usar fechamento pós-edital específico']
+  ['A3.3','Estratégia Rodrigo Rennó · PP Aula 02 · indicadores e métodos'],
+  ['A3.1','Estratégia · Avaliação Ex Ante · completa para Camile'],
+  ['A3.3','Estratégia · Avaliação Ex Post'],
+  ['A3.6','Estratégia · CMAP · seletivo e uso dos resultados'],
+  ['A3.4','Métodos qualitativos e mistos · PP Aula 02 / material correspondente'],
+  ['A3.5','Causalidade e avaliação econômica · Ex Post'],
+  ['A3.6','Conclusões, recomendações e uso dos resultados · Ex Post/pós-edital'],
+  ['A3.7','Ética da investigação · GAP CONTROLADO']
  ];
- const politicas=ensureSubject(st,{id:'politicas',course:'Políticas Públicas e Avaliação — Estratégia · Rodrigo Rennó · rota CGU final',minutes:60,units:ppTopics.map((x,i)=>baseUnit('pp-cgu-'+(i+1),i+1,x[1],{source:i===7?'Reaproveitamento B1 · não segunda teoria':i===8?'GAP CONTROLADO · material pós-edital específico':'Estratégia · Rodrigo Rennó / Avaliação',cguCodes:[x[0]],hiddenFromRoute:i===7||i===8,deferred:i===7||i===8}))});
+ const ppBase=ppTopics.map((x,i)=>baseUnit('pp-cgu-'+(i+1),i+1,x[1],{source:i===8?'PENDENTE · material pós-edital específico':'Estratégia · Políticas Públicas/Avaliação',cguCodes:[x[0]],deferred:i===8}));
+ ppBase.push(
+  baseUnit('pp-arranjos',10,'Estratégia pós-edital · Arranjos Institucionais',{source:'Estratégia · rota atual',cguCodes:['A3.1','A3.2']}),
+  baseUnit('pp-intersetorialidade',11,'Estratégia pós-edital · Intersetorialidade',{source:'Estratégia · rota atual',cguCodes:['A3.2']}),
+  baseUnit('pp-instrumentos',12,'Estratégia pós-edital · Instrumentos de Políticas Públicas',{source:'Estratégia · rota atual',cguCodes:['A3.1','A3.2']}),
+  baseUnit('pp-avaliacao-comissao-1',13,'Estratégia pós-edital · Avaliação de Políticas Públicas / Comissão · Aula 1',{source:'Estratégia · rota atual',cguCodes:['A3.3','A3.6']}),
+  baseUnit('pp-avaliacao-comissao-2',14,'Estratégia pós-edital · Avaliação de Políticas Públicas / Comissão · Aula 2',{source:'Estratégia · rota atual',cguCodes:['A3.3','A3.6']}),
+  baseUnit('pp-passo',15,'Estratégia · Passo A01/A02 + simulados',{source:'Estratégia · consolidação',cguCodes:['A3.1','A3.2','A3.3','A3.4','A3.5','A3.6']}),
+  baseUnit('pp-b1-reuse',90,'PP A03/A04 · reaproveitamento apenas em B1',{source:'Não é segunda teoria de Políticas Públicas',cguCodes:['B1.6','B1.7','B1.8'],hiddenFromRoute:true,deferred:true})
+ );
+ const politicas=ensureSubject(st,{id:'politicas',course:'Políticas Públicas e Avaliação — exclusivamente Estratégia · rota CGU 16/10',minutes:60,units:ppBase});
  Object.assign(politicas,{studyPhase:2,priority:'MANUTENÇÃO ALTA',active:true});
 
  const auditTopics=[
@@ -325,11 +335,11 @@ export function normalizeMethodState(current){
   if(code==='C2.2')return 'Estratégia/Herbert LGPD → Pacelli cap. 26';
   if(code==='C2.3')return 'Estratégia Organização A05 → Pacelli cap. 7';
   if(code==='C2.4')return 'Herbert LAI/Dados Abertos + Pacelli caps. 9/28; Direção C2 só se gap';
-  if(code==='C2.5')return 'GAP · localizar aula pós-edital específica; não presumir cobertura';
+  if(code==='C2.5')return 'Estratégia pós-edital · Integridade da Informação · aula específica; usar no recorte nominal';
   if(code==='C3.5')return 'Pacelli caps. 7/12/24 + Marcelo Apuração; jurídico pós-edital se necessário';
   if(code==='A4.1')return 'Rafael U12 + livro Corrupção em Licitações caps. 2 e 6';
-  if(code==='A4.2')return 'Rafael U12; Direção A4 pós-edital somente execução contratual que faltar';
-  if(code==='A4.3')return 'Rafael U4/U8 seletivo; Direção A4 pós-edital somente transferências/parcerias';
+  if(code==='A4.2')return 'Rafael U12 + Estratégia pós-edital · Execução Contratual; Direção só se ainda faltar detalhe';
+  if(code==='A4.3')return 'Rafael U4/U8 seletivo + Estratégia pós-edital · Transferências/Parcerias; Direção só se ainda faltar detalhe';
   if(code==='A4.4')return 'Livro Corrupção em Licitações caps. 2/3/6 + Ramon/ferramentas de dados quando aplicável';
   if(code==='A4.5')return 'Livro Corrupção em Licitações caps. 4/5 + Marcelo; Direção só detalhe jurídico faltante';
   if(code==='A5.1')return 'Marcelo + Estratégia Organização + Pacelli caps. 5/13/17';
@@ -346,7 +356,7 @@ export function normalizeMethodState(current){
   'A4.1':18,'A4.4':19,'A4.2':20,'A4.3':21,'A4.5':22,
   'A5.1':23,'A5.2':24,'A5.3':25,'A5.4':26,'A5.5':27,'A5.6':28,'A5.7':29
  }[code]||80);
- const auditoria=ensureSubject(st,{id:'auditoria',course:'Auditoria Governamental — Marcelo Soares rota final → Direção/TSE/NBC somente depois → A4/A5 dirigidos',minutes:75,units:auditTopics.map((x,i)=>baseUnit('aud-cgu-'+String(i+1).padStart(2,'0'),auditOrder(x[0]),x[1],{source:auditSource(x[0]),cguCodes:[x[0]],deferred:['C2.5','A5.6'].includes(x[0])}))});
+ const auditoria=ensureSubject(st,{id:'auditoria',course:'Auditoria Governamental — Marcelo Soares rota final → Direção/TSE/NBC somente depois → A4/A5 dirigidos',minutes:75,units:auditTopics.map((x,i)=>baseUnit('aud-cgu-'+String(i+1).padStart(2,'0'),auditOrder(x[0]),x[1],{source:auditSource(x[0]),cguCodes:[x[0]],deferred:['A5.6'].includes(x[0])}))});
  Object.assign(auditoria,{studyPhase:1,priority:'MÁXIMA',active:true});
 
  for(const s of st.subjects||[])for(const u of s.units||[]){
