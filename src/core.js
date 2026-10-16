@@ -48,7 +48,7 @@ function tiCode(u){
  return m?m[1].toUpperCase():'';
 }
 export function methodUnits(s){
- const units=[...(s?.units||[])];
+ const units=[...(s?.units||[])].filter(u=>u.hiddenFromRoute!==true);
  return units.sort((a,b)=>(Number(a.order)||0)-(Number(b.order)||0));
 }
 export function methodOrder(s,u){const i=methodUnits(s).findIndex(v=>v.id===u?.id);return i>=0?i+1:Number(u?.order)||0;}
@@ -64,8 +64,17 @@ function ensureSubject(st,{id,course,minutes,units,replaceUntouched=false}){
  else{
   for(const nu of units){
    const old=s.units.find(u=>u.id===nu.id||u.title===nu.title);
-   if(old){old.cguCodes=[...new Set([...(old.cguCodes||[]),...(nu.cguCodes||[])])];if(nu.deferred!==undefined)old.deferred=nu.deferred;if(nu.source)old.source=nu.source;}
-   else s.units.push(nu);
+   if(old){
+    old.cguCodes=[...new Set([...(old.cguCodes||[]),...(nu.cguCodes||[])])];
+    old.title=nu.title||old.title;
+    old.order=Number.isFinite(Number(nu.order))?Number(nu.order):old.order;
+    if(nu.deferred!==undefined)old.deferred=nu.deferred;
+    if(nu.hiddenFromRoute!==undefined)old.hiddenFromRoute=nu.hiddenFromRoute;
+    if(nu.source)old.source=nu.source;
+    if(nu.studyPlan)old.studyPlan=nu.studyPlan;
+    if(nu.stage)old.stage=nu.stage;
+    if(nu.totalBlocks)old.totalBlocks=nu.totalBlocks;
+   }else s.units.push(nu);
   }
  }
  return s;
