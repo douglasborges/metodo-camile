@@ -1,8 +1,8 @@
 # Método ET · Camile · CGU 2026
 
-Build atual: **1.6.0-cgu-final-materials** (família **v1.6**).
+Build atual: **1.6.1-cgu-bizurafo-cpu-final** (família **v1.6.1**).
 
-Aplicação da Camile para o pós-edital da **CGU — Auditor Federal de Finanças e Controle · Especialidade Auditoria**. A v1.6 consolida as decisões de materiais de 16/10/2026 sem apagar horas, sessões, metas ou progresso anterior.
+Aplicação da Camile para o pós-edital da **CGU — Auditor Federal de Finanças e Controle · Especialidade Auditoria**. A v1.6.1 corrige a rota de AFO e posiciona CPU na fase final sem apagar horas, sessões, metas ou progresso anterior.
 
 ## Prazo e carga
 
@@ -37,34 +37,39 @@ Cada Meta prevê:
 1. **Fase 1 — Núcleo prioritário:** AFO/Finanças + Auditoria + Administração Pública + DCON + DAD.
 2. **Fase 2 — P3 e fechamento comum:** Políticas Públicas/Avaliação + Integridade/Transparência + Dados/IA comum e complementos necessários.
 3. **Fase 3 — Complementos institucionais:** Estado/Democracia, Ética aplicada, Organização/Competências CGU e lacunas nominais.
-4. **Fase 4 — Sociedade Brasileira/Diversidade:** deliberadamente adiada e fora do ciclo atual.
+4. **Fase 4 — Contabilidade Pública + Sociedade Brasileira/Diversidade:** ambas ficam deliberadamente para o final e fora do ciclo atual.
 
 ## Materiais finais
 
 ### AFO / Finanças Públicas
 
-**Fonte-base:** Leandro Ravyelle · BizurAFO.
+**Única trilha da Camile: Leandro Ravyelle · BizurAFO.**
 
-Rota da Camile:
-**M1 → M2 → M3 → M4 → M6 → M7 → M8/M9 → M10 somente RAP → M11 → M13 → M14 seletivo → M15 → questões**.
+Rota:
+**M1 → M2 → M3 → M4 → M6 → M7 → M8/M9 → M10 somente RAP → M11 → M13 → M14 seletivo → M15 → questões/revisão.**
 
 - **M5 e M12:** fora da rota atual.
-- **M10:** estudar somente Restos a Pagar.
+- **M10:** somente Restos a Pagar.
 - **M14:** seletivo.
-- **André Luís — Receita Pública:** ponte/consolidação a partir do vídeo **17**:
-  **17–19 → 36–40 → 41–45 → 47 → 48–49**.
-- **Giovanni Pacelli — AFO Regular 2026 atualizado:** entra depois do intensivão/BizurAFO para consolidar e atualizar sem reiniciar tópicos sólidos.
-- **Celso Natale / Estratégia:** somente A2.1 quando houver lacuna.
-- **Estratégia pós-edital — Finanças Públicas:** somente A2.1.
-- **Estratégia pós-edital — Estatais / Lei 13.303:** somente A2.7.
+- Não adicionar segunda trilha de AFO.
 
-#### CPU / Contabilidade Pública
-**A2.4–A2.6 está DEFERIDA/BLOQUEADA na preparação atual da Camile.**
+### Contabilidade Pública — Fase 4
 
-- Gilmar Possati foi retirado da rota atual.
-- CPU não deve consumir horas até a prova atual.
-- **Fonte futura definida: Giovanni Pacelli.**
-- Qualquer histórico antigo fica preservado, mas não bloqueia a rota corrente.
+**Fonte: Giovanni Pacelli.**
+
+A CPU fica para o final, junto com **Sociedade Brasileira/Diversidade**.
+
+Videoaulas selecionadas:
+- **Módulo 06 — Dos Sistemas até a Natureza das Contas**
+- **Módulo 07 — Variações Patrimoniais Qualitativas e Quantitativas**
+- **Módulo 08 — Plano de Contas Aplicado ao Setor Público**
+- **Módulo 13 — Balanço Orçamentário e Balanço Financeiro**
+- **Módulo 14 — Balanço Patrimonial e DVP**
+- **Módulo 15 — DFC, DMPL e Notas Explicativas**
+
+Ordem: **M06 → M07 → M08 → M13 → M14 → M15 → questões/revisão**.
+
+CPU não integra o ciclo prioritário atual e só deve ser ativada na **Fase 4**.
 
 ### Auditoria
 
@@ -203,8 +208,15 @@ B1, C1, A1, CD1 etc. são **códigos internos da matriz**, não siglas oficiais 
 - Propriedade Drive: `camile-cloud-v1`
 - **GOAL_PLAN_VERSION = 3** para não zerar Meta, horas ou histórico.
 - **CYCLE_PLAN_VERSION = 5** porque o ciclo prioritário não mudou.
-- Branch de segurança desta atualização: `backup-2026-10-16-pre-v1.6-final`.
+- Branch de segurança desta correção: `backup-2026-10-16-pre-v1.6.1-afo-cpu`.
 - A aba **Dados** exibe **v1.6** e o build técnico.
 - A PWA consulta `version.json` sem cache e força atualização quando um build novo é publicado.
 
 🌻 **Fonte certa, no momento certo, sem duplicação — preservando cada hora já estudada.**
+
+## Correção das Metas ET · v1.6.1
+
+- **Metas 01–06:** AFO usa somente BizurAFO; CPU e Diversidade não entram.
+- **Meta 07:** início da Fase 4, quando o núcleo prioritário estiver sob controle — CPU Pacelli **M06 → M07 → M08** + início de Sociedade Brasileira/Diversidade.
+- **Meta 08:** CPU Pacelli **M13 → M14 → M15** + continuidade/fechamento de Sociedade Brasileira/Diversidade, além da consolidação final.
+- O fechamento das Metas continua baseado em 30h reais e no ciclo prioritário já definido; a Fase 4 aparece como orientação de material final sem apagar o histórico anterior.
