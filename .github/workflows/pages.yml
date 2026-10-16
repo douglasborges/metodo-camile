@@ -29,7 +29,7 @@ jobs:
         with:
           enablement: true
 
-      - name: Validar Método Camile · CGU pós-edital v1.6
+      - name: Validar Método Camile · v1.6.1
         run: |
           cp src/app.js /tmp/app.mjs
           cp src/core.js /tmp/core.mjs
@@ -51,52 +51,40 @@ jobs:
           node --check drive-sync-ui.js
 
           grep -q "PÓS-EDITAL · CGU 2026" index.html
-          grep -q "Camile, Auditora Federal da Controladoria-Geral da União" index.html
-          grep -q "1.6.0-cgu-final-materials" index.html
-          grep -q "version.json" index.html
-
-          grep -q "CGU_OFFICIAL_TOTAL=266" src/cgu-syllabus.js
-          grep -q "CGU_OPERATIONAL_TOTAL" src/cgu-syllabus.js
+          grep -q "1.6.1-cgu-bizurafo-cpu-final" index.html
           grep -q "weeklyMinimum=1800" src/core.js
           grep -q "dailyMinimum=300" src/core.js
           grep -Fq "['afo','auditoria','adm-publica','dcon','dad']" src/core.js
-          grep -q "afo-andre-receita" src/core.js
-          grep -q "afo-pacelli-2026" src/core.js
-          grep -q "afo-estatais-1303" src/core.js
-          grep -q "CPU A2.4 · DEFERIDA" src/core.js
-          grep -q "Estratégia pós-edital · Execução Contratual" src/core.js
-          grep -q "Estratégia pós-edital · Transferências/Parcerias" src/core.js
-          grep -q "Estratégia pós-edital · Integridade da Informação" src/core.js
-          grep -q "Arranjos Institucionais" src/core.js
-          grep -q "historical-camile" src/core.js
-          grep -q "blocksCompleted" src/core.js
+
+          grep -q "AFO / Finanças Públicas — somente Leandro Ravyelle · BizurAFO" src/core.js
+          grep -q "cpu-pacelli-06" src/core.js
+          grep -q "cpu-pacelli-07" src/core.js
+          grep -q "cpu-pacelli-08" src/core.js
+          grep -q "cpu-pacelli-13" src/core.js
+          grep -q "cpu-pacelli-14" src/core.js
+          grep -q "cpu-pacelli-15" src/core.js
+          grep -q "studyPhase:4,priority:'FINAL',active:false" src/core.js
+          ! grep -q "André Luís" src/core.js
 
           grep -q "GOAL_PLAN_VERSION=3" src/personal.js
           grep -q "GOAL_CYCLES_PER_META=4" src/personal.js
           grep -q "GOAL_META_COUNT=8" src/personal.js
-          grep -q "WEEKLY_MAINTENANCE" src/personal.js
-          grep -q "CPU A2.4–A2.6" src/personal.js
-          grep -q "André 17–19" src/personal.js
+          grep -q "AFO: somente BizurAFO" src/personal.js
+          grep -q "CPU: Giovanni Pacelli, módulos 06–08 primeiro" src/personal.js
+          grep -q "CPU Pacelli módulos 13–15" src/personal.js
+          ! grep -q "André Luís" src/personal.js
 
-          grep -q "DEFERRED_MATERIALS" src/cgu-materials.js
-          grep -q "Camile não estudará CPU agora" src/cgu-materials.js
-          grep -q "Giovanni Pacelli" src/cgu-materials.js
-          grep -q "André Luís" src/cgu-materials.js
-          grep -q "Compliance e Integridade no Setor Público e Privado" src/cgu-materials.js
-          grep -q "Como Combater a Corrupção em Licitações" src/cgu-materials.js
-          grep -q "BOOK_ROUTES" src/cgu-materials.js
-          grep -q "GAP_REGISTER" src/cgu-materials.js
-          grep -q "A3.7" src/cgu-materials.js
-          grep -q "A5.6" src/cgu-materials.js
-          grep -q "Fase 4" src/cgu-materials.js
-          grep -q "active:false" src/cgu-materials.js
+          grep -q "Fase 4 · CPU + Sociedade Brasileira / Diversidade" src/cgu-materials.js
+          grep -q "Giovanni Pacelli · Contabilidade Pública · videoaulas dos módulos 6, 7, 8, 13, 14 e 15" src/cgu-materials.js
+          grep -q "somente BizurAFO" src/cgu-materials.js
+          ! grep -q "André Luís" src/cgu-materials.js
 
+          grep -q "APP_VERSION_LABEL='v1.6.1'" src/app.js
+          grep -q "CPU / FASE FINAL" src/app.js
+          grep -q "'cpu'" src/app.js
           grep -q "VERSÃO EM USO" src/app.js
-          grep -q "APP_VERSION_LABEL='v1.6'" src/app.js
-          grep -q "CPU / MATERIAL DEFERIDO" src/app.js
-          grep -q "LACUNAS CONTROLADAS · V1.6" src/app.js
-          grep -q "códigos internos da nossa matriz" src/app.js
-          grep -q "Registrar leitura" src/app.js
+          grep -q "Correção AFO/CPU · 16/10" src/app.js
+          grep -q "version.json" index.html
 
       - name: Empacotar site
         uses: actions/upload-pages-artifact@v3
