@@ -167,37 +167,42 @@ export function normalizeMethodState(current){
  Object.assign(dcon,{studyPhase:1,priority:'ALTA',active:true});
 
   const afoUnits=[
-  baseUnit('afo-cgu-01',1,'BizurAFO · M01 · base A2.1 · economia/finanças públicas e intervenção do Estado',{source:'Leandro Ravyelle · BizurAFO',cguCodes:['A2.1']}),
-  baseUnit('afo-cgu-celso-01',2,'Celso Natale / Estratégia · A2.1 · bens públicos, externalidades, monopólios e federalismo fiscal',{source:'Complemento A2.1 · somente lacuna',cguCodes:['A2.1'],stage:'complemento'}),
-  baseUnit('afo-cgu-celso-02',3,'Celso Natale / Estratégia · A2.1 · progressividade/regressividade/neutralidade, resultados e NFSP',{source:'Complemento A2.1 · somente lacuna',cguCodes:['A2.1'],stage:'complemento'}),
-  baseUnit('afo-cgu-02',4,'BizurAFO · M02 · PPA, LDO e LOA',{source:'Leandro Ravyelle · BizurAFO',cguCodes:['B4.4','A2.2']}),
-  baseUnit('afo-cgu-03',5,'BizurAFO · M03 · Princípios orçamentários',{source:'Leandro Ravyelle · BizurAFO',cguCodes:['A2.2']}),
-  baseUnit('afo-cgu-04',6,'BizurAFO · M04 · Créditos adicionais',{source:'Leandro Ravyelle · BizurAFO',cguCodes:['A2.2']}),
+  baseUnit('afo-cgu-01',1,'BizurAFO · M01 · Finanças públicas e orçamento',{source:'Leandro Ravyelle · BizurAFO',cguCodes:['A2.1']}),
+  baseUnit('afo-cgu-02',2,'BizurAFO · M02 · PPA, LDO e LOA',{source:'Leandro Ravyelle · BizurAFO',cguCodes:['B4.4','A2.2']}),
+  baseUnit('afo-cgu-03',3,'BizurAFO · M03 · Princípios orçamentários',{source:'Leandro Ravyelle · BizurAFO',cguCodes:['A2.2']}),
+  baseUnit('afo-cgu-04',4,'BizurAFO · M04 · Créditos adicionais',{source:'Leandro Ravyelle · BizurAFO',cguCodes:['A2.2']}),
   baseUnit('afo-cgu-05',90,'BizurAFO · M05 · fora da rota atual da Camile',{source:'NÃO ESTUDAR nesta rota',hiddenFromRoute:true,deferred:true}),
-  baseUnit('afo-cgu-06',7,'BizurAFO · M06 · Técnicas orçamentárias / orçamento-programa',{source:'Leandro Ravyelle · BizurAFO',cguCodes:['A2.2']}),
-  baseUnit('afo-cgu-07',8,'BizurAFO · M07 · Receita pública',{source:'Leandro Ravyelle · BizurAFO',cguCodes:['A2.3']}),
-  baseUnit('afo-andre-receita',9,'André Luís · Receita Pública · ponte 17–19 → 36–40 → 41–45 → 47 → 48–49',{source:'André Luís · consolidação didática; começar no vídeo 17 · questões Cebraspe após blocos',cguCodes:['A2.3'],stage:'ponte'}),
-  baseUnit('afo-cgu-08',10,'BizurAFO · M08 · Despesa pública',{source:'Leandro Ravyelle · BizurAFO',cguCodes:['A2.3']}),
-  baseUnit('afo-cgu-09',11,'BizurAFO · M09 · Execução orçamentária e financeira',{source:'Leandro Ravyelle · BizurAFO',cguCodes:['A2.3']}),
-  baseUnit('afo-cgu-10',12,'BizurAFO · M10 · SOMENTE Restos a Pagar (RAP)',{source:'Leandro Ravyelle · BizurAFO · recorte',cguCodes:['A2.3']}),
-  baseUnit('afo-cgu-11',13,'BizurAFO · M11 · Lei de Responsabilidade Fiscal',{source:'Leandro Ravyelle · BizurAFO',cguCodes:['A2.3']}),
+  baseUnit('afo-cgu-06',5,'BizurAFO · M06 · Técnicas orçamentárias / orçamento-programa',{source:'Leandro Ravyelle · BizurAFO',cguCodes:['A2.2']}),
+  baseUnit('afo-cgu-07',6,'BizurAFO · M07 · Receita pública',{source:'Leandro Ravyelle · BizurAFO',cguCodes:['A2.3']}),
+  baseUnit('afo-cgu-08',7,'BizurAFO · M08 · Despesa pública',{source:'Leandro Ravyelle · BizurAFO',cguCodes:['A2.3']}),
+  baseUnit('afo-cgu-09',8,'BizurAFO · M09 · Execução orçamentária e financeira',{source:'Leandro Ravyelle · BizurAFO',cguCodes:['A2.3']}),
+  baseUnit('afo-cgu-10',9,'BizurAFO · M10 · SOMENTE Restos a Pagar (RAP)',{source:'Leandro Ravyelle · BizurAFO · recorte',cguCodes:['A2.3']}),
+  baseUnit('afo-cgu-11',10,'BizurAFO · M11 · Lei de Responsabilidade Fiscal',{source:'Leandro Ravyelle · BizurAFO',cguCodes:['A2.3']}),
   baseUnit('afo-cgu-12',91,'BizurAFO · M12 · fora da rota atual da Camile',{source:'NÃO ESTUDAR nesta rota',hiddenFromRoute:true,deferred:true}),
-  baseUnit('afo-cgu-13',14,'BizurAFO · M13 · Regimes/ajustes fiscais',{source:'Leandro Ravyelle · BizurAFO',cguCodes:['A2.2','A2.3'],deferred:false}),
-  baseUnit('afo-cgu-14',15,'BizurAFO · M14 · Lei 4.320/1964 · SELETIVO',{source:'Leandro Ravyelle · BizurAFO · seletivo',cguCodes:['A2.2','A2.3'],stage:'seletivo'}),
-  baseUnit('afo-cgu-15',16,'BizurAFO · M15 · Conta Única do Tesouro Nacional',{source:'Leandro Ravyelle · BizurAFO',cguCodes:['A2.3']}),
-  baseUnit('afo-cgu-16',92,'BizurAFO · M16 · questões extras Cebraspe · diagnóstico',{source:'Questões · não é teoria obrigatória',hiddenFromRoute:true,deferred:true}),
-  baseUnit('afo-pacelli-2026',17,'Giovanni Pacelli · AFO Regular 2026 · consolidação/atualização pós-BizurAFO',{source:'Giovanni Pacelli · curso atualizado · continuar sem reiniciar tópicos já sólidos',cguCodes:['A2.1','A2.2','A2.3'],stage:'pos-bizur'}),
-  baseUnit('afo-estatais-1303',18,'Estratégia pós-edital · Estatais / Lei 13.303 · recorte A2.7',{source:'Estratégia · somente A2.7 · não é CPU',cguCodes:['A2.7'],stage:'complemento'}),
-  baseUnit('afo-cgu-gilmar-01',100,'CPU A2.4 · DEFERIDA · histórico preservado',{source:'Fora da rota atual · futuro Giovanni Pacelli',cguCodes:['A2.4'],hiddenFromRoute:true,deferred:true}),
-  baseUnit('afo-cgu-gilmar-02',101,'CPU A2.5 · DEFERIDA · histórico preservado',{source:'Fora da rota atual · futuro Giovanni Pacelli',cguCodes:['A2.5'],hiddenFromRoute:true,deferred:true}),
-  baseUnit('afo-cgu-gilmar-03',102,'CPU A2.6 · DEFERIDA · histórico preservado',{source:'Fora da rota atual · futuro Giovanni Pacelli',cguCodes:['A2.6'],hiddenFromRoute:true,deferred:true}),
-  baseUnit('afo-cgu-gilmar-04',103,'CPU · DEFERIDA',{source:'Fora da rota atual · futuro Giovanni Pacelli',hiddenFromRoute:true,deferred:true}),
-  baseUnit('afo-cgu-gilmar-05',104,'CPU · DEFERIDA',{source:'Fora da rota atual · futuro Giovanni Pacelli',hiddenFromRoute:true,deferred:true})
+  baseUnit('afo-cgu-13',11,'BizurAFO · M13 · Regimes / ajustes fiscais',{source:'Leandro Ravyelle · BizurAFO',cguCodes:['A2.2','A2.3']}),
+  baseUnit('afo-cgu-14',12,'BizurAFO · M14 · Lei 4.320/1964 · SELETIVO',{source:'Leandro Ravyelle · BizurAFO · seletivo',cguCodes:['A2.2','A2.3'],stage:'seletivo'}),
+  baseUnit('afo-cgu-15',13,'BizurAFO · M15 · Conta Única do Tesouro Nacional',{source:'Leandro Ravyelle · BizurAFO',cguCodes:['A2.3']}),
+  baseUnit('afo-cgu-16',92,'BizurAFO · M16 · questões extras Cebraspe · diagnóstico',{source:'Questões · não é teoria obrigatória',hiddenFromRoute:true,deferred:true})
  ];
- const afo=ensureSubject(st,{id:'afo',course:'AFO / Finanças Públicas — BizurAFO → André Receita → Pacelli atualizado · CPU deferida',minutes:90,units:afoUnits,replaceUntouched:true});
+ const afo=ensureSubject(st,{id:'afo',course:'AFO / Finanças Públicas — somente Leandro Ravyelle · BizurAFO',minutes:90,units:afoUnits,replaceUntouched:true});
  Object.assign(afo,{studyPhase:1,priority:'MÁXIMA',active:true});
- // Histórico AFO anterior preservado fora da rota v1.6: não apagar, não bloquear.
+ // Remove da rota corrente materiais que foram cadastrados em versões intermediárias.
+ // As sessões já registradas permanecem no histórico, mas essas unidades não aparecem nem bloqueiam o avanço.
+ const removedAfoUnits=new Set(['afo-cgu-celso-01','afo-cgu-celso-02','afo-andre-receita','afo-pacelli-2026','afo-estatais-1303','afo-cgu-gilmar-01','afo-cgu-gilmar-02','afo-cgu-gilmar-03','afo-cgu-gilmar-04','afo-cgu-gilmar-05']);
+ afo.units=(afo.units||[]).filter(u=>!removedAfoUnits.has(u.id));
  for(const u of afo.units||[])if(/^afo-u-/.test(u.id||'')){u.hiddenFromRoute=true;u.deferred=true;u.source=u.source||'Histórico anterior · preservado fora da rota atual';}
+
+ const cpuUnits=[
+  baseUnit('cpu-pacelli-06',1,'Pacelli · Módulo 06 · Dos Sistemas até a Natureza das Contas',{source:'Giovanni Pacelli · Contabilidade Pública · Fase 4'}),
+  baseUnit('cpu-pacelli-07',2,'Pacelli · Módulo 07 · Variações Patrimoniais Qualitativas e Quantitativas',{source:'Giovanni Pacelli · Contabilidade Pública · Fase 4'}),
+  baseUnit('cpu-pacelli-08',3,'Pacelli · Módulo 08 · Plano de Contas Aplicado ao Setor Público',{source:'Giovanni Pacelli · Contabilidade Pública · Fase 4'}),
+  baseUnit('cpu-pacelli-13',4,'Pacelli · Módulo 13 · Balanço Orçamentário e Balanço Financeiro',{source:'Giovanni Pacelli · Contabilidade Pública · Fase 4'}),
+  baseUnit('cpu-pacelli-14',5,'Pacelli · Módulo 14 · Balanço Patrimonial e DVP',{source:'Giovanni Pacelli · Contabilidade Pública · Fase 4'}),
+  baseUnit('cpu-pacelli-15',6,'Pacelli · Módulo 15 · DFC, DMPL e Notas Explicativas',{source:'Giovanni Pacelli · Contabilidade Pública · Fase 4'})
+ ];
+ const cpu=ensureSubject(st,{id:'cpu',course:'Contabilidade Pública — Giovanni Pacelli · módulos 06–08 e 13–15 · Fase 4',minutes:120,units:cpuUnits,replaceUntouched:true});
+ Object.assign(cpu,{studyPhase:4,priority:'FINAL',active:false});
+
 
   const tiUnits=[
   baseUnit('ti-cgu-lucas-01',1,'Lucas Ianni · C4.1 · perguntas, fontes, dado x evidência',{source:'Estratégia · Fundamentos de Evidência, Dados e IA',cguCodes:['C4.1']}),
