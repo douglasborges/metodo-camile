@@ -39,59 +39,59 @@ export const GOAL_WINDOWS=Object.freeze([
 
 export const GOAL_MATERIAL_TARGETS=Object.freeze([
  [
-  'AFO: BizurAFO M1→M4 conforme o ponto real; A2.1 usa Celso/Estratégia somente se houver lacuna.',
+  'AFO: somente BizurAFO · avançar M1 → M2 → M3 → M4 conforme o ponto real.',
   'Auditoria: Marcelo AIG → Avaliação → Consultoria → Apuração; Direção ainda bloqueado.',
   'Administração: Marcelo Evolução APU T01-T03 + questões de Reforma → Governança.',
   'DCON: seguir A01/Teoria dos Direitos/Art. 5º sem reiniciar histórico; DAD: Rafael U2 → U3 → U7.',
-  'Manutenção: Rodrigo PP + Lucas Ianni/Ramon + Marcello/Andresan.'
+  'CPU e Sociedade Brasileira/Diversidade permanecem fora desta Meta.'
  ],
  [
-  'AFO: M6 → M7 → ponte de Receita com André 17–19 → 36–40 → 41–45 → 47 → 48–49 → M8/M9; depois, Pacelli atualizado sem reiniciar.',
+  'AFO: somente BizurAFO · M6 → M7 → M8/M9. M5 continua fora da rota.',
   'Auditoria: Marcelo Objetividade → PGMQ → PAINT → Planejamento Individual T1/T2.',
   'Administração: Gestão para Resultados → Planejamento → Excelência T01/T02.',
   'Pacelli/Netto: capítulos 2 → 5 → 6 → 7, somente após a base correspondente.',
-  'DAD: avançar U17 → U10 → U11; depois Lei 9.784 como fechamento.'
+  'CPU e Sociedade Brasileira/Diversidade permanecem reservadas para a Fase 4.'
  ],
  [
-  'AFO: M10 SOMENTE RAP → M11 → M13; M5/M12 fora. Pacelli AFO atualizado consolida e atualiza sem reiniciar.',
-  'Pacelli/Netto: capítulos 8 → 9 → 10 → 15; respeitar LAI/LGPD/Conflito antes dos capítulos dependentes.',
+  'AFO: somente BizurAFO · M10 SOMENTE RAP → M11 → M13. M12 fica fora da rota.',
+  'Pacelli/Netto: capítulos 8 → 9 → 10 → 15, respeitando LAI/LGPD/Conflito antes dos capítulos dependentes.',
   'DAD: U19 → U6 → chegar à U12 Licitações/Contratos; U8 PPP será seletivo.',
-  'Auditoria: terminar os módulos Marcelo já liberados; mapear A1/C5 antes de abrir Direção.',
-  'Políticas: PP A01/A02 → Arranjos Institucionais → Intersetorialidade → Instrumentos → Ex Ante.'
+  'Políticas: PP A01/A02 → Arranjos Institucionais → Intersetorialidade → Instrumentos → Ex Ante.',
+  'CPU ainda não entra.'
  ],
  [
-  'AFO: M14 seletivo → M15 → questões; CPU A2.4–A2.6 permanece DEFERIDA. Estratégia Estatais/Lei 13.303 entra apenas em A2.7.',
-  'CPU A2.4–A2.6: não estudar agora; futuro Giovanni Pacelli. A2.7 usa a aula específica de Estatais/Lei 13.303.',
+  'AFO: somente BizurAFO · M14 seletivo → M15 → questões/revisão do próprio material.',
   'Pacelli/Netto: capítulos 16 → 17 → 24 → 26 → 28; capítulos 12/13 entram quando DAD/Auditoria derem base.',
   'Livro Licitações: após Rafael U12, cap. 1 rápido → 2 → 3 → 6; cap. 4 continua bloqueado até achados/evidências do Marcelo.',
-  'Dados comum: Lucas Ianni C4.1/C4.2-C4.5 + Ramon técnico da Camile.'
+  'Dados comum: Lucas Ianni C4 + Ramon técnico da Camile.',
+  'CPU e Diversidade continuam guardadas para a fase final.'
  ],
  [
+  'AFO: consolidar BizurAFO por questões, erros e revisão; não abrir segunda trilha de AFO.',
   'Pacelli/Netto extras Camile: 19 → 20 → 25 → 27; cap. 12 para responsabilização conforme DAD.',
-  'Livro Licitações: cap. 4 depois da base Marcelo; cap. 5 apenas após DAD/Responsabilização.',
-  'Auditoria: somente agora liberar Direção/TSE Papéis + Testes + Amostragem + Execução + Evidências + Achados.',
-  'NBC TA 230/500; 505/520 e 320/330 apenas em lacuna real.',
-  'Políticas: Avaliação Comissão (2 aulas) → Ex Post → CMAP seletivo → Passo A01/A02 + simulados.'
+  'Auditoria: liberar Direção/TSE apenas em Papéis + Testes + Amostragem + Execução + Evidências + Achados depois do Marcelo.',
+  'A4.2/A4.3: Rafael como base + aulas pós-edital específicas do Estratégia.',
+  'CPU ainda não entra.'
  ],
  [
-  'A4.2/A4.3: Rafael como base + Estratégia pós-edital específico de Execução Contratual e Transferências/Parcerias; Direção só se ainda faltar detalhe.',
-  'A5.6: tratar como GAP JURÍDICO PRIORITÁRIO; complemento específico para prescrição, dosimetria, TAC, leniência e coordenação.',
-  'C2.5 passa a usar Estratégia pós-edital Integridade da Informação; A3.7 continua GAP CONTROLADO.',
-  'Organização/Competências CGU: A02 → A03 seletivo → A05 → A06 → A00/A01 → A04 seletivo.',
-  'Conteúdo fechado migra para baterias, checkpoints e Estudo Sólido.'
+  'Fechar AFO, Auditoria, Administração, DCON e DAD; conteúdo concluído migra para questões/checkpoints.',
+  'A5.6 permanece GAP JURÍDICO PRIORITÁRIO e A3.7 GAP CONTROLADO.',
+  'Organização/Competências CGU entra seletivamente na rota institucional.',
+  'Não abrir curso novo por completude.',
+  'Preparar a transição para a Fase 4, mas CPU/Diversidade só entram no final.'
  ],
  [
-  'Fechar as cinco prioridades e atacar apenas itens PARCIAL/PENDENTE do Check do Edital.',
-  'Revisar livros somente pelos capítulos marcados; Pacelli 22 e 29 permanecem reservas.',
-  'Sociedade Brasileira/Diversidade só entra se o núcleo prioritário e a Fase 2 estiverem sob controle.',
-  'Questões Cebraspe, erros, favoritas e legislação passam a dominar a carga.',
-  'Não abrir curso completo por sensação de incompletude.'
+  'FASE FINAL: se o núcleo prioritário estiver sob controle, iniciar CPU com Giovanni Pacelli pelos módulos 06 → 07 → 08.',
+  'FASE FINAL: iniciar Sociedade Brasileira/Diversidade pelo Direção B2, junto com CPU.',
+  'AFO permanece apenas em revisão/questões do BizurAFO; nenhuma segunda trilha.',
+  'Revisar livros somente pelos capítulos marcados; Pacelli 22 e 29 continuam reservas.',
+  'Check do Edital passa a comandar as lacunas finais.'
  ],
  [
-  'Consolidação total até 07/12: sem teoria ampla nova e sem CPU.',
-  'Revisar AFO A2.1-A2.7, Auditoria A1/A4/A5, Administração/Integridade, DCON e DAD pelos próprios materiais.',
-  'A3.7 e A5.6 recebem somente fechamento específico se ainda estiverem abertos; CPU permanece para o futuro.',
-  'Políticas, Dados/IA e Português seguem em manutenção por questões/revisão.',
+  'FASE FINAL: concluir CPU com Giovanni Pacelli pelos módulos 13 → 14 → 15 e revisar módulos 06–08.',
+  'FASE FINAL: concluir/avançar Sociedade Brasileira/Diversidade pelo Direção B2.',
+  'Consolidação total até 07/12: erros, favoritas, revisões gerais, checkpoints e Cebraspe.',
+  'A3.7 e A5.6 recebem apenas fechamento específico se ainda estiverem abertos.',
   'Preparar o Sprint Final 08–12/12.'
  ]
 ]);
@@ -99,58 +99,58 @@ export const GOAL_MATERIAL_TARGETS=Object.freeze([
 export const GOAL_FOCUS=Object.freeze([
  [
   'Ciclo prioritário: AFO/Finanças → Auditoria → Administração Pública → DCON → DAD; quatro voltas na Meta.',
-  'Regra-mestra v1.6: um item do edital tem uma fonte principal; complemento somente depois, sem duplicação.',
-  'AFO segue BizurAFO; André entra somente em Receita; Pacelli AFO atualizado entra depois do intensivão; CPU não entra.',
-  'Auditoria começa exclusivamente pelo Marcelo; Estratégia Auditoria pré-edital está removido.',
+  'AFO da Camile é somente BizurAFO. Nenhuma trilha paralela entra na rota.',
+  'CPU é disciplina separada e permanece reservada para a Fase 4.',
+  'Auditoria começa exclusivamente pelo Marcelo.',
   'Tempo real prevalece e o histórico individual jamais é reiniciado.'
  ],
  [
-  'AFO continua M6/M7/M8/M9; Celso/Estratégia fecham apenas A2.1; André consolida Receita; Pacelli atualiza depois.',
+  'AFO continua exclusivamente no BizurAFO.',
   'Marcelo Auditoria avança até PAINT/Planejamento; Direção continua bloqueado.',
-  'Administração segue a sequência Faixa Preta definida no Plano Mestre Final.',
-  'Leis especiais entram somente depois da aula-base Rafael/Ética correspondente.',
-  'Manutenção semanal: Políticas, Evidências/Dados/IA e Português.'
+  'Administração segue a sequência Faixa Preta definida no plano.',
+  'Leis especiais entram somente depois da aula-base correspondente.',
+  'CPU e Diversidade permanecem fora da fase corrente.'
  ],
  [
-  'AFO entra em M10 apenas RAP, M11 e M13; M12 fica fora da rota.',
+  'AFO: M10 apenas RAP, M11 e M13; M12 fora.',
   'Rafael DAD deve alcançar U12 sem saltar a rota-base; U8 PPP é seletivo.',
   'Pacelli/Netto é leitura dirigida, nunca curso linear.',
-  'Ex Ante é completa para Camile; PP A03/A04 só reaproveitam B1.',
-  'Registrar no Check exatamente o que foi coberto e o que permanece parcial.'
+  'Políticas é exclusivamente Estratégia na rota atual.',
+  'CPU não entra antes da Fase 4.'
  ],
  [
-  'AFO: M14 seletivo/M15; CPU A2.4–A2.6 permanece DEFERIDA; A2.7 usa Estatais/Lei 13.303.',
-  'Livro de licitações entra após Rafael U12; cap. 4 espera a base Marcelo em achados/evidências.',
-  'Lucas Ianni cobre o recorte comum C4; Ramon segue fonte técnica da Camile; Integridade da Informação fecha o item específico.',
-  'Pacelli capítulos altos entram apenas com a base normativa pronta.',
-  'Nenhum pacote paralelo refaz conteúdo já concluído.'
+  'AFO fecha a primeira passagem com M14 seletivo, M15 e questões/revisão.',
+  'Livro de licitações entra após Rafael U12; cap. 4 espera base Marcelo em achados/evidências.',
+  'Lucas Ianni cobre o recorte comum C4; Ramon segue fonte técnica da Camile.',
+  'Nenhum pacote paralelo refaz conteúdo já concluído.',
+  'CPU e Diversidade seguem reservadas para o final.'
  ],
  [
-  'Depois do Marcelo, Direção/TSE entra somente em testes, amostragem, execução, evidências e achados.',
-  'Direção/CGU NBC TA é seletivo; não transformar NBC/IPPF em segundo curso completo.',
-  'A4 usa Rafael + livro; Execução Contratual e Transferências/Parcerias usam também aulas pós-edital específicas do Estratégia.',
-  'A5 usa Pacelli/Netto + Rafael/Herbert + Organização CGU; A5.6 permanece gap prioritário.',
+  'Depois do Marcelo, Direção/TSE entra somente nos pontos técnicos realmente faltantes.',
+  'AFO passa a ser consolidação do BizurAFO por questões/revisão, sem segunda trilha.',
+  'A4 usa Rafael + livro + aulas pós-edital específicas.',
+  'A5 usa Pacelli/Netto + Rafael/Herbert + Organização CGU; A5.6 continua gap prioritário.',
   'Baterias/checkpoints crescem à medida que a teoria fecha.'
  ],
  [
-  'A3.7 e A5.6 são as lacunas controladas remanescentes; C2.5 e A4.2/A4.3 já têm materiais pós-edital específicos.',
-  'Organização/Competências CGU entra seletivamente na rota institucional.',
-  'Direção C1/C2/B1 só entra em lacuna nominal.',
-  'Conteúdo fechado migra para revisão/questões em vez de nova teoria.',
-  'Manutenção transversal continua curta; CPU segue bloqueada/deferida.'
+  'A3.7 e A5.6 são as lacunas controladas remanescentes.',
+  'Organização/Competências CGU entra seletivamente.',
+  'Conteúdo fechado migra para revisão/questões em vez de segunda teoria.',
+  'Fase 4 ainda não deve deslocar o núcleo prioritário.',
+  'Preparar CPU/Pacelli e Diversidade para entrada nas Metas finais.'
  ],
  [
-  'Fechamento das prioridades: nada de curso novo por completude.',
-  'Sociedade Brasileira/Diversidade permanece Fase 4 até o núcleo de maior retorno estar sob controle.',
-  'Check do Edital comanda as lacunas finais e preserva códigos internos apenas como referência técnica.',
-  'Legislação Seca continua 30 min/dia dentro das 30h.',
-  'Erros, favoritas, checkpoints e simulados ganham prioridade.'
+  'Fase 4 começa apenas no final: CPU + Sociedade Brasileira/Diversidade.',
+  'CPU: Giovanni Pacelli, módulos 06–08 primeiro.',
+  'Diversidade: Direção B2 em paralelo com CPU, sem retirar prioridade de revisões críticas.',
+  'AFO continua somente revisão/questões do BizurAFO.',
+  'Check do Edital comanda as lacunas finais.'
  ],
  [
-  'Consolidação final até 07/12: erros, favoritas, revisões gerais, checkpoints e Cebraspe.',
-  'Nenhuma teoria ampla nova; apenas gaps curtos de alto valor.',
-  'Revisar pelas fontes principais já estudadas e pelos capítulos dirigidos.',
-  'B2 só entra se houver espaço real sem deslocar o núcleo central.',
+  'Fase 4: CPU Pacelli módulos 13–15 + revisão dos módulos 06–08; Diversidade B2 segue junto.',
+  'Nenhuma teoria ampla nova fora desses blocos finais já planejados.',
+  'Erros, favoritas, revisões gerais, checkpoints e Cebraspe dominam a consolidação.',
+  'AFO continua exclusivamente com o material já feito do BizurAFO.',
   'Meta 08 fecha em 07/12 e libera o Sprint 08–12/12.'
  ]
 ])
