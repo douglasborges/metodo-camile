@@ -60,8 +60,8 @@ export const GOAL_MATERIAL_TARGETS=Object.freeze([
   'Políticas: PP A01/A02 → Ex Ante completa para Camile.'
  ],
  [
-  'AFO: M14 seletivo → M15 → questões; iniciar Gilmar A2.4-A2.7 quando o núcleo orçamentário estiver maduro.',
-  'Gilmar: DCASP → NBC TSP 34/MIC → Custos → Estatais I/II; A2.7 combina Gilmar + Nelma A15.',
+  'AFO: M14 seletivo → M15 → questões; iniciar CPU A2.4-A2.6 DEFERIDA; futuro Pacelli quando o núcleo orçamentário estiver maduro.',
+  'CPU A2.4–A2.6: não estudar agora; futuro Giovanni Pacelli. A2.7 usa a aula específica de Estatais/Lei 13.303.',
   'Pacelli/Netto: capítulos 16 → 17 → 24 → 26 → 28; capítulos 12/13 entram quando DAD/Auditoria derem base.',
   'Livro Licitações: após Rafael U12, cap. 1 rápido → 2 → 3 → 6; cap. 4 continua bloqueado até achados/evidências do Marcelo.',
   'Dados comum: Lucas Ianni C4.1/C4.2-C4.5 + Ramon técnico da Camile.'
@@ -119,7 +119,7 @@ export const GOAL_FOCUS=Object.freeze([
   'Registrar no Check exatamente o que foi coberto e o que permanece parcial.'
  ],
  [
-  'AFO: M14 seletivo, M15 e início de Gilmar A2.4-A2.7.',
+  'AFO: M14 seletivo, M15 e início de CPU A2.4-A2.6 DEFERIDA; futuro Pacelli.',
   'Livro de licitações entra após Rafael U12; cap. 4 espera a base Marcelo em achados/evidências.',
   'Lucas Ianni cobre o recorte comum C4; Ramon segue como fonte técnica da Camile.',
   'Pacelli capítulos altos entram apenas com a base normativa pronta.',
