@@ -220,7 +220,7 @@ export const GOAL_TEMPLATES=Array.from({length:GOAL_META_COUNT},(_,i)=>{
 });
 
 export const BIZURAFO_MODULES=Object.freeze([
- {id:'biz-01',number:1,title:'Base A2.1 · economia/finanças públicas e intervenção do Estado',status:'core',note:'ESTUDAR. Depois do M1, usar Celso Natale no fechamento de A2.1.'},
+ {id:'biz-01',number:1,title:'Base A2.1 · economia/finanças públicas e intervenção do Estado',status:'core',note:'ESTUDAR. Depois do M1, siga diretamente a rota do próprio BizurAFO.'},
  {id:'biz-02',number:2,title:'PPA, LDO e LOA',status:'core',note:'ESTUDAR na rota final da Camile.'},
  {id:'biz-03',number:3,title:'Princípios orçamentários',status:'core',note:'ESTUDAR na rota final da Camile.'},
  {id:'biz-04',number:4,title:'Créditos adicionais',status:'core',note:'ESTUDAR na rota final da Camile.'},
