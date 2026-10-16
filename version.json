@@ -1,6 +1,6 @@
 {
-  "build": "1.6.0-cgu-final-materials",
-  "family": "v1.6",
+  "build": "1.6.1-cgu-bizurafo-cpu-final",
+  "family": "v1.6.1",
   "publishedAt": "2026-10-16",
-  "channel": "cgu-final-materials"
+  "channel": "cgu-bizurafo-cpu-final"
 }
