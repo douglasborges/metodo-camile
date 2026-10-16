@@ -196,6 +196,8 @@ export function normalizeMethodState(current){
  ];
  const afo=ensureSubject(st,{id:'afo',course:'AFO / Finanças Públicas — BizurAFO → André Receita → Pacelli atualizado · CPU deferida',minutes:90,units:afoUnits,replaceUntouched:true});
  Object.assign(afo,{studyPhase:1,priority:'MÁXIMA',active:true});
+ // Histórico AFO anterior preservado fora da rota v1.6: não apagar, não bloquear.
+ for(const u of afo.units||[])if(/^afo-u-/.test(u.id||'')){u.hiddenFromRoute=true;u.deferred=true;u.source=u.source||'Histórico anterior · preservado fora da rota atual';}
 
   const tiUnits=[
   baseUnit('ti-cgu-lucas-01',1,'Lucas Ianni · C4.1 · perguntas, fontes, dado x evidência',{source:'Estratégia · Fundamentos de Evidência, Dados e IA',cguCodes:['C4.1']}),
@@ -217,6 +219,8 @@ export function normalizeMethodState(current){
  ];
  const ti=ensureSubject(st,{id:'ti',course:'Fundamentos de Evidências, Dados e IA — Lucas Ianni (comum) + Ramon TI TOTAL (técnico Camile)',minutes:60,units:tiUnits,replaceUntouched:true});
  Object.assign(ti,{studyPhase:2,priority:'MANUTENÇÃO ALTA',active:true});
+ // Histórico TI/TCU anterior preservado fora da rota CGU: não apagar, não bloquear.
+ for(const u of ti.units||[])if(/^ti-u-/.test(u.id||'')){u.hiddenFromRoute=true;u.deferred=true;u.source=u.source||'Histórico anterior · preservado fora da rota CGU';}
 
   const admTopics=[
   ['B1.1','Estado e legitimidade'],['B1.2','Democracia e representação'],['B1.3','Federalismo e capacidades estatais'],['B1.5','Valor público e controle'],['B1.6','Corrupção como fenômeno político e social'],['B1.7','Mecanismos de reprodução e captura'],['B1.8','Consequências e respostas à corrupção'],['B1.9','Estado e modelos de desenvolvimento econômico'],
