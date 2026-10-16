@@ -6,9 +6,9 @@
 
 export const PHASE_PLAN=Object.freeze([
  {id:'fase-1',label:'Fase 1 · Núcleo prioritário',subjects:['afo','auditoria','adm-publica','dcon','dad'],priority:'MÁXIMA',active:true,rule:'Entram desde já no ciclo; não esperar concluir uma disciplina inteira para iniciar a seguinte.'},
- {id:'fase-2',label:'Fase 2 · P3 e fechamento comum',subjects:['politicas','ti','afo','auditoria','adm-publica'],priority:'ALTA',active:true,rule:'Políticas Públicas/Avaliação, Contabilidade Pública, Integridade/Transparência e Dados/IA comum entram à medida que a base da Fase 1 amadurece.'},
+ {id:'fase-2',label:'Fase 2 · P3 e fechamento comum',subjects:['politicas','ti','afo','auditoria','adm-publica'],priority:'ALTA',active:true,rule:'Políticas Públicas/Avaliação, Integridade/Transparência e Dados/IA comum entram à medida que a base da Fase 1 amadurece.'},
  {id:'fase-3',label:'Fase 3 · Complementos institucionais',subjects:['adm-publica','auditoria','dcon','dad'],priority:'SELETIVA',active:true,rule:'Estado/Democracia, Ética aplicada, Organização/Competências CGU e lacunas Direção; não duplicar fontes-base.'},
- {id:'fase-4',label:'Fase 4 · Sociedade Brasileira / Diversidade',subjects:['diversidade'],priority:'FINAL',active:false,rule:'Deliberadamente adiada; só ativar depois dos blocos de maior retorno.'}
+ {id:'fase-4',label:'Fase 4 · CPU + Sociedade Brasileira / Diversidade',subjects:['cpu','diversidade'],priority:'FINAL',active:false,rule:'Contabilidade Pública com Pacelli e Sociedade Brasileira/Diversidade ficam juntas para o final, depois dos blocos de maior retorno.'}
 ]);
 
 export const SPECIAL_LAWS=Object.freeze([
@@ -97,7 +97,7 @@ export const GAP_REGISTER=Object.freeze([
 ]);
 
 export const DEFERRED_MATERIALS=Object.freeze([
- {code:'A2.4-A2.6',label:'Contabilidade Pública / CPU',status:'DEFERIDA',futureSource:'Giovanni Pacelli',rule:'Camile não estudará CPU agora. Manter fora da rota atual e preservar qualquer histórico; estudar futuramente com Pacelli.'}
+ {code:'CPU',label:'Contabilidade Pública',status:'FASE FINAL',futureSource:'Giovanni Pacelli',rule:'Estudar somente na Fase 4, junto com Sociedade Brasileira/Diversidade. Videoaulas: módulos 6, 7, 8, 13, 14 e 15.'}
 ])
 
 export const MATERIAL_PLAN=Object.freeze({
@@ -123,25 +123,18 @@ export const MATERIAL_PLAN=Object.freeze({
  },
  afo:{
   label:'AFO / Finanças Públicas',
-  phase:'Fase 1 + fechamento pós-BizurAFO',priority:'MÁXIMA',active:true,
+  phase:'Fase 1',priority:'MÁXIMA',active:true,
   principal:[
-   'Leandro Ravyelle · BizurAFO: M1 → M2 → M3 → M4 → M6 → M7 → M8/M9 → M10 somente RAP → M11 → M13 → M14 seletivo → M15 → questões.',
-   'André Luís · Receita Pública · ponte/consolidação a partir do vídeo 17: 17–19 → 36–40 → 41–45 → 47 → 48–49.',
-   'Giovanni Pacelli · AFO regular atualizado · entra depois do intensivão/BizurAFO para consolidação e atualização normativa, sem reiniciar o que já estiver sólido.'
+   'Leandro Ravyelle · BizurAFO · única trilha de AFO da Camile: M1 → M2 → M3 → M4 → M6 → M7 → M8/M9 → M10 somente RAP → M11 → M13 → M14 seletivo → M15 → questões.'
   ],
-  complement:[
-   'Celso Natale / Estratégia · somente A2.1: bens públicos, externalidades, monopólios, federalismo fiscal, progressividade/regressividade/neutralidade, resultado primário/nominal e NFSP.',
-   'Estratégia pós-edital · Finanças Públicas A2.1 apenas para fechar lacunas nominais.',
-   'Estratégia pós-edital · Estatais / Lei 13.303 somente para A2.7, sem abrir Contabilidade Pública.'
-  ],
+  complement:['Questões Cebraspe e revisão do próprio BizurAFO depois da teoria correspondente.'],
   books:[],
   avoid:[
-   'Não estudar outro curso completo de AFO/Orçamento do Direção/Estratégia.',
+   'Não adicionar segunda trilha de AFO em paralelo.',
    'M5 e M12 não integram a rota atual; M10 é somente RAP; M14 é seletivo.',
-   'Contabilidade Pública A2.4–A2.6 está DEFERIDA/BLOQUEADA nesta preparação; Gilmar Possati sai da rota atual.',
-   'CPU será estudada futuramente com Giovanni Pacelli; não consumir horas atuais da CGU com esse bloco.'
+   'Contabilidade Pública é disciplina separada e só entra na Fase 4 com Giovanni Pacelli.'
   ],
-  order:'BizurAFO rota final → André Luís somente na ponte de Receita → Pacelli AFO atualizado → Celso/Estratégia apenas A2.1 se lacuna → Estatais/Lei 13.303 apenas A2.7.'
+  order:'BizurAFO, na ordem definida → questões/revisão. Nenhuma trilha paralela de AFO.'
  },
  ti:{
   label:'Fundamentos de Evidências, Dados e IA',
@@ -177,6 +170,20 @@ export const MATERIAL_PLAN=Object.freeze({
   avoid:['Direção B4 Gestão por Resultados/Governança/Planejamento = duplicado.','TGA/Projetos/Processos completos = reserva TCU.','Não reiniciar Administração Pública por pacote genérico.'],
   order:'Marcelo na sequência final → Ética/leis especiais → Pacelli/Netto → complementos institucionais seletivos.'
  },
+ cpu:{
+  label:'Contabilidade Pública',
+  phase:'Fase 4',priority:'FINAL / BAIXA',active:false,
+  principal:[
+   'Giovanni Pacelli · Contabilidade Pública · videoaulas dos módulos 6, 7, 8, 13, 14 e 15.'
+  ],
+  complement:['Questões e revisão somente depois das videoaulas selecionadas.'],
+  books:[],
+  avoid:[
+   'Não iniciar CPU antes da Fase 4.',
+   'Não estudar curso completo de CPU: usar somente os módulos selecionados.'
+  ],
+  order:'M06 → M07 → M08 → M13 → M14 → M15 → questões/revisão.'
+ },
  diversidade:{
   label:'Sociedade Brasileira, Desigualdades, Diversidade e Desenvolvimento',
   phase:'Fase 4',priority:'FINAL / BAIXA',active:false,
@@ -184,7 +191,7 @@ export const MATERIAL_PLAN=Object.freeze({
   complement:['Questões Cebraspe e revisão do próprio material'],
   books:[],
   avoid:['Nenhum outro curso agora.','Não consumir horas do núcleo prioritário antes da Fase 4.'],
-  order:'FASE FINAL / active=false → Direção B2 → questões → revisão.'
+  order:'FASE FINAL / active=false → estudar em paralelo com CPU/Pacelli → Direção B2 → questões → revisão.'
  },
  dad:{
   label:'Direito Administrativo',
@@ -242,7 +249,7 @@ export const MATERIAL_PLAN=Object.freeze({
 });
 
 export const CYCLE_SOURCE_LABEL=Object.freeze({
- afo:'Fase 1 · BizurAFO + André Receita + Pacelli AFO atualizado; CPU deferida',
+ afo:'Fase 1 · somente BizurAFO',
  auditoria:'Fase 1 · Marcelo AIG→Planejamento; Direção só depois',
  'adm-publica':'Fase 1 · Marcelo Faixa Preta; ética/integridade depois',
  dcon:'Fase 1 · Nelma + ponte Estratégia Art. 5º',
@@ -250,7 +257,8 @@ export const CYCLE_SOURCE_LABEL=Object.freeze({
  politicas:'Fase 2 · Estratégia Rodrigo PP/Avaliação',
  port:'Manutenção · Marcello + Andresan',
  ti:'Fase 2 · Lucas Ianni comum + Ramon técnico + Integridade da Informação seletiva',
- diversidade:'Fase 4 FINAL · fora do ciclo principal'
+ cpu:'Fase 4 FINAL · Pacelli M06–M08 + M13–M15',
+ diversidade:'Fase 4 FINAL · junto com CPU, fora do ciclo principal'
 });
 
 export function materialPlanFor(id){return MATERIAL_PLAN[id]||null;}
