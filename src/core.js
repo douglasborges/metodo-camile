@@ -168,30 +168,33 @@ export function normalizeMethodState(current){
 
   const afoUnits=[
   baseUnit('afo-cgu-01',1,'BizurAFO · M01 · base A2.1 · economia/finanças públicas e intervenção do Estado',{source:'Leandro Ravyelle · BizurAFO',cguCodes:['A2.1']}),
-  baseUnit('afo-cgu-celso-01',2,'Celso Natale · A2.1 · bens públicos, externalidades, monopólios e federalismo fiscal',{source:'Celso Natale · pós-edital · A2.1',cguCodes:['A2.1'],stage:'fase-2'}),
-  baseUnit('afo-cgu-celso-02',3,'Celso Natale · A2.1 · progressividade/regressividade/neutralidade, resultado primário/nominal e NFSP',{source:'Celso Natale · pós-edital · A2.1',cguCodes:['A2.1'],stage:'fase-2'}),
+  baseUnit('afo-cgu-celso-01',2,'Celso Natale / Estratégia · A2.1 · bens públicos, externalidades, monopólios e federalismo fiscal',{source:'Complemento A2.1 · somente lacuna',cguCodes:['A2.1'],stage:'complemento'}),
+  baseUnit('afo-cgu-celso-02',3,'Celso Natale / Estratégia · A2.1 · progressividade/regressividade/neutralidade, resultados e NFSP',{source:'Complemento A2.1 · somente lacuna',cguCodes:['A2.1'],stage:'complemento'}),
   baseUnit('afo-cgu-02',4,'BizurAFO · M02 · PPA, LDO e LOA',{source:'Leandro Ravyelle · BizurAFO',cguCodes:['B4.4','A2.2']}),
   baseUnit('afo-cgu-03',5,'BizurAFO · M03 · Princípios orçamentários',{source:'Leandro Ravyelle · BizurAFO',cguCodes:['A2.2']}),
   baseUnit('afo-cgu-04',6,'BizurAFO · M04 · Créditos adicionais',{source:'Leandro Ravyelle · BizurAFO',cguCodes:['A2.2']}),
-  baseUnit('afo-cgu-05',90,'BizurAFO · M05 · fora da rota final da Camile',{source:'Não estudar nesta rota',hiddenFromRoute:true,deferred:true}),
+  baseUnit('afo-cgu-05',90,'BizurAFO · M05 · fora da rota atual da Camile',{source:'NÃO ESTUDAR nesta rota',hiddenFromRoute:true,deferred:true}),
   baseUnit('afo-cgu-06',7,'BizurAFO · M06 · Técnicas orçamentárias / orçamento-programa',{source:'Leandro Ravyelle · BizurAFO',cguCodes:['A2.2']}),
   baseUnit('afo-cgu-07',8,'BizurAFO · M07 · Receita pública',{source:'Leandro Ravyelle · BizurAFO',cguCodes:['A2.3']}),
-  baseUnit('afo-cgu-08',9,'BizurAFO · M08 · Despesa pública',{source:'Leandro Ravyelle · BizurAFO',cguCodes:['A2.3']}),
-  baseUnit('afo-cgu-09',10,'BizurAFO · M09 · Execução orçamentária e financeira',{source:'Leandro Ravyelle · BizurAFO',cguCodes:['A2.3']}),
-  baseUnit('afo-cgu-10',11,'BizurAFO · M10 · SOMENTE Restos a Pagar (RAP)',{source:'Leandro Ravyelle · BizurAFO · recorte',cguCodes:['A2.3']}),
-  baseUnit('afo-cgu-11',12,'BizurAFO · M11 · Lei de Responsabilidade Fiscal',{source:'Leandro Ravyelle · BizurAFO',cguCodes:['A2.3']}),
-  baseUnit('afo-cgu-12',91,'BizurAFO · M12 · fora da rota final da Camile',{source:'Não estudar nesta rota',hiddenFromRoute:true,deferred:true}),
-  baseUnit('afo-cgu-13',13,'BizurAFO · M13 · Regimes/ajustes fiscais · recorte da rota final',{source:'Leandro Ravyelle · BizurAFO',cguCodes:['A2.2','A2.3']}),
-  baseUnit('afo-cgu-14',14,'BizurAFO · M14 · Lei 4.320/1964 · SELETIVO',{source:'Leandro Ravyelle · BizurAFO · seletivo',cguCodes:['A2.2','A2.3'],stage:'seletivo'}),
-  baseUnit('afo-cgu-15',15,'BizurAFO · M15 · Conta Única do Tesouro Nacional',{source:'Leandro Ravyelle · BizurAFO',cguCodes:['A2.3']}),
-  baseUnit('afo-cgu-16',92,'BizurAFO · M16 · questões extras · usar como bateria/diagnóstico',{source:'Questões · não é teoria obrigatória',hiddenFromRoute:true,deferred:true}),
-  baseUnit('afo-cgu-gilmar-01',16,'Gilmar Possati · A2.4 · DCASP / Contabilidade Pública',{source:'Gilmar Possati · pós-edital',cguCodes:['A2.4'],stage:'fase-2'}),
-  baseUnit('afo-cgu-gilmar-02',17,'Gilmar Possati · A2.5 · NBC TSP 34 / MIC',{source:'Gilmar Possati · pós-edital',cguCodes:['A2.5'],stage:'fase-2'}),
-  baseUnit('afo-cgu-gilmar-03',18,'Gilmar Possati · A2.5 · Custos no setor público',{source:'Gilmar Possati · pós-edital',cguCodes:['A2.5'],stage:'fase-2'}),
-  baseUnit('afo-cgu-gilmar-04',19,'Gilmar Possati · A2.6 · Estatais I · informação societária',{source:'Gilmar Possati · pós-edital',cguCodes:['A2.6'],stage:'fase-2'}),
-  baseUnit('afo-cgu-gilmar-05',20,'Gilmar Possati · A2.6/A2.7 · Estatais II · governança/finalidade pública',{source:'Gilmar Possati + Nelma A15; Direção só se faltar enfoque',cguCodes:['A2.6','A2.7'],stage:'fase-2'})
+  baseUnit('afo-andre-receita',9,'André Luís · Receita Pública · ponte 17–19 → 36–40 → 41–45 → 47 → 48–49',{source:'André Luís · consolidação didática; começar no vídeo 17 · questões Cebraspe após blocos',cguCodes:['A2.3'],stage:'ponte'}),
+  baseUnit('afo-cgu-08',10,'BizurAFO · M08 · Despesa pública',{source:'Leandro Ravyelle · BizurAFO',cguCodes:['A2.3']}),
+  baseUnit('afo-cgu-09',11,'BizurAFO · M09 · Execução orçamentária e financeira',{source:'Leandro Ravyelle · BizurAFO',cguCodes:['A2.3']}),
+  baseUnit('afo-cgu-10',12,'BizurAFO · M10 · SOMENTE Restos a Pagar (RAP)',{source:'Leandro Ravyelle · BizurAFO · recorte',cguCodes:['A2.3']}),
+  baseUnit('afo-cgu-11',13,'BizurAFO · M11 · Lei de Responsabilidade Fiscal',{source:'Leandro Ravyelle · BizurAFO',cguCodes:['A2.3']}),
+  baseUnit('afo-cgu-12',91,'BizurAFO · M12 · fora da rota atual da Camile',{source:'NÃO ESTUDAR nesta rota',hiddenFromRoute:true,deferred:true}),
+  baseUnit('afo-cgu-13',14,'BizurAFO · M13 · Regimes/ajustes fiscais',{source:'Leandro Ravyelle · BizurAFO',cguCodes:['A2.2','A2.3'],deferred:false}),
+  baseUnit('afo-cgu-14',15,'BizurAFO · M14 · Lei 4.320/1964 · SELETIVO',{source:'Leandro Ravyelle · BizurAFO · seletivo',cguCodes:['A2.2','A2.3'],stage:'seletivo'}),
+  baseUnit('afo-cgu-15',16,'BizurAFO · M15 · Conta Única do Tesouro Nacional',{source:'Leandro Ravyelle · BizurAFO',cguCodes:['A2.3']}),
+  baseUnit('afo-cgu-16',92,'BizurAFO · M16 · questões extras Cebraspe · diagnóstico',{source:'Questões · não é teoria obrigatória',hiddenFromRoute:true,deferred:true}),
+  baseUnit('afo-pacelli-2026',17,'Giovanni Pacelli · AFO Regular 2026 · consolidação/atualização pós-BizurAFO',{source:'Giovanni Pacelli · curso atualizado · continuar sem reiniciar tópicos já sólidos',cguCodes:['A2.1','A2.2','A2.3'],stage:'pos-bizur'}),
+  baseUnit('afo-estatais-1303',18,'Estratégia pós-edital · Estatais / Lei 13.303 · recorte A2.7',{source:'Estratégia · somente A2.7 · não é CPU',cguCodes:['A2.7'],stage:'complemento'}),
+  baseUnit('afo-cgu-gilmar-01',100,'CPU A2.4 · DEFERIDA · histórico preservado',{source:'Fora da rota atual · futuro Giovanni Pacelli',cguCodes:['A2.4'],hiddenFromRoute:true,deferred:true}),
+  baseUnit('afo-cgu-gilmar-02',101,'CPU A2.5 · DEFERIDA · histórico preservado',{source:'Fora da rota atual · futuro Giovanni Pacelli',cguCodes:['A2.5'],hiddenFromRoute:true,deferred:true}),
+  baseUnit('afo-cgu-gilmar-03',102,'CPU A2.6 · DEFERIDA · histórico preservado',{source:'Fora da rota atual · futuro Giovanni Pacelli',cguCodes:['A2.6'],hiddenFromRoute:true,deferred:true}),
+  baseUnit('afo-cgu-gilmar-04',103,'CPU · DEFERIDA',{source:'Fora da rota atual · futuro Giovanni Pacelli',hiddenFromRoute:true,deferred:true}),
+  baseUnit('afo-cgu-gilmar-05',104,'CPU · DEFERIDA',{source:'Fora da rota atual · futuro Giovanni Pacelli',hiddenFromRoute:true,deferred:true})
  ];
- const afo=ensureSubject(st,{id:'afo',course:'AFO / Finanças Públicas / Contabilidade Pública — BizurAFO rota final → Celso A2.1 → Gilmar A2.4–A2.7',minutes:90,units:afoUnits,replaceUntouched:true});
+ const afo=ensureSubject(st,{id:'afo',course:'AFO / Finanças Públicas — BizurAFO → André Receita → Pacelli atualizado · CPU deferida',minutes:90,units:afoUnits,replaceUntouched:true});
  Object.assign(afo,{studyPhase:1,priority:'MÁXIMA',active:true});
 
   const tiUnits=[
@@ -418,7 +421,7 @@ function requirePrevious(s,u){
    return;
   }
  }
- let previous=s.units.filter(v=>v.order<u.order);if(previous.some(v=>!v.theoryDone||!v.batteryDone))throw Error('Conclua a teoria e a bateria das unidades anteriores antes de avançar.');if(checkpoints(s).some(c=>c.units.at(-1).order<u.order&&c.status!=='done'))throw Error('Conclua o checkpoint do bloco anterior antes de avançar.');
+ let previous=methodUnits(s).filter(v=>v.order<u.order);if(previous.some(v=>!v.theoryDone||!v.batteryDone))throw Error('Conclua a teoria e a bateria das unidades anteriores antes de avançar.');if(checkpoints(s).some(c=>c.units.at(-1).order<u.order&&c.status!=='done'))throw Error('Conclua o checkpoint do bloco anterior antes de avançar.');
 }
 function getUnit(st,sid,id){let s=st.subjects.find(s=>s.id===sid),u=s?.units.find(u=>u.id===id);if(!u)throw Error('Aula não encontrada.');return {s,u};}
 export function session(current,input){
