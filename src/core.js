@@ -217,24 +217,40 @@ export function normalizeMethodState(current){
 
   const admTopics=[
   ['B1.1','Estado e legitimidade'],['B1.2','Democracia e representação'],['B1.3','Federalismo e capacidades estatais'],['B1.5','Valor público e controle'],['B1.6','Corrupção como fenômeno político e social'],['B1.7','Mecanismos de reprodução e captura'],['B1.8','Consequências e respostas à corrupção'],['B1.9','Estado e modelos de desenvolvimento econômico'],
-  ['B3.1','Fundamentos da ética pública'],['B3.2','Deveres profissionais'],['B3.3','Conflitos de interesses e imparcialidade'],['B3.4','Relações de trabalho e atendimento'],['B3.5','Integridade como responsabilidade institucional'],
-  ['B4.1','Organização administrativa'],['B4.2','Modelos de administração'],['B4.3','Políticas públicas'],['B4.4','Planejamento e recursos'],['B4.5','Serviços e transformação digital'],
+  ['B3.1','Fundamentos da ética pública'],['B3.2','Deveres profissionais'],['B3.3','Conflitos de interesses, impedimento e imparcialidade'],['B3.4','Assédio, discriminação, escuta e não retaliação'],['B3.5','Integridade como responsabilidade institucional'],
+  ['B4.1','Organização administrativa'],['B4.2','Modelos de administração, governança e resultados'],['B4.3','Políticas públicas'],['B4.4','Planejamento, orçamento e sustentabilidade'],['B4.5','Serviços, usuário, simplificação e transformação digital'],
   ['C1.1','Governança e responsabilidades'],['C1.2','Riscos e controles essenciais'],['C1.3','Integridade pública'],['C1.4','Integridade privada'],['C1.5','Prevenção e melhoria institucional']
  ];
  const admSource=code=>{
-  if(code==='B4.1')return 'Rafael Oliveira · organização administrativa';
-  if(code==='B4.2'||code==='B4.4'||code==='B4.5')return 'Marcelo · Administração Pública';
-  if(code==='B4.3')return 'Estratégia · Políticas Públicas';
-  if(code.startsWith('B3.'))return 'Pacelli/Francisco Netto + normas CGU/Rafael/Herbert/Estratégia · ética e integridade';
-  if(code==='B1.1')return 'Nelma/Rafael · base constitucional-administrativa · Direção apenas lacuna';
-  if(code==='B1.2')return 'Nelma + Direção seletivo · democracia e representação';
-  if(code==='B1.3')return 'Nelma + Direção seletivo · federalismo, capacidades e coordenação';
-  if(code.startsWith('B1.'))return 'Direção · lacunas específicas de Estado, valor público, corrupção e desenvolvimento';
-  if(code.startsWith('C1.'))return 'Marcelo + Pacelli/Francisco Netto + Direção seletivo · governança, riscos e integridade';
-  return 'Plano mestre CGU · fonte seletiva';
+  if(code==='B4.2')return 'Marcelo Faixa Preta · Evolução APU T01-T03 + Q Reforma → Governança T01/T02 → Gestão para Resultados';
+  if(code==='B4.4')return 'Marcelo Faixa Preta · Planejamento (conceito/princípios + tipos) + BizurAFO recorte';
+  if(code==='B4.5')return 'Marcelo · Excelência T01/T02 + Rafael U6; Direção Governo Digital só se faltar';
+  if(code==='B4.1')return 'Rafael U2/U3/U4/U7/U17 · Direção só função específica se necessária';
+  if(code==='B4.3')return 'Estratégia Rodrigo Rennó · PP A01/A02 · estudar na disciplina Políticas Públicas';
+  if(code==='B3.1'||code==='B3.2')return 'Estratégia Ética A01/A02 + Código de Conduta CGU · depois Pacelli cap. 6';
+  if(code==='B3.3')return 'Herbert Lei 12.813 + Rafael U11/Herbert Lei 9.784 · depois Pacelli cap. 10';
+  if(code==='B3.4')return 'Pacelli cap. 24 + cap. 7 para proteção do denunciante';
+  if(code==='B3.5')return 'Estratégia Organização A06 + Pacelli caps. 15-17';
+  if(code==='B1.1')return 'Direção B1 seletivo + Marcelo para Estado-administração; PP A03 em pluralismo/intermediação';
+  if(code==='B1.2')return 'Direção B1 + Nelma A06/A08/A09; Pacelli cap. 28 para participação';
+  if(code==='B1.3')return 'Nelma A05 + Direção B1; PP A01 em implementação/burocracia';
+  if(code==='B1.5')return 'Marcelo Governança/Resultados + Direção B1; Pacelli caps. 13/17 seletivo';
+  if(['B1.6','B1.7','B1.8'].includes(code))return 'PP A03/A04 + Direção B1; Pacelli caps. 12/17/28 e cap. 22 reserva';
+  if(code==='B1.9')return 'Direção B1 + Nelma A15; Celso Natale em sustentabilidade/funções do Estado';
+  if(code==='C1.1'||code==='C1.2')return 'Marcelo Governança + Pacelli caps. 2/5/15; Direção C1 só se faltar framework específico';
+  if(code==='C1.3'||code==='C1.5')return 'Estratégia Organização A06 + Pacelli caps. 15-17/25';
+  if(code==='C1.4')return 'Pacelli caps. 19/20/27 + Rafael U22; Herbert/Lei Anticorrupção se disponível';
+  return 'Plano Mestre Final CGU · fonte seletiva';
  };
- const adm=ensureSubject(st,{id:'adm-publica',course:'Administração Pública, Estado, Ética, Governança e Integridade — Marcelo + Pacelli/Netto + complementos seletivos',minutes:60,units:admTopics.map((x,i)=>baseUnit('adm-cgu-'+String(i+1).padStart(2,'0'),i+1,x[1],{source:admSource(x[0]),cguCodes:[x[0]]}))});
- Object.assign(adm,{studyPhase:3,priority:'ALTA',active:true});
+ const admOrder=code=>({
+  'B4.2':1,'B4.4':2,'B4.1':3,'B4.5':4,
+  'C1.1':5,'C1.2':6,'C1.3':7,'C1.5':8,'C1.4':9,
+  'B3.1':10,'B3.2':11,'B3.3':12,'B3.4':13,'B3.5':14,
+  'B1.1':15,'B1.2':16,'B1.3':17,'B1.5':18,'B1.6':19,'B1.7':20,'B1.8':21,'B1.9':22,
+  'B4.3':90
+ }[code]||80);
+ const adm=ensureSubject(st,{id:'adm-publica',course:'Administração Pública / Governança / Ética / Integridade — Marcelo Faixa Preta + fontes finais CGU',minutes:60,units:admTopics.map((x,i)=>baseUnit('adm-cgu-'+String(i+1).padStart(2,'0'),admOrder(x[0]),x[1],{source:admSource(x[0]),cguCodes:[x[0]],hiddenFromRoute:x[0]==='B4.3'}))});
+ Object.assign(adm,{studyPhase:1,priority:'ALTA',active:true});
 
  const diversidadeTopics=[['B2.1','Fundamentos sociológicos'],['B2.2','Formação social e cidadania no Brasil'],['B2.3','População, território e trabalho'],['B2.4','Diversidade e acesso a direitos'],['B2.5','Desenvolvimento e realidade brasileira']];
  const diversidade=ensureSubject(st,{id:'diversidade',course:'Sociedade Brasileira, Desigualdades e Diversidade — Direção · fase final',minutes:60,units:diversidadeTopics.map((x,i)=>baseUnit('div-cgu-'+(i+1),i+1,x[1],{source:'Direção · bloco B2 integral · fase final',cguCodes:[x[0]]}))});
@@ -242,30 +258,45 @@ export function normalizeMethodState(current){
 
  const dad=st.subjects.find(s=>s.id==='dad');
  if(dad){
-  dad.course='DAD — Rafael Oliveira · U12 Licitações/Contratos · Herbert/Estratégia seletivos';
-  Object.assign(dad,{studyPhase:3,priority:'ALTA',active:true});
-  const addCodes=(matcher,codes)=>{for(const u of dad.units||[])if(matcher.test(u.title||''))u.cguCodes=[...new Set([...(u.cguCodes||[]),...codes])];};
-  addCodes(/organiza[cç][aã]o administrativa|administra[cç][aã]o p[uú]blica indireta/i,['B4.1']);
-  addCodes(/atos administrativos/i,['C3.1']);
-  addCodes(/processo administrativo/i,['C3.1','C3.2']);
-  addCodes(/controle da administra[cç][aã]o/i,['C3.3']);
-  addCodes(/improbidade|anticorrup[cç][aã]o/i,['C3.4','A5.5','A5.6']);
-  addCodes(/licita[cç][oõ]es e contratos/i,['A4.1','A4.2']);
+  dad.course='DAD — Rafael Oliveira · rota CGU final + U12 Licitações/Contratos + leis especiais';
+  Object.assign(dad,{studyPhase:1,priority:'ALTA',active:true});
+  for(const u of dad.units||[]){u.hiddenFromRoute=true;u.deferred=true;}
+  const route=(matcher,order,source,codes=[],extra={})=>{
+   const u=(dad.units||[]).find(x=>matcher.test(x.title||''));
+   if(!u)return;
+   u.order=order;u.source=source;u.cguCodes=[...new Set([...(u.cguCodes||[]),...codes])];
+   u.hiddenFromRoute=false;u.deferred=!!extra.deferred;u.stage=extra.stage||u.stage;
+  };
+  route(/Organiza[cç][aã]o Administrativa/i,1,'Rafael Oliveira · U2',['B4.1']);
+  route(/Administra[cç][aã]o P[uú]blica Indireta/i,2,'Rafael Oliveira · U3',['B4.1']);
+  route(/Cons[oó]rcios P[uú]blicos/i,3,'Rafael Oliveira · U7',['B4.1']);
+  route(/Agentes P[uú]blicos/i,4,'Rafael Oliveira · U17',['B4.1','C3.4','A5.5']);
+  route(/Atos Administrativos/i,5,'Rafael Oliveira · U10 · depois LINDB/Dec. 9.830',['C3.1']);
+  route(/Processo Administrativo/i,6,'Rafael Oliveira · U11 · depois Herbert Lei 9.784',['B3.3','C3.2','A5.5']);
+  route(/Controle da Administra[cç][aã]o/i,7,'Rafael Oliveira · U19',['C3.3']);
+  route(/C[oó]digo de Defesa do Usu[aá]rio/i,8,'Rafael Oliveira · U6',['B4.5']);
+  route(/Licita[cç][oõ]es e Contratos/i,9,'Rafael Oliveira · U12 · obrigatório para A4',['A4.1','A4.2','A4.4','A4.5']);
+  route(/Parcerias P[uú]blico-Privadas/i,10,'Rafael Oliveira · U8 · PPP seletivo',['A4.3'],{stage:'seletivo'});
+  route(/Origem, Evolu[cç][aã]o e Princ[ií]pios/i,11,'Rafael Oliveira · U1 · seletivo',['B1.4'],{stage:'seletivo'});
+  route(/Terceiro Setor/i,12,'Rafael Oliveira · U4 · seletivo',['B4.1','A4.3'],{stage:'seletivo'});
+  route(/Poderes Administrativos/i,13,'Rafael Oliveira · U9 · seletivo',['C3.1'],{stage:'seletivo'});
+  route(/Improbidade Administrativa/i,14,'Rafael Oliveira · U20 · depois Herbert LIA',['C3.4','A5.5','A5.6'],{stage:'seletivo'});
+  route(/Lei Anticorrup[cç][aã]o/i,15,'Rafael Oliveira · U22 · complemento integridade privada',['C1.4','C3.4','A5.4','A5.5','A5.6'],{stage:'seletivo'});
  }
 
  const ppTopics=[
-  ['B4.3','Aula 01 · Ciclo de políticas públicas'],
-  ['A3.3','Aula 02 · Indicadores e métodos'],
-  ['A3.1','Avaliação Ex Ante'],
-  ['A3.3','Avaliação Ex Post'],
-  ['A3.6','CMAP · estudo seletivo e uso de resultados'],
-  ['A3.4','Métodos qualitativos e mistos'],
-  ['A3.5','Identificação causal e análise econômica'],
-  ['A3.6','Conclusões, recomendações e uso dos resultados'],
-  ['A3.7','Ética da investigação']
+  ['B4.3','Estratégia Rodrigo Rennó · PP Aula 01 · ciclo, atores e implementação'],
+  ['A3.1','Estratégia Rodrigo Rennó · PP Aula 02 · métodos/avaliação'],
+  ['A3.1','Avaliação Ex Ante · COMPLETA para Camile'],
+  ['A3.2','Avaliação Ex Post'],
+  ['A3.3','CMAP · seletivo'],
+  ['A3.6','Passo · Aula 01/Aula 02'],
+  ['A3.6','Simulados / questões de Políticas Públicas'],
+  ['B1.6','PP A03/A04 · reaproveitamento apenas em B1 · não é segunda teoria de PP'],
+  ['A3.7','Ética da investigação · aguardar/usar fechamento pós-edital específico']
  ];
- const politicas=ensureSubject(st,{id:'politicas',course:'Políticas Públicas e Avaliação — Estratégia + Marcelo Soares seletivo',minutes:60,units:ppTopics.map((x,i)=>baseUnit('pp-cgu-'+(i+1),i+1,x[1],{source:i<2?'Estratégia · curso de Políticas Públicas':'Estratégia / Marcelo Soares · plano CGU',cguCodes:[x[0]]}))});
- Object.assign(politicas,{studyPhase:'manutencao',priority:'MANUTENÇÃO',active:true});
+ const politicas=ensureSubject(st,{id:'politicas',course:'Políticas Públicas e Avaliação — Estratégia · Rodrigo Rennó · rota CGU final',minutes:60,units:ppTopics.map((x,i)=>baseUnit('pp-cgu-'+(i+1),i+1,x[1],{source:i===7?'Reaproveitamento B1 · não segunda teoria':i===8?'GAP CONTROLADO · material pós-edital específico':'Estratégia · Rodrigo Rennó / Avaliação',cguCodes:[x[0]],hiddenFromRoute:i===7||i===8,deferred:i===7||i===8}))});
+ Object.assign(politicas,{studyPhase:2,priority:'MANUTENÇÃO ALTA',active:true});
 
  const auditTopics=[
   ['C2.1','Transparência · acesso à informação'],['C2.2','Transparência e proteção de dados'],['C2.3','Ouvidoria e proteção das pessoas'],['C2.4','Participação e melhoria de serviços'],['C2.5','Integridade da informação e comunicação'],
