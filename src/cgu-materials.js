@@ -1,5 +1,5 @@
 // Plano mestre de materiais · Camile · CGU 2026 · Auditoria
-// Versão v1.6 · consolidada a partir do Plano Mestre Final remodelado (14/10/2026).
+// Versão v1.6.1 · correção AFO/CPU de 16/10/2026.
 // Regra-mestra: UM TÓPICO DO EDITAL = UMA FONTE PRINCIPAL.
 // Complemento só entra depois da fonte principal; pacote paralelo não repete teoria já coberta.
 // O histórico individual deve ser preservado quando a fonte/material muda.
