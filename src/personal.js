@@ -20,7 +20,7 @@ export const GOAL_CYCLES_PER_META=4;
 export const GOAL_META_COUNT=8;
 export const WEEKLY_MAINTENANCE=Object.freeze([
  {subjectId:'politicas',label:'Políticas Públicas',referenceMinutes:60,source:'Estratégia PP/Avaliação · próxima etapa'},
- {subjectId:'ti',label:'TI / Dados',referenceMinutes:60,source:'Ramon TI TOTAL · próxima etapa'},
+ {subjectId:'ti',label:'Evidências / Dados / IA',referenceMinutes:60,source:'Lucas Ianni comum + Ramon TI TOTAL técnico'},
  {subjectId:'port',label:'Português',referenceMinutes:60,source:'Marcello Giulian + Andresan'}
 ]);
 const GOAL_CORE_MINUTES=CYCLE.reduce((sum,id)=>sum+(RULES[id]?.minutes||60),0)*GOAL_CYCLES_PER_META;
@@ -39,111 +39,119 @@ export const GOAL_WINDOWS=Object.freeze([
 
 export const GOAL_MATERIAL_TARGETS=Object.freeze([
  [
-  'AFO: BizurAFO na ordem real da Camile; sem liberar Celso/Gilmar antes da base.',
-  'Auditoria: Marcelo Soares; mapear A1/C5 já coberto.',
-  'Administração: Marcelo; livro Pacelli/Netto apenas se o capítulo corresponder ao ponto estudado.',
-  'DCON: continuar a ponte do Art. 5º; DAD: seguir Rafael sem saltos.'
+  'AFO: M1 do BizurAFO e, em seguida, Celso Natale A2.1; depois retomar M2/M3/M4 conforme as ocorrências.',
+  'Auditoria: Marcelo AIG → Avaliação → Consultoria → Apuração; Direção ainda bloqueado.',
+  'Administração: Marcelo Evolução APU T01-T03 + questões de Reforma → Governança.',
+  'DCON: seguir A01/Teoria dos Direitos/Art. 5º sem reiniciar histórico; DAD: Rafael U2 → U3 → U7.',
+  'Manutenção: Rodrigo PP + Lucas Ianni/Ramon + Marcello/Andresan.'
  ],
  [
-  'Pacelli/Netto: capítulos 2 → 5 → 6 → 7.',
-  'AFO: continuar primeira passagem BizurAFO.',
-  'Auditoria: Marcelo; sem Direção.',
-  'Manutenção: 1 ocorrência de Políticas, TI/Dados e Português.'
+  'AFO: M6 → M7 → M8/M9; M5 não entra na rota. Consolidar A2.1 Celso se ainda houver lacuna.',
+  'Auditoria: Marcelo Objetividade → PGMQ → PAINT → Planejamento Individual T1/T2.',
+  'Administração: Gestão para Resultados → Planejamento → Excelência T01/T02.',
+  'Pacelli/Netto: capítulos 2 → 5 → 6 → 7, somente após a base correspondente.',
+  'DAD: avançar U17 → U10 → U11; depois Lei 9.784 como fechamento.'
  ],
  [
-  'Pacelli/Netto: capítulos 8 → 9 → 10 → 15.',
-  'DAD: avançar em direção à U12 Licitações/Contratos; U8 PPP seletivo.',
-  'AFO: concluir a maior parte possível do BizurAFO antes dos complementos.',
-  'Auditoria: continuar Marcelo e consolidar evidências/achados conforme a base.'
+  'AFO: M10 SOMENTE RAP → M11 → M13; M12 não entra na rota atual.',
+  'Pacelli/Netto: capítulos 8 → 9 → 10 → 15; respeitar LAI/LGPD/Conflito antes dos capítulos dependentes.',
+  'DAD: U19 → U6 → chegar à U12 Licitações/Contratos; U8 PPP será seletivo.',
+  'Auditoria: terminar os módulos Marcelo já liberados; mapear A1/C5 antes de abrir Direção.',
+  'Políticas: PP A01/A02 → Ex Ante completa para Camile.'
  ],
  [
-  'Pacelli/Netto: capítulos 16 → 17 → 24 → 26 → 28; extras Camile 12 → 13 quando houver base.',
-  'Como Combater a Corrupção em Licitações: 2 → 3 → 6 somente depois de Rafael U12 e base correspondente.',
-  'AFO: Celso A2.1 e Gilmar A2.4–A2.6 apenas nas lacunas efetivas.',
-  'Capítulo 4 do livro de licitações continua bloqueado até a base Marcelo de achados/evidências.'
+  'AFO: M14 seletivo → M15 → questões; iniciar Gilmar A2.4-A2.7 quando o núcleo orçamentário estiver maduro.',
+  'Gilmar: DCASP → NBC TSP 34/MIC → Custos → Estatais I/II; A2.7 combina Gilmar + Nelma A15.',
+  'Pacelli/Netto: capítulos 16 → 17 → 24 → 26 → 28; capítulos 12/13 entram quando DAD/Auditoria derem base.',
+  'Livro Licitações: após Rafael U12, cap. 1 rápido → 2 → 3 → 6; cap. 4 continua bloqueado até achados/evidências do Marcelo.',
+  'Dados comum: Lucas Ianni C4.1/C4.2-C4.5 + Ramon técnico da Camile.'
  ],
  [
-  'Pacelli/Netto extras Camile: 19 → 20 → 25 → 27.',
-  'Como Combater a Corrupção em Licitações: 4 → 5 após os pré-requisitos.',
-  'Auditoria: fechar base Marcelo e só então liberar complementos Direção/NBC/IPPF.',
-  'Iniciar baterias/checkpoints nas prioridades já fechadas.'
+  'Pacelli/Netto extras Camile: 19 → 20 → 25 → 27; cap. 12 para responsabilização conforme DAD.',
+  'Livro Licitações: cap. 4 depois da base Marcelo; cap. 5 apenas após DAD/Responsabilização.',
+  'Auditoria: somente agora liberar Direção/TSE Papéis + Testes + Amostragem + Execução + Evidências + Achados.',
+  'NBC TA 230/500; 505/520 e 320/330 apenas em lacuna real.',
+  'Políticas: Ex Post → CMAP seletivo → Passo A01/A02 + simulados.'
  ],
  [
-  'Direção/TSE apenas nos pontos técnicos ainda faltantes depois de Marcelo.',
-  'A4/A5: consolidar livro de licitações + Pacelli/Netto + base jurídica Rafael/Herbert/Estratégia.',
-  'AFO/Adm./DCON/DAD: fechar lacunas e migrar o que estiver concluído para revisão/questões.',
-  'Nenhuma segunda teoria para conteúdo já fechado.'
+  'A4.2/A4.3: Rafael como base; Direção pós-edital apenas na execução contratual/transferências que faltarem.',
+  'A5.6: tratar como GAP JURÍDICO PRIORITÁRIO; complemento específico para prescrição, dosimetria, TAC, leniência e coordenação.',
+  'C2.5 e A3.6-A3.7 continuam gaps controlados: localizar material específico, sem presumir cobertura.',
+  'Organização/Competências CGU: A02 → A03 seletivo → A05 → A06 → A00/A01 → A04 seletivo.',
+  'Conteúdo fechado migra para baterias, checkpoints e Estudo Sólido.'
  ],
  [
-  'Fechar as cinco prioridades e atacar somente lacunas do Check do Edital.',
-  'Estudo Sólido: erros, favoritas, checkpoints e revisões.',
-  'Sociedade Brasileira/Diversidade só entra se as prioridades centrais estiverem sob controle.',
-  'Manutenção transversal permanece curta e semanal.'
+  'Fechar as cinco prioridades e atacar apenas itens PARCIAL/PENDENTE do Check do Edital.',
+  'Revisar livros somente pelos capítulos marcados; Pacelli 22 e 29 permanecem reservas.',
+  'Sociedade Brasileira/Diversidade só entra se o núcleo prioritário e a Fase 2 estiverem sob controle.',
+  'Questões Cebraspe, erros, favoritas e legislação passam a dominar a carga.',
+  'Não abrir curso completo por sensação de incompletude.'
  ],
  [
-  'Consolidação total até 07/12: nada de curso amplo novo.',
-  'Livros: apenas releitura dirigida dos capítulos marcados e pontos errados.',
-  'Questões Cebraspe, erros, favoritas, legislação e checkpoints.',
-  'Preparar o Sprint Final de 08–12/12.'
+  'Consolidação total até 07/12: sem teoria ampla nova.',
+  'Revisar AFO A2.1-A2.7, Auditoria A1/A4/A5, Administração/Integridade, DCON e DAD pelos próprios materiais.',
+  'C2.5, A3.6-A3.7, A4.2-A4.3, A5.6 e A2.7 recebem somente fechamento pontual se ainda estiverem abertos.',
+  'Políticas, Dados/IA e Português seguem em manutenção por questões/revisão.',
+  'Preparar o Sprint Final 08–12/12.'
  ]
 ]);
 
 export const GOAL_FOCUS=Object.freeze([
  [
-  'Ciclo prioritário · 4 voltas: AFO/Finanças → Auditoria → Administração Pública → DCON → DAD. Tempo real prevalece sobre a referência.',
-  'AFO · BizurAFO primeiro; avance a primeira passagem antes de liberar Celso/Gilmar.',
-  'Auditoria · Marcelo Soares é a base. Direção ainda não entra.',
-  'Administração Pública · Marcelo primeiro; iniciar a leitura dirigida de Pacelli/Francisco Netto apenas nos capítulos já aderentes à base estudada.',
-  'DCON/DAD · continuar Art. 5º pelo Estratégia + Nelma; Rafael Oliveira na sequência real. Manutenção semanal: 1 ocorrência de Políticas, TI/Dados e Português.'
+  'Ciclo prioritário: AFO/Finanças → Auditoria → Administração Pública → DCON → DAD; quatro voltas na Meta.',
+  'Regra-mestra v1.6: um item do edital tem uma fonte principal; complemento somente depois, sem duplicação.',
+  'AFO já segue a rota final: M1 → Celso A2.1 → M2/M3/M4; M5 não entra.',
+  'Auditoria começa exclusivamente pelo Marcelo; Estratégia Auditoria pré-edital está removido.',
+  'Tempo real prevalece e o histórico individual jamais é reiniciado.'
  ],
  [
-  'AFO · continuar BizurAFO, com foco em fechar orçamento/planejamento/execução antes de complementos.',
-  'Auditoria · avançar Marcelo Soares. Sem Auditoria do Estratégia; Direção só depois da base Marcelo.',
-  'Livro Pacelli/Francisco Netto · trilha comum dirigida: capítulos 2 → 5 → 6 → 7, sem reler conteúdo já fechado.',
-  'DAD · Rafael em sequência; Herbert/Estratégia entram apenas para LAI, LIA, LGPD, Lei 9.784, Lei 12.813 e LINDB/Decreto 9.830 quando o item exigir.',
-  'Manutenção · Estratégia Políticas Públicas, Ramon TI/Dados e Marcello/Andresan em uma ocorrência semanal cada.'
+  'AFO continua M6/M7/M8/M9; Celso fecha apenas A2.1.',
+  'Marcelo Auditoria avança até PAINT/Planejamento; Direção continua bloqueado.',
+  'Administração segue a sequência Faixa Preta definida no Plano Mestre Final.',
+  'Leis especiais entram somente depois da aula-base Rafael/Ética correspondente.',
+  'Manutenção semanal: Políticas, Evidências/Dados/IA e Português.'
  ],
  [
-  'AFO · fechar o máximo possível da base BizurAFO; só então mapear A2.1 para Celso Natale e A2.4–A2.6 para Gilmar Possati.',
-  'Livro Pacelli/Francisco Netto · capítulos 8 → 9 → 10 → 15, seguindo apenas o recorte CGU.',
-  'Auditoria · continuar Marcelo; registrar exatamente o ponto em A1/C5 já coberto.',
-  'DAD · priorizar a chegada à U12 Licitações/Contratos; U8 PPP é seletivo para a Camile.',
-  'DCON/Adm. Pública · seguir fonte principal sem duplicação; manutenção transversal permanece 1x/semana.'
+  'AFO entra em M10 apenas RAP, M11 e M13; M12 fica fora da rota.',
+  'Rafael DAD deve alcançar U12 sem saltar a rota-base; U8 PPP é seletivo.',
+  'Pacelli/Netto é leitura dirigida, nunca curso linear.',
+  'Ex Ante é completa para Camile; PP A03/A04 só reaproveitam B1.',
+  'Registrar no Check exatamente o que foi coberto e o que permanece parcial.'
  ],
  [
-  'AFO · Celso Natale somente nas lacunas A2.1 comprovadas; Gilmar Possati entra depois em A2.4–A2.6.',
-  'Livro Pacelli/Francisco Netto · capítulos 16 → 17 → 24 → 26 → 28; começar extras da Camile 12 → 13 quando a base correspondente estiver pronta.',
-  'Licitações · depois de Rafael U12 e da base correspondente de Marcelo, liberar Como Combater a Corrupção em Licitações na ordem 2 → 3 → 6.',
-  'Auditoria · capítulo 4 do livro de licitações continua bloqueado até a base Marcelo estar concluída.',
-  'Políticas/TI/Português · manter uma ocorrência semanal, sem roubar prioridade das cinco matérias centrais.'
+  'AFO: M14 seletivo, M15 e início de Gilmar A2.4-A2.7.',
+  'Livro de licitações entra após Rafael U12; cap. 4 espera a base Marcelo em achados/evidências.',
+  'Lucas Ianni cobre o recorte comum C4; Ramon segue como fonte técnica da Camile.',
+  'Pacelli capítulos altos entram apenas com a base normativa pronta.',
+  'Nenhum pacote paralelo refaz conteúdo já concluído.'
  ],
  [
-  'Auditoria/A5 · Pacelli/Francisco Netto extras da Camile: 19 → 20 → 25 → 27, de forma dirigida e sem leitura integral do livro.',
-  'Licitações · após cumprir os pré-requisitos, continuar Como Combater a Corrupção em Licitações: capítulo 4 → capítulo 5.',
-  'Auditoria · objetivo é concluir a base Marcelo; somente depois entram Direção/TSE e NBC/IPPF seletivos.',
-  'AFO · concluir Celso/Gilmar necessários; A2.7 permanece lacuna controlada para fechamento pós-edital.',
-  'Administração/DCON/DAD · avançar teoria e iniciar baterias/checkpoints no que já estiver fechado.'
+  'Depois do Marcelo, Direção/TSE entra somente em testes, amostragem, execução, evidências e achados.',
+  'Direção/CGU NBC TA é seletivo; não transformar NBC/IPPF em segundo curso completo.',
+  'A4 usa Rafael + livro; o livro não fecha execução contratual nem transferências/parcerias.',
+  'A5 usa Pacelli/Netto + Rafael/Herbert + Organização CGU; A5.6 permanece gap prioritário.',
+  'Baterias/checkpoints crescem à medida que a teoria fecha.'
  ],
  [
-  'Auditoria · depois de Marcelo: Direção/TSE para papéis, testes, amostragem, execução, evidências e achados; comunicação/relatório/monitoramento apenas se lacuna persistir.',
-  'NBC TA 230, 500, 505/520 e 320/330; IPPF, riscos e três linhas: somente se o Check do Edital indicar lacuna concreta.',
-  'A4/A5 · usar livro de licitações + Pacelli/Netto + base jurídica Rafael/Herbert/Estratégia; não criar segunda teoria.',
-  'AFO/Adm./DCON/DAD · fechar lacunas prioritárias e migrar conteúdo concluído para revisão/questões.',
-  'Manutenção transversal segue curta: Políticas, TI e Português 1x/semana.'
+  'Fechamento de A4.2/A4.3, A5.6, C2.5, A3.6-A3.7 e A2.7 somente por material específico.',
+  'Organização/Competências CGU entra seletivamente na rota institucional.',
+  'Direção C1/C2/B1 só entra em lacuna nominal.',
+  'Conteúdo fechado migra para revisão/questões em vez de nova teoria.',
+  'Manutenção transversal continua curta.'
  ],
  [
-  'Fechamento das cinco prioridades: AFO, Auditoria, Administração Pública, DCON e DAD. Nenhum curso novo por completude.',
-  'Disciplinas fechadas migram para Estudo Sólido, erros, favoritas e checkpoints.',
-  'Sociedade Brasileira/Diversidade permanece Fase 4 e só é ativada quando as prioridades estiverem sob controle; então usar Direção B2 integral.',
-  'Check do Edital passa a comandar lacunas finais. Os códigos B/C/A/CD são internos da matriz; priorize sempre o nome do conteúdo.',
-  'Legislação Seca continua 30 min/dia; Políticas, TI e Português seguem em manutenção.'
+  'Fechamento das prioridades: nada de curso novo por completude.',
+  'Sociedade Brasileira/Diversidade permanece Fase 4 até o núcleo de maior retorno estar sob controle.',
+  'Check do Edital comanda as lacunas finais e preserva códigos internos apenas como referência técnica.',
+  'Legislação Seca continua 30 min/dia dentro das 30h.',
+  'Erros, favoritas, checkpoints e simulados ganham prioridade.'
  ],
  [
-  'Consolidação final até 07/12: erros, favoritas, revisões gerais, checkpoints e questões Cebraspe.',
-  'Nenhuma teoria ampla nova; apenas lacuna curta e de alto valor indicada no Check do Edital.',
-  'Revisar AFO/A2, Auditoria A1/A4/A5, Administração/Integridade, DCON e DAD com os próprios materiais e livros dirigidos.',
-  'Sociedade Brasileira/Diversidade entra apenas se ainda houver espaço real e prioridade concluída; nunca desloca os cinco blocos centrais.',
-  'Fechar a Meta 08 em 07/12 para liberar 08–12/12 exclusivamente ao Sprint Final.'
+  'Consolidação final até 07/12: erros, favoritas, revisões gerais, checkpoints e Cebraspe.',
+  'Nenhuma teoria ampla nova; apenas gaps curtos de alto valor.',
+  'Revisar pelas fontes principais já estudadas e pelos capítulos dirigidos.',
+  'B2 só entra se houver espaço real sem deslocar o núcleo central.',
+  'Meta 08 fecha em 07/12 e libera o Sprint 08–12/12.'
  ]
 ])
 
@@ -212,23 +220,23 @@ export const GOAL_TEMPLATES=Array.from({length:GOAL_META_COUNT},(_,i)=>{
 });
 
 export const BIZURAFO_MODULES=Object.freeze([
- {id:'biz-01',number:1,title:'Conceito, dimensões, tipos de orçamento e intervenção do Estado nas finanças públicas',status:'core',note:'Núcleo CGU: funções do governo, falhas de mercado, políticas econômicas, federalismo fiscal e conceitos de orçamento. Se a aula entrar em tripé macroeconômico como aprofundamento autônomo, não priorize nesta passagem de AFO.'},
- {id:'biz-02',number:2,title:'Instrumentos de planejamento — PPA, LDO e LOA',status:'core',note:'Núcleo de AFO/Finanças Públicas para a CGU.'},
- {id:'biz-03',number:3,title:'Princípios orçamentários',status:'core',note:'Núcleo de AFO/Finanças Públicas para a CGU. Na primeira passagem, priorize a teoria principal; a aula única extra e as baterias longas podem ficar para depois.'},
- {id:'biz-04',number:4,title:'Créditos adicionais e alterações orçamentárias',status:'core',note:'Núcleo de AFO/Finanças Públicas para a CGU.'},
- {id:'biz-05',number:5,title:'Ciclo orçamentário',status:'core',note:'Núcleo de AFO/Finanças Públicas para a CGU: elaboração, discussão/votação, emendas, execução e controle.'},
- {id:'biz-06',number:6,title:'Técnicas orçamentárias e orçamento-programa',status:'core',note:'Núcleo de AFO/Finanças Públicas para a CGU: evolução conceitual, técnicas e orçamento-programa.'},
- {id:'biz-07',number:7,title:'Receita pública',status:'core',note:'Núcleo CGU: classificações, estágios, fontes e dívida ativa.'},
- {id:'biz-08',number:8,title:'Despesa pública',status:'core',note:'Núcleo CGU: classificações e estágios. Restos a pagar e temas correlatos reaparecem nos módulos seguintes.'},
- {id:'biz-09',number:9,title:'Execução orçamentária e financeira, programação e descentralização',status:'core',note:'Execução, programação e descentralização são mantidas pelo recorte CGU de orçamento/execução e pelo valor transversal para controle.'},
- {id:'biz-10',number:10,title:'Restos a pagar, despesas de exercícios anteriores e suprimento de fundos',status:'core',note:'ESTUDAR. Restos a pagar, DEA e suprimento de fundos permanecem no plano por integrarem a execução orçamentária/financeira e a Lei 4.320/1964 relevante ao recorte CGU.'},
- {id:'biz-11',number:11,title:'Lei de Responsabilidade Fiscal — LRF',status:'cut',note:'ESTUDAR COM CORTES: priorize conceitos/RCL, planejamento, LDO/LOA, renúncia, geração de despesas, transferências voluntárias, destinação ao setor privado, transparência, prestação de contas e fiscalização. Adie, neste intensivão, pessoal, seguridade, endividamento, gestão patrimonial e relatórios RREO/RGF quando tratados só como aprofundamento de LRF.'},
- {id:'biz-12',number:12,title:'Sistemas de informações',status:'cut',note:'ESTUDAR COM CORTES: priorize os sistemas diretamente úteis à execução orçamentária, financeira e ao controle; detalhes periféricos ficam para lacunas do pacote atualizado.'},
- {id:'biz-13',number:13,title:'Regime de ajustes fiscais',status:'pause',note:'NÃO ESTUDAR NESTE INTENSIVÃO. Fica fora do primeiro giro definido para a Camile; preservar para segunda volta se o pacote atualizado indicar necessidade.'},
- {id:'biz-14',number:14,title:'Lei 4.320/1964 — multibancas',status:'cut',note:'ESTUDAR COM CORTE/SEGUNDA VOLTA: usar a Lei 4.320/1964 como consolidação dos pontos de orçamento e execução efetivamente exigidos no edital CGU. Na aula dos arts. 22–35, não priorize arts. 22–33 (Títulos II e III); retome a partir do art. 34. Use o restante como consolidação, não como primeiro contato.'},
- {id:'biz-15',number:15,title:'Conta Única do Tesouro Nacional',status:'core',note:'Núcleo de AFO/Finanças Públicas para a CGU: conceito e previsão legal.'},
- {id:'biz-16',number:16,title:'Questões extras Cebraspe',status:'optional',note:'OPCIONAL NO PRIMEIRO GIRO. Use como diagnóstico ao final dos blocos; não é necessário assistir todas as resoluções longas agora.'}
-]);
+ {id:'biz-01',number:1,title:'Base A2.1 · economia/finanças públicas e intervenção do Estado',status:'core',note:'ESTUDAR. Depois do M1, usar Celso Natale no fechamento de A2.1.'},
+ {id:'biz-02',number:2,title:'PPA, LDO e LOA',status:'core',note:'ESTUDAR na rota final da Camile.'},
+ {id:'biz-03',number:3,title:'Princípios orçamentários',status:'core',note:'ESTUDAR na rota final da Camile.'},
+ {id:'biz-04',number:4,title:'Créditos adicionais',status:'core',note:'ESTUDAR na rota final da Camile.'},
+ {id:'biz-05',number:5,title:'Módulo 05',status:'pause',note:'NÃO ESTUDAR na rota final atual da Camile.'},
+ {id:'biz-06',number:6,title:'Técnicas orçamentárias e orçamento-programa',status:'core',note:'ESTUDAR.'},
+ {id:'biz-07',number:7,title:'Receita pública',status:'core',note:'ESTUDAR.'},
+ {id:'biz-08',number:8,title:'Despesa pública',status:'core',note:'ESTUDAR.'},
+ {id:'biz-09',number:9,title:'Execução orçamentária e financeira',status:'core',note:'ESTUDAR.'},
+ {id:'biz-10',number:10,title:'Restos a Pagar',status:'cut',note:'ESTUDAR SOMENTE RAP. DEA e suprimento de fundos não fazem parte do recorte atual deste módulo.'},
+ {id:'biz-11',number:11,title:'Lei de Responsabilidade Fiscal — LRF',status:'core',note:'ESTUDAR na rota final.'},
+ {id:'biz-12',number:12,title:'Sistemas de informações',status:'pause',note:'NÃO ESTUDAR na rota final atual da Camile.'},
+ {id:'biz-13',number:13,title:'Regimes / ajustes fiscais',status:'core',note:'ESTUDAR. O Plano Mestre Final recolocou o M13 na rota da Camile.'},
+ {id:'biz-14',number:14,title:'Lei 4.320/1964',status:'cut',note:'SELETIVO. Usar apenas os pontos aderentes ao edital e ao fechamento A2.2/A2.3.'},
+ {id:'biz-15',number:15,title:'Conta Única do Tesouro Nacional',status:'core',note:'ESTUDAR.'},
+ {id:'biz-16',number:16,title:'Questões extras Cebraspe',status:'optional',note:'Usar como diagnóstico/bateria; não é teoria obrigatória na rota.'}
+])
 const BIZ_STATUS_LABEL={core:'ESTUDAR',cut:'ESTUDAR COM CORTES',pause:'NÃO ESTUDAR AGORA',optional:'OPCIONAL'};
 export function bizurStatusLabel(status){return BIZ_STATUS_LABEL[status]||status;}
 export function bizurSnapshot(current){
