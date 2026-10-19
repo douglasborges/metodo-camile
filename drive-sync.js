@@ -31,6 +31,7 @@
 
   // Espelha a arquitetura estável do Drive Sync atual da StudyOS.
   const CLIENT_ID = '242070309786-1rn9vsc4fo0coaq3e3mptrlf1m9f0kt3.apps.googleusercontent.com';
+  const EXPECTED_OAUTH_ORIGIN = 'https://douglasborges.github.io';
   const SCOPE = 'https://www.googleapis.com/auth/drive.file';
   const STORE_KEY = 'metodo-et:camile:v1';
   const META_KEY = 'metodo-et-camile-drive-sync-meta-v1';
@@ -52,6 +53,13 @@
   let remoteTimer = null;
   let button = null;
   let uiState = { code: 'disconnected', detail: 'Seus estudos estão salvos neste dispositivo.' };
+
+  window.__METODO_ET_OAUTH_DIAGNOSTICS__ = Object.freeze({
+    clientId: CLIENT_ID,
+    expectedOrigin: EXPECTED_OAUTH_ORIGIN,
+    currentOrigin: location.origin,
+    originMatchesApp: location.origin === EXPECTED_OAUTH_ORIGIN
+  });
 
   const nativeSetItem = Storage.prototype.setItem;
   const nativeRemoveItem = Storage.prototype.removeItem;
@@ -169,7 +177,14 @@
     return gsiPromise;
   }
 
+  function assertAppOrigin() {
+    if (location.origin !== EXPECTED_OAUTH_ORIGIN) {
+      throw new Error(`Origem OAuth inesperada: ${location.origin}. A Método ET · Camile deve abrir em ${EXPECTED_OAUTH_ORIGIN}.`);
+    }
+  }
+
   async function initTokenClient() {
+    assertAppOrigin();
     if (tokenClient) return tokenClient;
     await loadGoogleIdentity();
     tokenClient = google.accounts.oauth2.initTokenClient({
