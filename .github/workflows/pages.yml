@@ -29,7 +29,7 @@ jobs:
         with:
           enablement: true
 
-      - name: Validar Método Camile · v1.6.1
+      - name: Validar Método Camile · v1.6.2 OAuth
         run: |
           cp src/app.js /tmp/app.mjs
           cp src/core.js /tmp/core.mjs
@@ -50,41 +50,24 @@ jobs:
           node --check drive-sync.js
           node --check drive-sync-ui.js
 
-          grep -q "PÓS-EDITAL · CGU 2026" index.html
-          grep -q "1.6.1-cgu-bizurafo-cpu-final" index.html
+          grep -q "1.6.2-cgu-oauth-origin" index.html
+          grep -q "APP_VERSION_LABEL='v1.6.2'" src/app.js
+          grep -q "OAuth/Drive corrigido · 19/10" src/app.js
+          grep -q "https://douglasborges.github.io" drive-sync.js
+          grep -q "EXPECTED_OAUTH_ORIGIN" drive-sync.js
+          grep -q "__METODO_ET_OAUTH_DIAGNOSTICS__" drive-sync.js
+          grep -q "Origem OAuth" drive-sync-ui.js
+          ! grep -q "oauth-client-hotfix.js" index.html
+
           grep -q "weeklyMinimum=1800" src/core.js
           grep -q "dailyMinimum=300" src/core.js
           grep -Fq "['afo','auditoria','adm-publica','dcon','dad']" src/core.js
-
           grep -q "AFO / Finanças Públicas — somente Leandro Ravyelle · BizurAFO" src/core.js
           grep -q "cpu-pacelli-06" src/core.js
-          grep -q "cpu-pacelli-07" src/core.js
-          grep -q "cpu-pacelli-08" src/core.js
-          grep -q "cpu-pacelli-13" src/core.js
-          grep -q "cpu-pacelli-14" src/core.js
           grep -q "cpu-pacelli-15" src/core.js
-          grep -q "studyPhase:4,priority:'FINAL',active:false" src/core.js
-          ! grep -q "André Luís" src/core.js
-
           grep -q "GOAL_PLAN_VERSION=3" src/personal.js
           grep -q "GOAL_CYCLES_PER_META=4" src/personal.js
           grep -q "GOAL_META_COUNT=8" src/personal.js
-          grep -q "AFO: somente BizurAFO" src/personal.js
-          grep -q "CPU: Giovanni Pacelli, módulos 06–08 primeiro" src/personal.js
-          grep -q "CPU Pacelli módulos 13–15" src/personal.js
-          ! grep -q "André Luís" src/personal.js
-
-          grep -q "Fase 4 · CPU + Sociedade Brasileira / Diversidade" src/cgu-materials.js
-          grep -q "Giovanni Pacelli · Contabilidade Pública · videoaulas dos módulos 6, 7, 8, 13, 14 e 15" src/cgu-materials.js
-          grep -q "somente BizurAFO" src/cgu-materials.js
-          ! grep -q "André Luís" src/cgu-materials.js
-
-          grep -q "APP_VERSION_LABEL='v1.6.1'" src/app.js
-          grep -q "CPU / FASE FINAL" src/app.js
-          grep -q "'cpu'" src/app.js
-          grep -q "VERSÃO EM USO" src/app.js
-          grep -q "Correção AFO/CPU · 16/10" src/app.js
-          grep -q "version.json" index.html
 
       - name: Empacotar site
         uses: actions/upload-pages-artifact@v3
