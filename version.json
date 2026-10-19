@@ -1,6 +1,6 @@
 {
-  "build": "1.6.1-cgu-bizurafo-cpu-final",
-  "family": "v1.6.1",
-  "publishedAt": "2026-10-16",
-  "channel": "cgu-bizurafo-cpu-final"
+  "build": "1.6.2-cgu-oauth-origin",
+  "family": "v1.6.2",
+  "publishedAt": "2026-10-19",
+  "channel": "cgu-oauth-origin"
 }
