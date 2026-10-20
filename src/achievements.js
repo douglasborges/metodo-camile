@@ -1,5 +1,5 @@
-import * as M from './core.js?v=1.6.2-cgu-oauth-origin';
-import {streaks} from './progress.js?v=1.6.2-cgu-oauth-origin';
+import * as M from './core.js?v=2.0.0-cgu-auditoria-final-20261021';
+import {streaks} from './progress.js?v=2.0.0-cgu-auditoria-final-20261021';
 
 export const CATEGORY_META={
   hours:{icon:'⏱',title:'Horas líquidas',description:'Tempo efetivo de estudo principal, sem revisão noturna e sem Legislação Seca.'},
