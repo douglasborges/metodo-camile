@@ -29,7 +29,7 @@ jobs:
         with:
           enablement: true
 
-      - name: Validar Método Camile · v1.6.2 OAuth
+      - name: Validar Método Camile · v2.0 Plano Final CGU
         run: |
           cp src/app.js /tmp/app.mjs
           cp src/core.js /tmp/core.mjs
@@ -39,6 +39,8 @@ jobs:
           cp src/achievements.js /tmp/achievements.mjs
           cp src/cgu-syllabus.js /tmp/cgu-syllabus.mjs
           cp src/cgu-materials.js /tmp/cgu-materials.mjs
+          cp src/cgu-final-plan.js /tmp/cgu-final-plan.mjs
+          cp src/cgu-final-runtime.js /tmp/cgu-final-runtime.mjs
           node --check /tmp/app.mjs
           node --check /tmp/core.mjs
           node --check /tmp/personal.mjs
@@ -47,27 +49,39 @@ jobs:
           node --check /tmp/achievements.mjs
           node --check /tmp/cgu-syllabus.mjs
           node --check /tmp/cgu-materials.mjs
+          node --check /tmp/cgu-final-plan.mjs
+          node --check /tmp/cgu-final-runtime.mjs
           node --check drive-sync.js
           node --check drive-sync-ui.js
 
-          grep -q "1.6.2-cgu-oauth-origin" index.html
-          grep -q "APP_VERSION_LABEL='v1.6.2'" src/app.js
-          grep -q "OAuth/Drive corrigido · 19/10" src/app.js
-          grep -q "https://douglasborges.github.io" drive-sync.js
-          grep -q "EXPECTED_OAUTH_ORIGIN" drive-sync.js
-          grep -q "__METODO_ET_OAUTH_DIAGNOSTICS__" drive-sync.js
-          grep -q "Origem OAuth" drive-sync-ui.js
-          ! grep -q "oauth-client-hotfix.js" index.html
-
-          grep -q "weeklyMinimum=1800" src/core.js
+          grep -q "2.0.0-cgu-auditoria-final-20261021" index.html
+          grep -q "APP_VERSION_LABEL='v2.0'" src/app.js
+          grep -q "function prioritiesPage()" src/app.js
+          grep -q "Prioridades CGU" index.html
+          grep -q "CYCLE_PLAN_VERSION=6" src/core.js
+          grep -q "weeklyMinimum=1980" src/core.js
+          grep -q "weeklyTarget=2340" src/core.js
           grep -q "dailyMinimum=300" src/core.js
-          grep -Fq "['afo','auditoria','adm-publica','dcon','dad']" src/core.js
-          grep -q "AFO / Finanças Públicas — somente Leandro Ravyelle · BizurAFO" src/core.js
-          grep -q "cpu-pacelli-06" src/core.js
-          grep -q "cpu-pacelli-15" src/core.js
-          grep -q "GOAL_PLAN_VERSION=3" src/personal.js
-          grep -q "GOAL_CYCLES_PER_META=4" src/personal.js
-          grep -q "GOAL_META_COUNT=8" src/personal.js
+          grep -q "dailyTarget=360" src/core.js
+          grep -q "sundayReviewMinutes=180" src/core.js
+          grep -q "FINAL_CGU_CYCLE_SUBJECTS" src/core.js
+          grep -q "Domingo é reservado à revisão e não avança o ciclo" src/core.js
+          grep -q "CGU_AUD_2026_10_20_FINAL_PROPOSTA_v1" src/cgu-final-plan.js
+          grep -q "NAO_ESTUDAR_DUPLICADO" src/cgu-final-plan.js
+          grep -q "EM_PREPARACAO_NO_PRINT" src/cgu-final-plan.js
+          grep -q "PAC_AFO" src/cgu-final-runtime.js
+          grep -q "PAC_CPU" src/cgu-final-runtime.js
+          grep -q "MARC_AUD" src/cgu-final-runtime.js
+          grep -q "MARC_ADM" src/cgu-final-runtime.js
+          grep -q "RAFA_DAD" src/cgu-final-runtime.js
+          grep -q "NELMA" src/cgu-final-runtime.js
+
+          # OAuth/Drive precisa permanecer no mesmo mecanismo e identidade.
+          grep -q "metodo-et:camile:v1" drive-sync.js
+          grep -q "Metodo ET - Camile - Dados.json" drive-sync.js
+          grep -q "camile-cloud-v1" drive-sync.js
+          grep -q "242070309786-1rn9vsc4fo0coaq3e3mptrlf1m9f0kt3.apps.googleusercontent.com" drive-sync.js
+          grep -q "https://douglasborges.github.io" drive-sync.js
 
       - name: Empacotar site
         uses: actions/upload-pages-artifact@v3
