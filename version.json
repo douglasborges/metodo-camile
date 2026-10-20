@@ -1,6 +1,7 @@
 {
-  "build": "1.6.2-cgu-oauth-origin",
-  "family": "v1.6.2",
-  "publishedAt": "2026-10-19",
-  "channel": "cgu-oauth-origin"
+  "build": "2.0.0-cgu-auditoria-final-20261021",
+  "family": "v2.0",
+  "publishedAt": "2026-10-20",
+  "effectiveStudyStart": "2026-10-21",
+  "channel": "cgu-auditoria-final"
 }
