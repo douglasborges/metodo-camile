@@ -471,7 +471,7 @@ export function session(current,input){
   const match=(String(input.title||'')+' '+String(input.notes||'')).match(/bloco\s*(\d+)/i);
   if(match)u.blocksCompleted=Math.max(Number(u.blocksCompleted)||0,Math.min(24,Number(match[1])||0));
  }
- if(input.applyCycle&&!['night','andresan'].includes(input.activity)&&input.date===day()&&CYCLE[st.cycle.index]===s.id){
+ if(input.applyCycle&&!['night','andresan'].includes(input.activity)&&input.date===day()&&new Date(input.date+'T12:00:00').getDay()!==0&&CYCLE[st.cycle.index]===s.id){
   st.cycle.minutes=0;
   st.cycle.index=(st.cycle.index+1)%CYCLE.length;
   entry.cycleApplied=true;
@@ -505,6 +505,7 @@ export function finishCheckpoint(current,sid,id,results,minutes,applyCycle=false
  let perUnit={};for(let u of cp.units){let r=results[u.id],attempted=Number(r?.attempted),correct=Number(r?.correct);if(!Number.isInteger(attempted)||attempted<1||attempted>20||!Number.isInteger(correct)||correct<0||correct>attempted)throw Error('Registre de 1 a 20 questões por unidade, com acertos válidos.');perUnit[u.id]={attempted,correct};}
  const record={done:true,date:day(),minutes,perUnit};s.checkpoints[id]=record;const entry=checkpointSession(st,s,{...cp,record},record,minutes);
  if(applyCycle){
+  if(new Date(day()+'T12:00:00').getDay()===0)throw Error('Domingo é reservado à revisão e não avança o ciclo.');
   if(CYCLE[st.cycle.index]!==s.id)throw Error('Só a disciplina atual pode concluir a ocorrência do ciclo.');
   st.cycle.minutes=0;st.cycle.index=(st.cycle.index+1)%CYCLE.length;entry.cycleApplied=true;entry.slotComplete=true;
  }
