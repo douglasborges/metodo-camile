@@ -1,8 +1,10 @@
+import {FINAL_CGU_CYCLE_SUBJECTS,applyFinalCguCurriculum} from './cgu-final-runtime.js';
 export const KEY='metodo-et:camile:v1';
 export const LEGACY_CYCLE_V13=Object.freeze(['port','dcon','afo','ti','adm-publica','diversidade','afo','dad','politicas','auditoria','afo']);
 export const INTERIM_CYCLE_V14=Object.freeze(['afo','auditoria','adm-publica','dcon','dad','afo','politicas','port','ti','afo']);
-export const CYCLE_PLAN_VERSION=5;
-export const CYCLE=['afo','auditoria','adm-publica','dcon','dad'];
+export const PRE_FINAL_CYCLE_V5=Object.freeze(['afo','auditoria','adm-publica','dcon','dad']);
+export const CYCLE_PLAN_VERSION=6;
+export const CYCLE=[...FINAL_CGU_CYCLE_SUBJECTS];
 export const RULES=Object.freeze({
  afo:{label:'AFO',minutes:90,checkpoint:3,unit:'módulo'},
  cpu:{label:'Contabilidade Pública',minutes:120,checkpoint:3,unit:'módulo'},
@@ -14,7 +16,8 @@ export const RULES=Object.freeze({
  'adm-publica':{label:'Adm. Pública',minutes:60,checkpoint:4,unit:'aula'},
  diversidade:{label:'Diversidade',minutes:60,checkpoint:4,unit:'aula'},
  politicas:{label:'Políticas Públicas',minutes:60,checkpoint:4,unit:'aula'},
- auditoria:{label:'Auditoria',minutes:75,checkpoint:4,unit:'aula'}
+ auditoria:{label:'Auditoria',minutes:75,checkpoint:4,unit:'aula'},
+ cgu7:{label:'7 Fontes CGU',minutes:60,checkpoint:4,unit:'aula'}
 });
 export const ACTIVITIES={free:'Estudo livre',theory:'Teoria',micro:'Microrrevisão',battery:'Revisão + primeira bateria',checkpoint:'Checkpoint',general:'Revisão geral',solid:'Questões — Estudo Sólido',andresan:'Andresan · questões Cebraspe',night:'Revisão noturna'};
 export const TI_TCU_SELECTED_36=Object.freeze([
@@ -129,14 +132,18 @@ function dconHistoricalProgress(st,dcon){
 export function normalizeMethodState(current){
  const st=copy(current);
  st.settings=st.settings||{};
- st.settings.weeklyMinimum=1800;
+ st.settings.weeklyMinimum=1980;
+ st.settings.weeklyTarget=2340;
  st.settings.dailyMinimum=300;
+ st.settings.dailyTarget=360;
+ st.settings.sundayReviewMinutes=180;
+ st.settings.cguPlanStart='2026-10-21';
  st.settings.focus='CGU';
  st.settings.secondary='TCU';
  if(!Array.isArray(st.subjects))st.subjects=[];
  if(!st.cycle||!Number.isInteger(st.cycle.index))st.cycle={index:0,minutes:0};
  if(st.cyclePlanVersion!==CYCLE_PLAN_VERSION){
-  const previousCycle=st.cyclePlanVersion===4?INTERIM_CYCLE_V14:LEGACY_CYCLE_V13;
+  const previousCycle=st.cyclePlanVersion===5?PRE_FINAL_CYCLE_V5:(st.cyclePlanVersion===4?INTERIM_CYCLE_V14:LEGACY_CYCLE_V13);
   const previousSubject=previousCycle[Math.max(0,Math.min(previousCycle.length-1,Number(st.cycle.index)||0))];
   let nextIndex=CYCLE.indexOf(previousSubject);
   if(nextIndex<0)nextIndex=0;
@@ -385,6 +392,7 @@ export function normalizeMethodState(current){
   if(hit){art5.theoryDone=true;art5.blocksCompleted=24;art5.theoryDate=(st.sessions||[]).filter(row=>row.subjectId==='dcon'&&row.unitId==='dcon-u-2'&&/bloco\s*24\b/i.test(String(row.title||'')+' '+String(row.notes||''))).map(row=>row.date).sort().at(-1)||art5.theoryDate;}
  }
  dconHistoricalProgress(st,dcon);
+ applyFinalCguCurriculum(st);
  return st;
 }
 export const copy=v=>JSON.parse(JSON.stringify(v));
