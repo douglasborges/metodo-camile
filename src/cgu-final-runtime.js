@@ -1,10 +1,10 @@
-import {FINAL_CGU_PLAN,FINAL_CGU_LESSONS,normalizeFinalCguState} from './cgu-final-plan.js';
+import {FINAL_CGU_PLAN,FINAL_CGU_LESSONS,normalizeFinalCguState,finalCguNeedsFallback} from './cgu-final-plan.js';
 
 export const FINAL_CGU_RUNTIME_VERSION='2.0.0-cgu-auditoria-final-20261021';
-export const FINAL_CGU_CYCLE_SUBJECTS=Object.freeze([
+export const FINAL_CGU_CYCLE_SUBJECTS=Object.freeze(Object.defineProperty([
  'afo','dcon','cpu','adm-publica','afo','dad','cpu','auditoria','afo','dad','cpu','auditoria','cgu7'
-]);
-export const FINAL_CGU_CYCLE_LABELS=Object.freeze([
+],12,{get:()=>finalCguNeedsFallback('P3')?'auditoria':'cgu7'}));
+export const FINAL_CGU_CYCLE_LABELS=Object.freeze(Object.defineProperty([
  "AFO · Pacelli",
  "Direito Constitucional · Nelma",
  "CPU · Pacelli",
@@ -17,11 +17,11 @@ export const FINAL_CGU_CYCLE_LABELS=Object.freeze([
  "DAD / 7 Fontes P2",
  "CPU · Pacelli",
  "Auditoria · Marcelo",
- "7 Fontes P3 quando disponível · fallback/reforço P3"
-]);
+ "7 Fontes P3"
+],12,{get:()=>finalCguNeedsFallback('P3')?'Auditoria · Marcelo — reforço P3 · fallback 7 Fontes':'7 Fontes P3'}));
 
 export const PREVIOUS_FINAL_CGU_CYCLE=Object.freeze(["afo","cpu","auditoria","dad","afo","cpu","adm-publica","auditoria","afo","cpu","dcon","auditoria","dad"]);
-// A passagem antiga de fallback (índice 11) migra para 12: agora cgu7.
+// A passagem antiga de fallback (índice 11) migra para 12: fonte resolvida pela disponibilidade P3.
 // Estados já intercalados mantêm índice/minutos; a posição 13 muda só de fonte ativa.
 export function migrateFinalCguCycle(state,previousCycle=PREVIOUS_FINAL_CGU_CYCLE){
  const old=state.cycle||{index:0,minutes:0},index=Number(old.index)||0;
@@ -170,7 +170,7 @@ export function finalCguLessonProgress(state,lesson){
 }
 export function finalCguSlot(index){
  const slot=FINAL_CGU_PLAN.slot_cycle_13[index]||FINAL_CGU_PLAN.slot_cycle_13[0];
- return {...slot,subjectId:FINAL_CGU_CYCLE_SUBJECTS[index]||FINAL_CGU_CYCLE_SUBJECTS[0],label:FINAL_CGU_CYCLE_LABELS[index]||slot.discipline};
+ return {...slot,discipline:FINAL_CGU_CYCLE_LABELS[index]||slot.discipline,subjectId:FINAL_CGU_CYCLE_SUBJECTS[index]||FINAL_CGU_CYCLE_SUBJECTS[0],label:FINAL_CGU_CYCLE_LABELS[index]||slot.discipline};
 }
 export function finalCguIsSunday(date=new Date()){return date.getDay()===0;}
 export function finalCguPhaseForDate(iso){

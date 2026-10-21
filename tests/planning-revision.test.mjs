@@ -11,14 +11,14 @@ const previous=s=>{s.cyclePlanVersion=6;s.cguFinalPlan={...s.cguFinalPlan,cycleM
 const artId=camile?'dcon-u-2':'ESTRATEGIA-DCON-04';
 const dcon=s=>s.subjects.find(x=>x.id==='dcon');
 test('ciclo solicitado: 13 posições, sem AFO/CPU consecutivas inclusive na volta',()=>{
- const expected=['afo','dcon','cpu',camile?'adm-publica':'adm','afo','dad','cpu',camile?'auditoria':'aud','afo','dad','cpu',camile?'auditoria':'aud','cgu7'];
+ const expected=['afo','dcon','cpu',camile?'adm-publica':'adm','afo','dad','cpu',camile?'auditoria':'aud','afo','dad','cpu',camile?'auditoria':'aud',camile?'auditoria':'aud'];
  assert.deepEqual(M.CYCLE,expected);assert.deepEqual(FINAL_CGU_CYCLE_SUBJECTS,expected);
  for(let i=0;i<13;i++){
   assert.notDeepEqual(new Set([expected[i],expected[(i+1)%13]]),new Set(['afo','cpu']));
   assert.equal(finalCguSlot(i).subjectId,expected[i]);assert.equal(finalCguSlot(i).slot,i+1);
   assert.equal(finalCguSlot(i).discipline,finalCguSlot(i).label);
  }
- assert.match(finalCguSlot(12).label,/7 Fontes P3.*fallback/);
+ assert.match(finalCguSlot(12).label,/Auditoria.*reforço P3.*fallback 7 Fontes/);
  assert.match(finalCguSlot(9).label,/DAD.*7 Fontes P2/);
 });
 test('migra todas as posições anteriores, preserva minutos e não migra de novo ao recarregar',()=>{
@@ -26,7 +26,7 @@ test('migra todas as posições anteriores, preserva minutos e não migra de nov
  for(let index=0;index<13;index++){
   const s=previous(seed());s.cycle={index,minutes:47,marker:'preservar'};
   const next=update(s);
-  assert.equal(next.cycle.index,map[index]);assert.equal(M.CYCLE[next.cycle.index],index===11?'cgu7':PREVIOUS_FINAL_CGU_CYCLE[index]);
+  assert.equal(next.cycle.index,map[index]);assert.equal(M.CYCLE[next.cycle.index],PREVIOUS_FINAL_CGU_CYCLE[index]);
   assert.equal(next.cycle.minutes,47);assert.equal(next.cycle.marker,'preservar');
   assert.deepEqual(update(JSON.parse(JSON.stringify(next))).cycle,next.cycle);
  }
@@ -110,7 +110,7 @@ test('estados já intercalados mantêm as 13 posições e os minutos após corre
    assert.deepEqual(s.cycle,{index,minutes:47});assert.deepEqual(s.sessions,sessions);
   }
  }
- assert.equal(M.CYCLE[9],'dad');assert.equal(M.CYCLE[11],camile?'auditoria':'aud');assert.equal(M.CYCLE[12],'cgu7');
+ assert.equal(M.CYCLE[9],'dad');assert.equal(M.CYCLE[11],camile?'auditoria':'aud');assert.equal(M.CYCLE[12],camile?'auditoria':'aud');
  const published=FINAL_CGU_LESSONS.filter(x=>x.source==='7F'&&x.availability==='PUBLICADA_NO_PRINT');
  assert.ok(published.some(x=>x.priority==='P3'));assert.equal(published.some(x=>x.priority==='P2'),false);
 });

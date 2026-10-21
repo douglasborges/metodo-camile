@@ -4,7 +4,8 @@ export const LEGACY_CYCLE_V13=Object.freeze(['port','dcon','afo','ti','adm-publi
 export const INTERIM_CYCLE_V14=Object.freeze(['afo','auditoria','adm-publica','dcon','dad','afo','politicas','port','ti','afo']);
 export const PRE_FINAL_CYCLE_V5=Object.freeze(['afo','auditoria','adm-publica','dcon','dad']);
 export const CYCLE_PLAN_VERSION=7;
-export const CYCLE=[...FINAL_CGU_CYCLE_SUBJECTS];
+// Manter o getter da posição 13: não congelar uma cópia da disponibilidade.
+export const CYCLE=FINAL_CGU_CYCLE_SUBJECTS;
 export const RULES=Object.freeze({
  afo:{label:'AFO',minutes:90,checkpoint:3,unit:'módulo'},
  cpu:{label:'Contabilidade Pública',minutes:120,checkpoint:3,unit:'módulo'},
