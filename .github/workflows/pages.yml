@@ -65,7 +65,7 @@ jobs:
           grep -q "APP_VERSION_LABEL='v2.0'" src/app.js
           grep -q "function prioritiesPage()" src/app.js
           grep -q "Prioridades CGU" index.html
-          grep -q "CYCLE_PLAN_VERSION=7" src/core.js
+          grep -q "CYCLE_PLAN_VERSION=8" src/core.js
           grep -q "weeklyMinimum=1980" src/core.js
           grep -q "weeklyTarget=2340" src/core.js
           grep -q "dailyMinimum=300" src/core.js
