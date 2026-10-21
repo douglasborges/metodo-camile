@@ -389,7 +389,7 @@ export const FINAL_CGU_PLAN={
       "progress": "NAO_INFERIR"
     },
     {
-      "id": "ESTRATEGIA-DCON-04",
+      "id": "dcon-u-2",
       "source": "NELMA",
       "category": "DCON",
       "number": "04 · Estratégia",
@@ -4938,3 +4938,4 @@ export function normalizeFinalCguState(state){
  state.cguFinalPlan.migratedAt=state.cguFinalPlan.migratedAt||new Date().toISOString();
  return state;
 }
+
