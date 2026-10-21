@@ -2,14 +2,33 @@ import {FINAL_CGU_PLAN,FINAL_CGU_LESSONS,normalizeFinalCguState} from './cgu-fin
 
 export const FINAL_CGU_RUNTIME_VERSION='2.0.0-cgu-auditoria-final-20261021';
 export const FINAL_CGU_CYCLE_SUBJECTS=Object.freeze([
- 'afo','cpu','auditoria','dad','afo','cpu','adm-publica','auditoria','afo','cpu','dcon','auditoria','dad'
+ 'afo','dcon','cpu','adm-publica','afo','dad','cpu','auditoria','afo','dad','cpu','auditoria','auditoria'
 ]);
 export const FINAL_CGU_CYCLE_LABELS=Object.freeze([
- 'AFO · Pacelli','CPU · Pacelli','Auditoria · Marcelo','DAD · Rafael / pré → 7 Fontes',
- 'AFO · Pacelli','CPU · Pacelli','Administração Pública · Marcelo','Auditoria · Marcelo',
- 'AFO · Pacelli','CPU · Pacelli','Direito Constitucional · Nelma',
- '7 Fontes P3 quando publicado · fallback P3','DAD / 7 Fontes P2'
+ "AFO · Pacelli",
+ "Direito Constitucional · Nelma",
+ "CPU · Pacelli",
+ "Administração Pública · Marcelo",
+ "AFO · Pacelli",
+ "DAD · Rafael / pré-requisitos → 7 Fontes",
+ "CPU · Pacelli",
+ "Auditoria · Marcelo",
+ "AFO · Pacelli",
+ "DAD / 7 Fontes P2",
+ "CPU · Pacelli",
+ "Auditoria · Marcelo",
+ "7 Fontes P3 quando disponível · fallback/reforço P3"
 ]);
+
+export const PREVIOUS_FINAL_CGU_CYCLE=Object.freeze(["afo","cpu","auditoria","dad","afo","cpu","adm-publica","auditoria","afo","cpu","dcon","auditoria","dad"]);
+export function migrateFinalCguCycle(state,previousCycle=PREVIOUS_FINAL_CGU_CYCLE){
+ const old=state.cycle||{index:0,minutes:0},index=Number(old.index)||0;
+ const equivalent=previousCycle===PREVIOUS_FINAL_CGU_CYCLE
+  ? [0,2,7,5,4,6,3,11,8,10,1,12,9][index]
+  : FINAL_CGU_CYCLE_SUBJECTS.indexOf(previousCycle[index]);
+ state.cycle={...old,index:equivalent>=0?equivalent:0};
+ return state;
+}
 
 const SOURCE_CONFIG=Object.freeze({
  PAC_AFO:{subjectId:'afo',course:'AFO — Giovanni Pacelli · Curso Regular 2026',minutes:60},
@@ -46,6 +65,7 @@ function newUnit(lesson,order){
   course:lesson.course,lessonNumber:lesson.number,priority:lesson.priority,kind:lesson.kind,
   deps:lesson.deps||'',catalogStatus:lesson.status,availability:lesson.availability||'',
   sourcePage:lesson.source_page??null,note:lesson.note||'',
+  ...(lesson.exclusiveArt5?{totalBlocks:24,studyPlan:lesson.note}:{}),
   hiddenFromRoute:lesson.source==='7F' && !(lesson.availability==='PUBLICADA_NO_PRINT' && lesson.status==='ESTUDAR')
  };
 }
@@ -63,6 +83,7 @@ function copyStudyEvidence(target,source){
  return target;
 }
 function legacyEvidence(subject,lesson){
+ if(lesson.exclusiveArt5)return null;
  const ids=LEGACY_DIRECT[lesson.id]||[];
  let hit=(subject.units||[]).find(u=>ids.includes(u.id));
  if(hit)return hit;
@@ -160,3 +181,4 @@ export function finalCguPhaseForDate(iso){
  }
  return null;
 }
+

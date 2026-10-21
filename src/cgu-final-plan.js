@@ -46,68 +46,68 @@ export const FINAL_CGU_PLAN={
   "slot_cycle_13": [
     {
       "slot": 1,
-      "discipline": "AFO Pacelli",
+      "discipline": "AFO · Pacelli",
       "priority": "P3"
     },
     {
       "slot": 2,
-      "discipline": "CPU Pacelli",
-      "priority": "P3"
+      "discipline": "Direito Constitucional · Nelma",
+      "priority": "P1"
     },
     {
       "slot": 3,
-      "discipline": "Auditoria Marcelo",
+      "discipline": "CPU · Pacelli",
       "priority": "P3"
     },
     {
       "slot": 4,
-      "discipline": "DAD Rafael/pré - 7F posteriormente",
-      "priority": "P2/P3"
+      "discipline": "Administração Pública · Marcelo",
+      "priority": "P1"
     },
     {
       "slot": 5,
-      "discipline": "AFO Pacelli",
+      "discipline": "AFO · Pacelli",
       "priority": "P3"
     },
     {
       "slot": 6,
-      "discipline": "CPU Pacelli",
-      "priority": "P3"
+      "discipline": "DAD · Rafael / pré-requisitos → 7 Fontes",
+      "priority": "P2/P3"
     },
     {
       "slot": 7,
-      "discipline": "Admin Marcelo",
-      "priority": "P1"
+      "discipline": "CPU · Pacelli",
+      "priority": "P3"
     },
     {
       "slot": 8,
-      "discipline": "Auditoria Marcelo",
+      "discipline": "Auditoria · Marcelo",
       "priority": "P3"
     },
     {
       "slot": 9,
-      "discipline": "AFO Pacelli",
+      "discipline": "AFO · Pacelli",
       "priority": "P3"
     },
     {
       "slot": 10,
-      "discipline": "CPU Pacelli",
-      "priority": "P3"
+      "discipline": "DAD / 7 Fontes P2",
+      "priority": "P2"
     },
     {
       "slot": 11,
-      "discipline": "Direito Constitucional Nelma",
-      "priority": "P1"
+      "discipline": "CPU · Pacelli",
+      "priority": "P3"
     },
     {
       "slot": 12,
-      "discipline": "7 Fontes P3 quando publicado; até lá reforço P3",
+      "discipline": "Auditoria · Marcelo",
       "priority": "P3"
     },
     {
       "slot": 13,
-      "discipline": "DAD/7 Fontes P2",
-      "priority": "P2"
+      "discipline": "7 Fontes P3 quando disponível · fallback/reforço P3",
+      "priority": "P3"
     }
   ],
   "users": [
@@ -317,17 +317,35 @@ export const FINAL_CGU_PLAN={
       "source": "NELMA",
       "category": "DCON",
       "number": "02",
-      "title": "Teoria dos Direitos e Garantias Fundamentais; Direitos e Deveres Individuais e Coletivos",
+      "title": "Teoria geral dos Direitos e Garantias Fundamentais — somente pré-requisitos; excluir art. 5º",
       "priority": "P1",
       "status": "ESTUDAR",
       "teacher": "Nelma Fontana",
       "course": "Direito Constitucional Cebraspe, 16 aulas",
       "deps": "01",
-      "note": "",
+      "note": "NÃO ESTUDAR o art. 5º pela Aula 02 Cebraspe. Para o art. 5º, usar exclusivamente Estratégia Concursos — Nelma Fontana — Aula 04: 24 vídeos teóricos + exercícios.",
       "kind": "CGU",
       "availability": "GRADE PUBLICADA",
       "source_page": null,
       "progress": "NAO_INFERIR"
+    },
+    {
+      "id": "dcon-u-2",
+      "source": "NELMA",
+      "category": "DCON",
+      "number": "04 · Estratégia",
+      "title": "Estratégia — Nelma Fontana — Aula 04 — Art. 5º — 24 vídeos teóricos + exercícios",
+      "priority": "P1",
+      "status": "ESTUDAR",
+      "teacher": "Nelma Fontana",
+      "course": "Estratégia Concursos — Nelma Fontana — Aula 04 — Art. 5º",
+      "deps": "Nelma 01 → teoria geral dos direitos fundamentais (Nelma 02, sem art. 5º)",
+      "note": "Fonte principal e exclusiva da teoria do art. 5º: 24 vídeos teóricos + exercícios. Depois, RETORNAR à Nelma/Cebraspe: Direitos Sociais → Direitos Políticos → Organização do Estado → demais aulas selecionadas, fiscalização/controle e Ordem Econômica. Não repetir o art. 5º no Cebraspe.",
+      "kind": "CGU",
+      "availability": "GRADE PUBLICADA",
+      "source_page": null,
+      "progress": "NAO_INFERIR",
+      "exclusiveArt5": true
     },
     {
       "id": "NELMA-DCON-03",
@@ -339,7 +357,7 @@ export const FINAL_CGU_PLAN={
       "status": "ESTUDAR",
       "teacher": "Nelma Fontana",
       "course": "Direito Constitucional Cebraspe, 16 aulas",
-      "deps": "02",
+      "deps": "Teoria geral (02) → Estratégia/Nelma Aula 04 — Art. 5º; depois retornar ao Cebraspe",
       "note": "",
       "kind": "CGU",
       "availability": "GRADE PUBLICADA",
@@ -4839,3 +4857,4 @@ export function normalizeFinalCguState(state){
  state.cguFinalPlan.migratedAt=state.cguFinalPlan.migratedAt||new Date().toISOString();
  return state;
 }
+

@@ -1,9 +1,9 @@
-import {FINAL_CGU_CYCLE_SUBJECTS,applyFinalCguCurriculum} from './cgu-final-runtime.js';
+import {FINAL_CGU_CYCLE_SUBJECTS,applyFinalCguCurriculum,migrateFinalCguCycle,PREVIOUS_FINAL_CGU_CYCLE} from './cgu-final-runtime.js';
 export const KEY='metodo-et:camile:v1';
 export const LEGACY_CYCLE_V13=Object.freeze(['port','dcon','afo','ti','adm-publica','diversidade','afo','dad','politicas','auditoria','afo']);
 export const INTERIM_CYCLE_V14=Object.freeze(['afo','auditoria','adm-publica','dcon','dad','afo','politicas','port','ti','afo']);
 export const PRE_FINAL_CYCLE_V5=Object.freeze(['afo','auditoria','adm-publica','dcon','dad']);
-export const CYCLE_PLAN_VERSION=6;
+export const CYCLE_PLAN_VERSION=7;
 export const CYCLE=[...FINAL_CGU_CYCLE_SUBJECTS];
 export const RULES=Object.freeze({
  afo:{label:'AFO',minutes:90,checkpoint:3,unit:'módulo'},
@@ -63,8 +63,8 @@ function ensureSubject(st,{id,course,minutes,units,replaceUntouched=false}){
  let s=st.subjects?.find(x=>x.id===id);
  if(!s){s={id,course,phase:'new',slotMinutes:minutes,units:[],checkpoints:{},notebooks:[],andresanComplete:false};st.subjects.push(s);}
  s.course=course;s.slotMinutes=minutes;s.phase=s.phase||'new';s.checkpoints=s.checkpoints||{};s.notebooks=s.notebooks||[];s.andresanComplete=!!s.andresanComplete;
- if(replaceUntouched&&subjectUntouched(st,s)){s.units=units;s.checkpoints={};}
- else{
+ // Mesclar por identidade: mesmo unidades parciais e checkpoints antigos devem sobreviver.
+ {
   for(const nu of units){
    const old=s.units.find(u=>u.id===nu.id||u.title===nu.title);
    if(old){
@@ -143,21 +143,18 @@ export function normalizeMethodState(current){
  if(!Array.isArray(st.subjects))st.subjects=[];
  if(!st.cycle||!Number.isInteger(st.cycle.index))st.cycle={index:0,minutes:0};
  if(st.cyclePlanVersion!==CYCLE_PLAN_VERSION){
-  const previousCycle=st.cyclePlanVersion===5?PRE_FINAL_CYCLE_V5:(st.cyclePlanVersion===4?INTERIM_CYCLE_V14:LEGACY_CYCLE_V13);
-  const previousSubject=previousCycle[Math.max(0,Math.min(previousCycle.length-1,Number(st.cycle.index)||0))];
-  let nextIndex=CYCLE.indexOf(previousSubject);
-  if(nextIndex<0)nextIndex=0;
-  st.cycle={...st.cycle,index:nextIndex,minutes:0};
+  const previousCycle=st.cyclePlanVersion===6?PREVIOUS_FINAL_CGU_CYCLE:st.cyclePlanVersion===5?PRE_FINAL_CYCLE_V5:(st.cyclePlanVersion===4?INTERIM_CYCLE_V14:LEGACY_CYCLE_V13);
+  migrateFinalCguCycle(st,previousCycle);
   st.cyclePlanVersion=CYCLE_PLAN_VERSION;
  }
  if(st.cycle.index<0||st.cycle.index>=CYCLE.length)st.cycle={index:0,minutes:0};
  const oldInfo=st.subjects.find(s=>s.id==='info');
- if(oldInfo&&subjectUntouched(st,oldInfo))st.subjects=st.subjects.filter(s=>s.id!=='info');
+ if(oldInfo&&subjectUntouched(st,oldInfo))Object.assign(oldInfo,{active:false,legacyPreserved:true});
 
  const port=st.subjects.find(s=>s.id==='port');
  if(port){port.course='Português — Marcello Giulian · curso mantido integralmente';port.slotMinutes=60;Object.assign(port,{studyPhase:'manutencao',priority:'MANUTENÇÃO',active:true});}
 
- const dcon=ensureSubject(st,{id:'dcon',course:'Direito Constitucional — Nelma Fontana + Estratégia · rota CGU final',minutes:60,replaceUntouched:true,units:[
+ const dcon=ensureSubject(st,{id:'dcon',course:'Direito Constitucional — Nelma Fontana + Estratégia · rota CGU final',minutes:60,replaceUntouched:false,units:[
   baseUnit('dcon-u-1',1,'Nelma · A01 · Princípios Fundamentais',{source:'Nelma Fontana',cguCodes:['B1.4']}),
   baseUnit('dcon-u-3',2,'Estratégia/Nelma · A03 · Teoria dos Direitos',{source:'Estratégia/Nelma · ponte de Direitos Fundamentais',cguCodes:['B1.4']}),
   baseUnit('dcon-u-2',3,'Estratégia · A04 · Art. 5º · 24 videoaulas + exercícios',{studyPlan:'Concluir os 24 vídeos e os exercícios antes de considerar o Art. 5º fechado.',totalBlocks:24,source:'Estratégia Concursos',cguCodes:['B1.4']}),
@@ -381,15 +378,11 @@ export function normalizeMethodState(current){
  }
  for(const row of st.sessions||[]){
   if(row.legacy===true||row.activity!=='theory'||!row.unitId)continue;
+  if(row.subjectId==='dcon'&&row.unitId==='dcon-u-2')continue;
   const note=(String(row.title||'')+' '+String(row.notes||'')).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
   if(!/(finalizei|concluid[ao]|totalmente concluid[ao]|pdf concluido|teoria concluida)/.test(note))continue;
   const s=st.subjects?.find(x=>x.id===row.subjectId),u=s?.units?.find(x=>x.id===row.unitId);
   if(u&&!u.theoryDone){u.theoryDone=true;u.theoryDate=validDay(row.date)?row.date:u.theoryDate;markCguCodes(st,u.cguCodes,'auto-history');}
- }
- const art5=dcon?.units?.find(u=>u.id==='dcon-u-2');
- if(art5&&!art5.theoryDone){
-  const hit=(st.sessions||[]).some(row=>row.subjectId==='dcon'&&row.unitId==='dcon-u-2'&&/bloco\s*24\b/i.test(String(row.title||'')+' '+String(row.notes||'')));
-  if(hit){art5.theoryDone=true;art5.blocksCompleted=24;art5.theoryDate=(st.sessions||[]).filter(row=>row.subjectId==='dcon'&&row.unitId==='dcon-u-2'&&/bloco\s*24\b/i.test(String(row.title||'')+' '+String(row.notes||''))).map(row=>row.date).sort().at(-1)||art5.theoryDate;}
  }
  dconHistoricalProgress(st,dcon);
  applyFinalCguCurriculum(st);
@@ -468,8 +461,9 @@ export function session(current,input){
  if((start!==null||end!==null)&&(!Number.isFinite(start)||!Number.isFinite(end)||start<0||end<start))throw Error('Preencha início e fim válidos do conteúdo.');
  const entry={id:uid(),subjectId:s.id,unitId:u?.id||'',title:String(input.title||'').trim()||u?.title||'',date:input.date,createdAt:new Date().toISOString(),activity:input.activity,minutes,questions:q,correct,medium:input.medium||'',start,end,notes:String(input.notes||''),legacy:false,cycleApplied:false};
  if(s.id==='dcon'&&u?.id==='dcon-u-2'){
-  const match=(String(input.title||'')+' '+String(input.notes||'')).match(/bloco\s*(\d+)/i);
-  if(match)u.blocksCompleted=Math.max(Number(u.blocksCompleted)||0,Math.min(24,Number(match[1])||0));
+  const match=(String(input.title||'')+' '+String(input.notes||'')).match(/bloco\s*(\d+)\s+conclu[ií]do\b/i);
+  const completed=Number(u.blocksCompleted)||0;
+  if(match&&Number(match[1])===completed+1&&completed<24)u.blocksCompleted=completed+1;
  }
  if(input.applyCycle&&!['night','andresan'].includes(input.activity)&&input.date===day()&&new Date(input.date+'T12:00:00').getDay()!==0&&CYCLE[st.cycle.index]===s.id){
   st.cycle.minutes=0;
@@ -530,3 +524,4 @@ export function validate(st){
  }
  return st;
 }
+

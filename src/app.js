@@ -176,6 +176,7 @@ function prioritiesStatusLabel(lesson,progress){
  if(progress.status==='EM_ANDAMENTO')return 'EM ANDAMENTO';
  return 'PENDENTE';
 }
+function dconPolicyCard(){return '<section class="card"><h2>DCON · exceção obrigatória do art. 5º</h2><p>Regra geral: Nelma Fontana — curso Cebraspe. Para o art. 5º, fonte teórica principal e exclusiva: <b>Estratégia Concursos — Nelma Fontana — Aula 04 — Art. 5º — 24 vídeos teóricos + exercícios.</b></p><p>Fundamentos e pré-requisitos → teoria geral dos direitos fundamentais → Estratégia Aula 04 → RETORNAR à Nelma/Cebraspe: Direitos Sociais → Direitos Políticos → Organização do Estado → demais aulas selecionadas, fiscalização/controle e Ordem Econômica.</p><p>NÃO ESTUDAR o art. 5º pela Aula 02 Cebraspe nem repetir sua teoria nesse curso. O progresso anterior permanece preservado.</p></section>';}
 function prioritiesPage(){
  const filtered=FINAL_CGU_LESSONS.filter(x=>{
   if(cguPriorityFilter&&x.priority!==cguPriorityFilter)return false;
@@ -202,6 +203,7 @@ function prioritiesPage(){
    '<div class="actions" style="margin-top:12px">'+availability+(canStudy?'<button class="secondary small" data-action="catalog-study" data-subject="'+esc(p.subjectId)+'" data-unit="'+esc(p.unitId)+'">Registrar estudo desta aula</button>':'')+'</div></article>';
  }).join('');
  return heading('PLANO FINAL · CGU 2026','Prioridades CGU','P3 primeiro, P2 depois, P1 por último. Pré-requisitos necessários podem furar a ordem.')+
+ dconPolicyCard()+
  '<div class="grid metrics four"><div class="card metric"><small>P3</small><strong>'+counts.P3+'</strong><span class="sub">unidades</span></div><div class="card metric"><small>P2</small><strong>'+counts.P2+'</strong><span class="sub">unidades</span></div><div class="card metric"><small>P1</small><strong>'+counts.P1+'</strong><span class="sub">unidades</span></div><div class="card metric"><small>CATÁLOGO</small><strong>'+FINAL_CGU_LESSONS.length+'</strong><span class="sub">unidades integradas</span></div></div>'+
  '<section class="card"><div class="inline-filter"><label>Prova<select id="cgu-priority-filter">'+[['','Todas'],['P3','P3'],['P2','P2'],['P1','P1']].map(([v,t])=>option(v,t,cguPriorityFilter)).join('')+'</select></label><label>Tipo<select id="cgu-kind-filter">'+[['','PRÉ + CGU'],['PRÉ','PRÉ'],['CGU','CGU']].map(([v,t])=>option(v,t,cguKindFilter)).join('')+'</select></label><label>Status<select id="cgu-status-filter">'+[['','Todos'],['PENDENTE','Pendente'],['EM ANDAMENTO','Em andamento'],['CONCLUÍDO','Concluído'],['NÃO ESTUDAR — DUPLICADO','Não estudar duplicado'],['EM PREPARAÇÃO','Em preparação'],['CONFERIR COMPLEMENTO','Conferir complemento'],['ESTUDAR POR ÚLTIMO','Estudar por último']].map(([v,t])=>option(v,t,cguStatusFilter)).join('')+'</select></label></div><div class="warning"><b>7 Fontes:</b> aula riscada significa apenas que a segunda videoaula não deve ser estudada. O conteúdo do edital continua aberto até a fonte principal ser efetivamente concluída. Aulas “Em preparação” não entram como disponíveis.</div></section>'+
  '<section class="section-title"><div class="page-head"><div><h2>'+filtered.length+' unidades no filtro atual</h2><p class="muted">Currículo comum para Douglas e Camile; o progresso exibido aqui é somente desta instalação da Camile.</p></div><span class="badge">'+esc(FINAL_CGU_PLAN.version)+'</span></div>'+rows+'</section>';
@@ -307,6 +309,7 @@ function subjectsPage(){
  const shown=catalogUnits.length?catalogUnits:units;
  return heading('PLANO FINAL · CGU 2026','Disciplinas','Aulas da fonte principal, pré-requisitos e progresso real preservado.')+
  tabs()+
+ (s.id==='dcon'?dconPolicyCard():'')+
  '<section class="card"><div class="page-head"><div><h2>'+esc(s.course)+'</h2><p>'+shown.length+' unidades ativas · '+esc(s.priority||'')+' · referência '+M.hm(s.slotMinutes)+'</p></div><span class="badge">PLANO FINAL</span></div>'+
  '<div class="statline"><span>Teoria <b>'+shown.filter(u=>u.theoryDone).length+'/'+shown.length+'</b></span><span>Baterias <b>'+shown.filter(u=>u.batteryDone).length+'/'+shown.length+'</b></span><span>Revisão geral <b>'+shown.filter(u=>u.generalDone).length+'/'+shown.length+'</b></span></div>'+
  '<div class="table-wrap"><table><thead><tr><th>#</th><th>AULA / MÓDULO</th><th>PRIORIDADE</th><th>PRÉ-REQUISITO</th><th>SITUAÇÃO</th><th>CONTROLE</th></tr></thead><tbody>'+
