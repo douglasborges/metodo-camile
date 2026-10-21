@@ -11,7 +11,7 @@ const previous=s=>{s.cyclePlanVersion=6;s.cguFinalPlan={...s.cguFinalPlan,cycleM
 const artId=camile?'dcon-u-2':'ESTRATEGIA-DCON-04';
 const dcon=s=>s.subjects.find(x=>x.id==='dcon');
 test('ciclo solicitado: 13 posições, sem AFO/CPU consecutivas inclusive na volta',()=>{
- const expected=['afo','dcon','cpu',camile?'adm-publica':'adm','afo','dad','cpu',camile?'auditoria':'aud','afo','dad','cpu',camile?'auditoria':'aud',camile?'auditoria':'aud'];
+ const expected=['afo','dcon','cpu',camile?'adm-publica':'adm','afo','dad','cpu',camile?'auditoria':'aud','afo','dad','cpu',camile?'auditoria':'aud','cgu7'];
  assert.deepEqual(M.CYCLE,expected);assert.deepEqual(FINAL_CGU_CYCLE_SUBJECTS,expected);
  for(let i=0;i<13;i++){
   assert.notDeepEqual(new Set([expected[i],expected[(i+1)%13]]),new Set(['afo','cpu']));
@@ -26,7 +26,7 @@ test('migra todas as posições anteriores, preserva minutos e não migra de nov
  for(let index=0;index<13;index++){
   const s=previous(seed());s.cycle={index,minutes:47,marker:'preservar'};
   const next=update(s);
-  assert.equal(next.cycle.index,map[index]);assert.equal(M.CYCLE[next.cycle.index],PREVIOUS_FINAL_CGU_CYCLE[index]);
+  assert.equal(next.cycle.index,map[index]);assert.equal(M.CYCLE[next.cycle.index],index===11?'cgu7':PREVIOUS_FINAL_CGU_CYCLE[index]);
   assert.equal(next.cycle.minutes,47);assert.equal(next.cycle.marker,'preservar');
   assert.deepEqual(update(JSON.parse(JSON.stringify(next))).cycle,next.cycle);
  }
@@ -99,4 +99,24 @@ test('domingo não avança o ciclo; sessão de revisão e minutos prévios perma
   const next=M.session(s,{subjectId:'afo',activity:'free',date:M.day(),minutes:180,applyCycle:true,title:'Revisão dominical'});
   assert.deepEqual(next.cycle,s.cycle);assert.equal(next.sessions.length,s.sessions.length+1);
  }finally{globalThis.Date=RealDate;}
+});
+
+test('estados já intercalados mantêm as 13 posições e os minutos após correção e recarga',()=>{
+ for(let index=0;index<13;index++){
+  let s=update(previous(seed()));s.cycle={index,minutes:47};
+  const sessions=structuredClone(s.sessions);
+  for(let reload=0;reload<2;reload++){
+   s=update(JSON.parse(JSON.stringify(s)));
+   assert.deepEqual(s.cycle,{index,minutes:47});assert.deepEqual(s.sessions,sessions);
+  }
+ }
+ assert.equal(M.CYCLE[9],'dad');assert.equal(M.CYCLE[11],camile?'auditoria':'aud');assert.equal(M.CYCLE[12],'cgu7');
+ const published=FINAL_CGU_LESSONS.filter(x=>x.source==='7F'&&x.availability==='PUBLICADA_NO_PRINT');
+ assert.ok(published.some(x=>x.priority==='P3'));assert.equal(published.some(x=>x.priority==='P2'),false);
+});
+test('manifest mantém início e atalhos sem build e sem campo id',()=>{
+ const manifest=JSON.parse(fs.readFileSync(new URL('../manifest.webmanifest',import.meta.url)));
+ assert.equal(manifest.start_url,'./');assert.equal(Object.hasOwn(manifest,'id'),false);
+ assert.deepEqual(manifest.shortcuts.map(x=>x.url),['today','progress','data'].map(x=>(camile?'./#':'./index.html#')+x));
+ const html=fs.readFileSync(new URL('../index.html',import.meta.url),'utf8');assert.match(html,/src\/app\.js\?v=/);
 });

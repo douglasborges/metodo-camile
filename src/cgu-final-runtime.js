@@ -2,7 +2,7 @@ import {FINAL_CGU_PLAN,FINAL_CGU_LESSONS,normalizeFinalCguState} from './cgu-fin
 
 export const FINAL_CGU_RUNTIME_VERSION='2.0.0-cgu-auditoria-final-20261021';
 export const FINAL_CGU_CYCLE_SUBJECTS=Object.freeze([
- 'afo','dcon','cpu','adm-publica','afo','dad','cpu','auditoria','afo','dad','cpu','auditoria','auditoria'
+ 'afo','dcon','cpu','adm-publica','afo','dad','cpu','auditoria','afo','dad','cpu','auditoria','cgu7'
 ]);
 export const FINAL_CGU_CYCLE_LABELS=Object.freeze([
  "AFO · Pacelli",
@@ -21,6 +21,8 @@ export const FINAL_CGU_CYCLE_LABELS=Object.freeze([
 ]);
 
 export const PREVIOUS_FINAL_CGU_CYCLE=Object.freeze(["afo","cpu","auditoria","dad","afo","cpu","adm-publica","auditoria","afo","cpu","dcon","auditoria","dad"]);
+// A passagem antiga de fallback (índice 11) migra para 12: agora cgu7.
+// Estados já intercalados mantêm índice/minutos; a posição 13 muda só de fonte ativa.
 export function migrateFinalCguCycle(state,previousCycle=PREVIOUS_FINAL_CGU_CYCLE){
  const old=state.cycle||{index:0,minutes:0},index=Number(old.index)||0;
  const equivalent=previousCycle===PREVIOUS_FINAL_CGU_CYCLE

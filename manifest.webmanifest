@@ -2,7 +2,7 @@
   "name": "Método ET · Camile · CGU Auditoria · v2.0",
   "short_name": "Camile ET",
   "description": "Método ET · Camile · Plano Final CGU Auditoria 2026 — P3 → P2 → P1, ciclo de 13 posições e histórico preservado.",
-  "start_url": "./?build=2.0.0-cgu-auditoria-final-20261021",
+  "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "display_override": [
@@ -31,17 +31,18 @@
     {
       "name": "Hoje",
       "short_name": "Hoje",
-      "url": "./?build=2.0.0-cgu-auditoria-final-20261021#today"
+      "url": "./#today"
     },
     {
       "name": "Progresso",
       "short_name": "Progresso",
-      "url": "./?build=2.0.0-cgu-auditoria-final-20261021#progress"
+      "url": "./#progress"
     },
     {
       "name": "Dados",
       "short_name": "Dados",
-      "url": "./?build=2.0.0-cgu-auditoria-final-20261021#data"
+      "url": "./#data"
     }
   ]
 }
+
