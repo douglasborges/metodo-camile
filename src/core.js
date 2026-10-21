@@ -130,8 +130,47 @@ function dconHistoricalProgress(st,dcon){
  }
 }
 
+const CAMILE_AFO_DUPLICATE_REPAIR_DATE='2026-10-21';
+function repairCamileAfoDuplicateSessions(st){
+ const repairKey='camileAfoDuplicates20261021';
+ if(st.repairs?.[repairKey]?.done||!Array.isArray(st.sessions))return st;
+ const rows=st.sessions.filter(x=>x&&x.subjectId==='afo'&&x.date===CAMILE_AFO_DUPLICATE_REPAIR_DATE&&!x.legacy)
+  .sort((a,b)=>String(a.createdAt||'').localeCompare(String(b.createdAt||'')));
+ const keep=[...rows].reverse().find(x=>Number(x.minutes)===120&&x.cycleApplied===true&&x.slotComplete===true);
+ if(!keep||rows.at(-1)?.id!==keep.id)return st;
+ let group=null;
+ if(rows.length===3)group=rows;
+ else{
+  const keepMs=Date.parse(keep.createdAt||'');
+  if(!Number.isFinite(keepMs))return st;
+  const recent=rows.filter(x=>{
+   const ms=Date.parse(x.createdAt||'');
+   return Number.isFinite(ms)&&ms<=keepMs&&keepMs-ms<=30*60*1000;
+  });
+  if(recent.length===3&&recent.at(-1)?.id===keep.id)group=recent;
+ }
+ if(!group)return st;
+ const remove=group.filter(x=>x.id!==keep.id);
+ if(remove.length!==2)return st;
+ const removeIds=new Set(remove.map(x=>x.id));
+ for(const row of remove){
+  if(!['battery','general'].includes(row.activity)||!row.unitId)continue;
+  const subject=st.subjects?.find(x=>x.id===row.subjectId),unit=subject?.units?.find(x=>x.id===row.unitId),bucket=unit?.[row.activity];
+  if(!bucket)continue;
+  bucket.attempted=Math.max(0,Number(bucket.attempted||0)-Number(row.questions||0));
+  bucket.correct=Math.max(0,Math.min(bucket.attempted,Number(bucket.correct||0)-Number(row.correct||0)));
+  if(row.activity==='battery'&&bucket.attempted<30)unit.batteryDone=false;
+ }
+ st.sessions=st.sessions.filter(x=>!removeIds.has(x.id));
+ st.repairs={...(st.repairs||{}),[repairKey]:{
+  done:true,date:CAMILE_AFO_DUPLICATE_REPAIR_DATE,keptSessionId:keep.id,removedSessionIds:[...removeIds]
+ }};
+ return st;
+}
+
 export function normalizeMethodState(current){
  const st=copy(current);
+ repairCamileAfoDuplicateSessions(st);
  st.settings=st.settings||{};
  st.settings.weeklyMinimum=1980;
  st.settings.weeklyTarget=2340;
