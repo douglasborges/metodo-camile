@@ -1,4 +1,4 @@
-import * as M from './core.js?v=2.0.0-cgu-auditoria-final-20261021';
+import * as M from './core.js?v=2.0.0-cgu-auditoria-final-20261021&repair=camile-afo-20261021';
 import {durationMinutes,progressMetrics} from './progress.js?v=2.0.0-cgu-auditoria-final-20261021';
 import { motivationForDay, saveReminder, normalizeExtras, LEGISLATION_QUEUE, legislationPair, goalSnapshot, completeGoal, FINAL_SPRINT, BIZURAFO_MODULES, bizurSnapshot, bizurStatusLabel, recordBizurAFO, setBizurModuleDone, endBizurFocus, resumeBizurFocus } from './personal.js?v=2.0.0-cgu-auditoria-final-20261021';
 import {CGU_SYLLABUS,CGU_CHECK_TOPICS,CGU_OPERATIONAL_TOTAL,CGU_OFFICIAL_TOTAL,CGU_CHECK_START,cguDaysRemaining} from './cgu-syllabus.js?v=2.0.0-cgu-auditoria-final-20261021';
