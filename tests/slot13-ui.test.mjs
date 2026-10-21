@@ -1,52 +1,24 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import fs from 'node:fs';
-import * as M from '../src/core.js';
-import {normalizeExtras} from '../src/personal.js';
-import {FINAL_CGU_LESSONS,finalCguAvailable7F} from '../src/cgu-final-plan.js';
-import {applyFinalCguCurriculum,finalCguSlot} from '../src/cgu-final-runtime.js';
-const camile=true;
-for(const available of [false,true])test('posição 13: interface, cronômetro, sessão e recarga '+(available?'7 Fontes liberada':'fallback Auditoria'),async()=>{
- const lesson=FINAL_CGU_LESSONS.find(x=>x.source==='7F'&&x.priority==='P3'&&x.availability==='PUBLICADA_NO_PRINT');
- const oldStatus=lesson.status;if(available)lesson.status='ESTUDAR';
- const sid=available?'cgu7':(camile?'auditoria':'aud');
- assert.equal(finalCguAvailable7F('P3').length,available?1:0);
- assert.equal(M.CYCLE[12],sid);assert.equal(M.CYCLE[11],camile?'auditoria':'aud');assert.equal(M.CYCLE[9],'dad');
- assert.equal(finalCguSlot(12).label,available?'7 Fontes P3':'Auditoria · Marcelo — reforço P3 · fallback 7 Fontes');
- let state=JSON.parse(fs.readFileSync(new URL('../data/initial-state.json',import.meta.url)));
- state=normalizeExtras(state);
- if(!camile)state=(await import('../src/goals.js')).normalizeGoals(state);
- state=camile?M.normalizeMethodState(state):applyFinalCguCurriculum(state);
- state.cycle={index:12,minutes:47};
- const original=structuredClone(state.sessions);
- const unit=M.methodUnits(state.subjects.find(s=>s.id===sid))[0];assert.ok(unit);
- if(available)assert.equal(unit.id,lesson.id);else assert.equal(M.methodUnits(state.subjects.find(s=>s.id==='cgu7')).length,0);
- const storage=new Map([[M.KEY,JSON.stringify(state)]]),elements=new Map(),listeners={};
- const get=q=>{if(!elements.has(q))elements.set(q,{innerHTML:'',textContent:'',className:'',classList:{toggle(){}},focus(){},setAttribute(){},prepend(){},scrollIntoView(){},open:false,showModal(){this.open=true;},close(){this.open=false;},elements:{subjectId:{value:sid},activity:{value:'theory'},unitId:{value:unit.id},applyCycle:{checked:false},finishPassage:{checked:false}}});return elements.get(q);};
- const globals=['document','window','location','localStorage','fetch','setInterval','setTimeout','clearTimeout','FormData'];const before=Object.fromEntries(globals.map(k=>[k,globalThis[k]]));
- try{
-  globalThis.document={querySelector:get,querySelectorAll:()=>[],addEventListener:(n,f)=>listeners[n]=f};
-  globalThis.window={addEventListener:(n,f)=>listeners[n]=f};globalThis.location={hash:'#today'};
-  globalThis.localStorage={getItem:k=>storage.get(k)||null,setItem:(k,v)=>storage.set(k,v),removeItem:k=>storage.delete(k)};
-  globalThis.fetch=async()=>({ok:true,json:async()=>state});globalThis.setInterval=()=>0;globalThis.setTimeout=()=>0;globalThis.clearTimeout=()=>{};
-  const click=action=>listeners.click({target:{closest:()=>({dataset:{action}})}});
-  await import('../src/app.js?scenario='+available);await new Promise(r=>setImmediate(r));
-  assert.doesNotMatch(get('#main').innerHTML,/Não foi possível abrir/,get('#load-error').textContent);
-  assert.equal(JSON.parse(storage.get(M.KEY)).cycle.index,12,'índice após inicialização');
-  click('go-subject');location.hash='#subjects';listeners.hashchange();assert.match(get('#main').innerHTML,available?/7 Fontes/:/Auditoria/);
-  location.hash='#today';listeners.hashchange();click('timer-start');
-  assert.match(get('#modal-body').innerHTML,available?/Iniciar foco · 7 Fontes CGU/:/Iniciar foco · Auditoria/);
-  assert.ok(get('#modal-body').innerHTML.includes('value="'+unit.id+'"'));
-  get('#timer-form').onsubmit({preventDefault(){},target:get('#timer-form')});
-  assert.equal(JSON.parse(storage.get(M.KEY+':timer')).subjectId,sid);
-  click('session');assert.ok(get('#modal-body').innerHTML.includes('value="'+sid+'" selected'));
-  globalThis.FormData=class{*[Symbol.iterator](){yield* Object.entries({subjectId:sid,unitId:unit.id,activity:'theory',date:M.day(),hours:'0',durationMinutes:'17',questions:'0',correct:'0',medium:'video',notes:'Sessão de teste',start:'',end:''});}};
-  get('#session-form').onsubmit({preventDefault(){},target:get('#session-form')});
-  const saved=JSON.parse(storage.get(M.KEY));assert.equal(saved.sessions.length,original.length+1);
-  assert.deepEqual(saved.sessions.slice(0,-1),original);assert.equal(saved.sessions.at(-1).subjectId,sid);assert.equal(saved.sessions.at(-1).unitId,unit.id);assert.equal(saved.sessions.at(-1).minutes,17);
-  assert.deepEqual(saved.cycle,{index:12,minutes:47});
-  await import('../src/app.js?slot13-reload='+available);await new Promise(r=>setImmediate(r));
-  const reloaded=JSON.parse(storage.get(M.KEY));assert.deepEqual(reloaded.sessions,saved.sessions);assert.deepEqual(reloaded.cycle,saved.cycle);
-  click('timer-start');assert.match(get('#modal-body').innerHTML,available?/Iniciar foco · 7 Fontes CGU/:/Iniciar foco · Auditoria/);
- }finally{lesson.status=oldStatus;for(const k of globals)globalThis[k]=before[k];}
+import {FINAL_CGU_PLAN,FINAL_CGU_LESSONS} from '../src/cgu-final-plan.js';
+import {FINAL_CGU_CYCLE_SUBJECTS,finalCguSlot,finalCguSlotLessons} from '../src/cgu-final-runtime.js';
+
+test('ciclo do chat Análise do curso CGU: ordem e materiais 7 Fontes',()=>{
+ assert.equal(FINAL_CGU_PLAN.slot_cycle_13.length,13);
+ assert.deepEqual(FINAL_CGU_CYCLE_SUBJECTS,['afo','auditoria','cgu7','cpu','dcon','cgu7','afo','adm-publica','cgu7','cpu','auditoria','cgu7','cgu7']);
+ assert.deepEqual(finalCguSlotLessons(2).map(x=>x.category).filter((v,i,a)=>a.indexOf(v)===i),['DIR']);
+ assert.ok(finalCguSlotLessons(5).every(x=>x.category==='POL'));
+ assert.ok(finalCguSlotLessons(8).some(x=>x.category==='GOV'));
+ assert.ok(finalCguSlotLessons(8).some(x=>x.category==='ETICA'));
+ assert.ok(finalCguSlotLessons(11).some(x=>x.category==='CONTR'));
+ assert.ok(finalCguSlotLessons(11).some(x=>x.category==='INTEG'));
+ assert.ok(finalCguSlotLessons(12).some(x=>x.category==='DADOS'));
+ assert.ok(finalCguSlotLessons(12).some(x=>x.category==='SOC'));
+});
+test('datas reais de Sociedade e Contratações não alteram disponibilidade por inferência',()=>{
+ const society=FINAL_CGU_LESSONS.filter(x=>x.category==='SOC');
+ const contr=FINAL_CGU_LESSONS.filter(x=>x.category==='CONTR');
+ assert.deepEqual(society.map(x=>x.planned_release_date),['2026-10-22','2026-10-31','2026-11-10','2026-11-20','2026-11-30','2026-12-12']);
+ assert.deepEqual(contr.map(x=>x.planned_release_date),['2026-11-11','2026-11-18','2026-11-25','2026-12-02','2026-12-09']);
+ assert.ok([...society,...contr].every(x=>x.release_rule.includes('somente considerar disponível')));
 });

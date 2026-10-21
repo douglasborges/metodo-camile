@@ -1,34 +1,41 @@
-import {FINAL_CGU_PLAN,FINAL_CGU_LESSONS,normalizeFinalCguState,finalCguNeedsFallback} from './cgu-final-plan.js';
+import {FINAL_CGU_PLAN,FINAL_CGU_LESSONS,normalizeFinalCguState} from './cgu-final-plan.js';
 
 export const FINAL_CGU_RUNTIME_VERSION='2.0.0-cgu-auditoria-final-20261021';
-export const FINAL_CGU_CYCLE_SUBJECTS=Object.freeze(Object.defineProperty([
- 'afo','dcon','cpu','adm-publica','afo','dad','cpu','auditoria','afo','dad','cpu','auditoria','cgu7'
-],12,{get:()=>finalCguNeedsFallback('P3')?'auditoria':'cgu7'}));
-export const FINAL_CGU_CYCLE_LABELS=Object.freeze(Object.defineProperty([
+export const FINAL_CGU_CYCLE_SUBJECTS=Object.freeze([
+ 'afo','auditoria','cgu7','cpu','dcon','cgu7','afo','adm-publica','cgu7','cpu','auditoria','cgu7','cgu7'
+]);
+export const FINAL_CGU_CYCLE_LABELS=Object.freeze([
  "AFO · Pacelli",
- "Direito Constitucional · Nelma",
- "CPU · Pacelli",
- "Administração Pública · Marcelo",
+ "Auditoria Governamental · Marcelo Soares",
+ "Direito Público Aplicado · 7 Fontes",
+ "Contabilidade Pública · Pacelli",
+ "Constitucional e Ciência Política · Nelma / 7 Fontes",
+ "Políticas Públicas · 7 Fontes",
  "AFO · Pacelli",
- "DAD · Rafael / pré-requisitos → 7 Fontes",
- "CPU · Pacelli",
- "Auditoria · Marcelo",
- "AFO · Pacelli",
- "DAD / 7 Fontes P2",
- "CPU · Pacelli",
- "Auditoria · Marcelo",
- "7 Fontes P3"
-],12,{get:()=>finalCguNeedsFallback('P3')?'Auditoria · Marcelo — reforço P3 · fallback 7 Fontes':'7 Fontes P3'}));
+ "Administração Pública · Marcelo Soares",
+ "Governança, Riscos e Ética · 7 Fontes",
+ "Contabilidade Pública · Pacelli",
+ "Auditoria Governamental · Marcelo Soares",
+ "Contratações e Responsabilização · 7 Fontes",
+ "Evidências, Dados, IA e residuais · 7 Fontes"
+]);
 
-export const PREVIOUS_FINAL_CGU_CYCLE=Object.freeze(["afo","cpu","auditoria","dad","afo","cpu","adm-publica","auditoria","afo","cpu","dcon","auditoria","dad"]);
-// A passagem antiga de fallback (índice 11) migra para 12: fonte resolvida pela disponibilidade P3.
-// Estados já intercalados mantêm índice/minutos; a posição 13 muda só de fonte ativa.
+export const PREVIOUS_FINAL_CGU_CYCLE=Object.freeze(['afo','dcon','cpu','adm-publica','afo','dad','cpu','auditoria','afo','dad','cpu','auditoria','cgu7']);
+export const PREVIOUS_FINAL_CGU_CYCLE_V6=Object.freeze(['afo','cpu','auditoria','dad','afo','cpu','adm-publica','auditoria','afo','cpu','dcon','auditoria','dad']);
+const COURSE_ANALYSIS_MIGRATION=Object.freeze([0,4,3,7,6,2,9,1,0,2,9,10,12]);
+const V6_TO_COURSE_ANALYSIS=Object.freeze([0,3,1,2,6,9,7,10,0,9,4,12,2]);
 export function migrateFinalCguCycle(state,previousCycle=PREVIOUS_FINAL_CGU_CYCLE){
- const old=state.cycle||{index:0,minutes:0},index=Number(old.index)||0;
- const equivalent=previousCycle===PREVIOUS_FINAL_CGU_CYCLE
-  ? [0,2,7,5,4,6,3,11,8,10,1,12,9][index]
-  : FINAL_CGU_CYCLE_SUBJECTS.indexOf(previousCycle[index]);
- state.cycle={...old,index:equivalent>=0?equivalent:0};
+ const old=state.cycle||{index:0,minutes:0},index=Math.max(0,Math.min(12,Number(old.index)||0));
+ let equivalent;
+ if(previousCycle===PREVIOUS_FINAL_CGU_CYCLE)equivalent=COURSE_ANALYSIS_MIGRATION[index];
+ else if(previousCycle===PREVIOUS_FINAL_CGU_CYCLE_V6)equivalent=V6_TO_COURSE_ANALYSIS[index];
+ else{
+  const previousSubject=previousCycle[index];
+  equivalent=FINAL_CGU_CYCLE_SUBJECTS.indexOf(previousSubject);
+  if(equivalent<0&&previousSubject==='dad')equivalent=2;
+  if(equivalent<0)equivalent=0;
+ }
+ state.cycle={...old,index:equivalent};
  return state;
 }
 
@@ -64,8 +71,8 @@ function newUnit(lesson,order){
   theoryDone:false,theoryDate:'',batteryDone:false,generalDone:false,materialReady:false,
   battery:emptyQuestions(),general:emptyQuestions(),legacy:[],marks:[],
   catalog:true,catalogVersion:FINAL_CGU_PLAN.version,sourceCode:lesson.source,source:lesson.teacher,
-  course:lesson.course,lessonNumber:lesson.number,priority:lesson.priority,kind:lesson.kind,
-  deps:lesson.deps||'',catalogStatus:lesson.status,availability:lesson.availability||'',
+  course:lesson.course,lessonNumber:lesson.number,priority:lesson.priority,kind:lesson.kind,category:lesson.category||'',
+  deps:lesson.deps||'',catalogStatus:lesson.status,availability:lesson.availability||'',plannedReleaseDate:lesson.planned_release_date||'',releaseRule:lesson.release_rule||'',
   sourcePage:lesson.source_page??null,note:lesson.note||'',
   ...(lesson.exclusiveArt5?{totalBlocks:24,studyPlan:lesson.note}:{}),
   hiddenFromRoute:lesson.source==='7F' && !(lesson.availability==='PUBLICADA_NO_PRINT' && lesson.status==='ESTUDAR')
@@ -167,6 +174,13 @@ export function finalCguLessonProgress(state,lesson){
   status:u?.theoryDone?'CONCLUIDO':sessions.length?'EM_ANDAMENTO':'PENDENTE',
   subjectId:config?.subjectId||'',unitId:u?.id||''
  };
+}
+export function finalCguSlotLessons(index,{onlyAvailable=false}={}){
+ const slot=FINAL_CGU_PLAN.slot_cycle_13[index]||FINAL_CGU_PLAN.slot_cycle_13[0];
+ const categories=Array.isArray(slot.material_categories)?slot.material_categories:[];
+ let rows=FINAL_CGU_LESSONS.filter(x=>x.source==='7F'&&categories.includes(x.category));
+ if(onlyAvailable)rows=rows.filter(x=>x.availability==='PUBLICADA_NO_PRINT'&&x.status==='ESTUDAR');
+ return rows;
 }
 export function finalCguSlot(index){
  const slot=FINAL_CGU_PLAN.slot_cycle_13[index]||FINAL_CGU_PLAN.slot_cycle_13[0];

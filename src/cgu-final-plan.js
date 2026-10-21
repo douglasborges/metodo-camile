@@ -41,75 +41,134 @@ export const FINAL_CGU_PLAN={
       "Marcelo Auditoria Governamental"
     ],
     "temporary_available_bridge": "Rafael Oliveira DAD",
-    "7fontes": "STUDY nonduplicate and uncovered content; no double counting"
+    "7fontes": "STUDY nonduplicate and uncovered content; no double counting",
+    "seven_fontes_release_rule": "Vídeo = disponível imediatamente; Em breve = planejar para a data prevista +2 dias. Exceções: Sociedade Brasileira e Auditoria de Contratações usam a data real anunciada, sem +2. Em todos os casos, só contar como disponível quando vídeo/material estiver acessível.",
+    "seven_fontes_alternatives": "Direção/Estratégia são apenas alternativas futuras; não incluir automaticamente nesta rota."
   },
   "slot_cycle_13": [
-    {
-      "slot": 1,
-      "discipline": "AFO · Pacelli",
-      "priority": "P3"
-    },
-    {
-      "slot": 2,
-      "discipline": "Direito Constitucional · Nelma",
-      "priority": "P1"
-    },
-    {
-      "slot": 3,
-      "discipline": "CPU · Pacelli",
-      "priority": "P3"
-    },
-    {
-      "slot": 4,
-      "discipline": "Administração Pública · Marcelo",
-      "priority": "P1"
-    },
-    {
-      "slot": 5,
-      "discipline": "AFO · Pacelli",
-      "priority": "P3"
-    },
-    {
-      "slot": 6,
-      "discipline": "DAD · Rafael / pré-requisitos → 7 Fontes",
-      "priority": "P2/P3"
-    },
-    {
-      "slot": 7,
-      "discipline": "CPU · Pacelli",
-      "priority": "P3"
-    },
-    {
-      "slot": 8,
-      "discipline": "Auditoria · Marcelo",
-      "priority": "P3"
-    },
-    {
-      "slot": 9,
-      "discipline": "AFO · Pacelli",
-      "priority": "P3"
-    },
-    {
-      "slot": 10,
-      "discipline": "DAD / 7 Fontes P2",
-      "priority": "P2"
-    },
-    {
-      "slot": 11,
-      "discipline": "CPU · Pacelli",
-      "priority": "P3"
-    },
-    {
-      "slot": 12,
-      "discipline": "Auditoria · Marcelo",
-      "priority": "P3"
-    },
-    {
-      "slot": 13,
-      "discipline": "7 Fontes P3 quando disponível · fallback/reforço P3",
-      "priority": "P3"
-    }
-  ],
+  {
+    "slot": 1,
+    "discipline": "AFO · Pacelli",
+    "priority": "P3",
+    "material_source": "Giovanni Pacelli",
+    "material_categories": [],
+    "material_note": "AFO — curso regular Pacelli."
+  },
+  {
+    "slot": 2,
+    "discipline": "Auditoria Governamental · Marcelo Soares",
+    "priority": "P3",
+    "material_source": "Marcelo Soares",
+    "material_categories": [],
+    "material_note": "Auditoria Governamental — Marcelo Soares."
+  },
+  {
+    "slot": 3,
+    "discipline": "Direito Público Aplicado · 7 Fontes",
+    "priority": "P2",
+    "material_source": "7 Fontes · Rodrigo Morais de Amorim",
+    "material_categories": [
+      "DIR"
+    ],
+    "material_note": "Atuação administrativa; devido processo; sistemas de controle/CGU; responsabilização; assédio e discriminação."
+  },
+  {
+    "slot": 4,
+    "discipline": "Contabilidade Pública · Pacelli",
+    "priority": "P3",
+    "material_source": "Giovanni Pacelli",
+    "material_categories": [],
+    "material_note": "Contabilidade Pública — curso regular Pacelli."
+  },
+  {
+    "slot": 5,
+    "discipline": "Constitucional e Ciência Política · Nelma / 7 Fontes",
+    "priority": "P1",
+    "material_source": "Nelma Fontana + 7 Fontes",
+    "material_categories": [
+      "ESTADO"
+    ],
+    "material_note": "Constitucional pela Nelma; Ciência Política residual pela 7 Fontes (Estado, democracia, direitos e Ciência Política)."
+  },
+  {
+    "slot": 6,
+    "discipline": "Políticas Públicas · 7 Fontes",
+    "priority": "P3",
+    "material_source": "7 Fontes · Daniel Almeida",
+    "material_categories": [
+      "POL"
+    ],
+    "material_note": "Ciclo, implementação, gestão, coordenação, avaliação ex ante/ex post, indicadores e resultados."
+  },
+  {
+    "slot": 7,
+    "discipline": "AFO · Pacelli",
+    "priority": "P3",
+    "material_source": "Giovanni Pacelli",
+    "material_categories": [],
+    "material_note": "AFO — curso regular Pacelli."
+  },
+  {
+    "slot": 8,
+    "discipline": "Administração Pública · Marcelo Soares",
+    "priority": "P1",
+    "material_source": "Marcelo Soares",
+    "material_categories": [],
+    "material_note": "Administração Pública — Marcelo Soares."
+  },
+  {
+    "slot": 9,
+    "discipline": "Governança, Riscos e Ética · 7 Fontes",
+    "priority": "P2",
+    "material_source": "7 Fontes · Orlando Cames / Ana Cristina Furtado Sobrinho",
+    "material_categories": [
+      "GOV",
+      "ETICA"
+    ],
+    "material_note": "Governança pública, gestão de riscos e controles, integridade pública/privada, cultura de integridade e ética."
+  },
+  {
+    "slot": 10,
+    "discipline": "Contabilidade Pública · Pacelli",
+    "priority": "P3",
+    "material_source": "Giovanni Pacelli",
+    "material_categories": [],
+    "material_note": "Contabilidade Pública — curso regular Pacelli."
+  },
+  {
+    "slot": 11,
+    "discipline": "Auditoria Governamental · Marcelo Soares",
+    "priority": "P3",
+    "material_source": "Marcelo Soares",
+    "material_categories": [],
+    "material_note": "Auditoria Governamental — Marcelo Soares."
+  },
+  {
+    "slot": 12,
+    "discipline": "Contratações e Responsabilização · 7 Fontes",
+    "priority": "P3",
+    "material_source": "7 Fontes · Orlando Cames / Rodrigo Morais de Amorim",
+    "material_categories": [
+      "CONTR",
+      "INTEG"
+    ],
+    "material_note": "Contratações e transferências + responsabilização/integridade, PAD, PAR, leniência e TAC."
+  },
+  {
+    "slot": 13,
+    "discipline": "Evidências, Dados, IA e residuais · 7 Fontes",
+    "priority": "P2/P1",
+    "material_source": "7 Fontes · Guilherme Neves / Bruno Guilhen + residuais",
+    "material_categories": [
+      "DADOS",
+      "TRANS",
+      "SOC",
+      "ESTADO",
+      "ETICA"
+    ],
+    "material_note": "Evidências, dados e IA; residuais de Transparência, Ética, Ciência Política e Sociedade Brasileira. Estudar apenas pendências não concluídas nos blocos anteriores."
+  }
+],
   "users": [
     "Douglas",
     "Camile"
@@ -330,7 +389,7 @@ export const FINAL_CGU_PLAN={
       "progress": "NAO_INFERIR"
     },
     {
-      "id": "dcon-u-2",
+      "id": "ESTRATEGIA-DCON-04",
       "source": "NELMA",
       "category": "DCON",
       "number": "04 · Estratégia",
@@ -2449,6 +2508,8 @@ export const FINAL_CGU_PLAN={
       "teacher": "José Luiz Ferreira",
       "course": "7 Fontes CGU Auditoria - Sociedade Brasileira, Desigualdades, Diversidade e Desenvolvimento",
       "availability": "EM_PREPARACAO_NO_PRINT",
+      "planned_release_date": "2026-10-22",
+      "release_rule": "DATA_REAL_7FONTES_SEM_MARGEM; somente considerar disponível quando o vídeo/material estiver acessível",
       "source_page": 2,
       "note": "",
       "kind": "CGU",
@@ -2466,6 +2527,8 @@ export const FINAL_CGU_PLAN={
       "teacher": "José Luiz Ferreira",
       "course": "7 Fontes CGU Auditoria - Sociedade Brasileira, Desigualdades, Diversidade e Desenvolvimento",
       "availability": "EM_PREPARACAO_NO_PRINT",
+      "planned_release_date": "2026-10-31",
+      "release_rule": "DATA_REAL_7FONTES_SEM_MARGEM; somente considerar disponível quando o vídeo/material estiver acessível",
       "source_page": 2,
       "note": "",
       "kind": "CGU",
@@ -2483,6 +2546,8 @@ export const FINAL_CGU_PLAN={
       "teacher": "José Luiz Ferreira",
       "course": "7 Fontes CGU Auditoria - Sociedade Brasileira, Desigualdades, Diversidade e Desenvolvimento",
       "availability": "EM_PREPARACAO_NO_PRINT",
+      "planned_release_date": "2026-11-10",
+      "release_rule": "DATA_REAL_7FONTES_SEM_MARGEM; somente considerar disponível quando o vídeo/material estiver acessível",
       "source_page": 2,
       "note": "",
       "kind": "CGU",
@@ -2500,6 +2565,8 @@ export const FINAL_CGU_PLAN={
       "teacher": "José Luiz Ferreira",
       "course": "7 Fontes CGU Auditoria - Sociedade Brasileira, Desigualdades, Diversidade e Desenvolvimento",
       "availability": "EM_PREPARACAO_NO_PRINT",
+      "planned_release_date": "2026-11-20",
+      "release_rule": "DATA_REAL_7FONTES_SEM_MARGEM; somente considerar disponível quando o vídeo/material estiver acessível",
       "source_page": 2,
       "note": "",
       "kind": "CGU",
@@ -2517,6 +2584,8 @@ export const FINAL_CGU_PLAN={
       "teacher": "José Luiz Ferreira",
       "course": "7 Fontes CGU Auditoria - Sociedade Brasileira, Desigualdades, Diversidade e Desenvolvimento",
       "availability": "EM_PREPARACAO_NO_PRINT",
+      "planned_release_date": "2026-11-30",
+      "release_rule": "DATA_REAL_7FONTES_SEM_MARGEM; somente considerar disponível quando o vídeo/material estiver acessível",
       "source_page": 2,
       "note": "",
       "kind": "CGU",
@@ -2534,6 +2603,8 @@ export const FINAL_CGU_PLAN={
       "teacher": "José Luiz Ferreira",
       "course": "7 Fontes CGU Auditoria - Sociedade Brasileira, Desigualdades, Diversidade e Desenvolvimento",
       "availability": "EM_PREPARACAO_NO_PRINT",
+      "planned_release_date": "2026-12-12",
+      "release_rule": "DATA_REAL_7FONTES_SEM_MARGEM; somente considerar disponível quando o vídeo/material estiver acessível",
       "source_page": 2,
       "note": "",
       "kind": "CGU",
@@ -4727,6 +4798,8 @@ export const FINAL_CGU_PLAN={
       "teacher": "Orlando Cames",
       "course": "7 Fontes CGU Auditoria - Auditoria de Contratações, Transferências e Execução de Recursos",
       "availability": "EM_PREPARACAO_NO_PRINT",
+      "planned_release_date": "2026-11-11",
+      "release_rule": "DATA_REAL_7FONTES_SEM_MARGEM; somente considerar disponível quando o vídeo/material estiver acessível",
       "source_page": 18,
       "note": "",
       "kind": "CGU",
@@ -4744,6 +4817,8 @@ export const FINAL_CGU_PLAN={
       "teacher": "Orlando Cames",
       "course": "7 Fontes CGU Auditoria - Auditoria de Contratações, Transferências e Execução de Recursos",
       "availability": "EM_PREPARACAO_NO_PRINT",
+      "planned_release_date": "2026-11-18",
+      "release_rule": "DATA_REAL_7FONTES_SEM_MARGEM; somente considerar disponível quando o vídeo/material estiver acessível",
       "source_page": 18,
       "note": "",
       "kind": "CGU",
@@ -4761,6 +4836,8 @@ export const FINAL_CGU_PLAN={
       "teacher": "Orlando Cames",
       "course": "7 Fontes CGU Auditoria - Auditoria de Contratações, Transferências e Execução de Recursos",
       "availability": "EM_PREPARACAO_NO_PRINT",
+      "planned_release_date": "2026-11-25",
+      "release_rule": "DATA_REAL_7FONTES_SEM_MARGEM; somente considerar disponível quando o vídeo/material estiver acessível",
       "source_page": 18,
       "note": "",
       "kind": "CGU",
@@ -4778,6 +4855,8 @@ export const FINAL_CGU_PLAN={
       "teacher": "Orlando Cames",
       "course": "7 Fontes CGU Auditoria - Auditoria de Contratações, Transferências e Execução de Recursos",
       "availability": "EM_PREPARACAO_NO_PRINT",
+      "planned_release_date": "2026-12-02",
+      "release_rule": "DATA_REAL_7FONTES_SEM_MARGEM; somente considerar disponível quando o vídeo/material estiver acessível",
       "source_page": 18,
       "note": "",
       "kind": "CGU",
@@ -4795,6 +4874,8 @@ export const FINAL_CGU_PLAN={
       "teacher": "Orlando Cames",
       "course": "7 Fontes CGU Auditoria - Auditoria de Contratações, Transferências e Execução de Recursos",
       "availability": "EM_PREPARACAO_NO_PRINT",
+      "planned_release_date": "2026-12-09",
+      "release_rule": "DATA_REAL_7FONTES_SEM_MARGEM; somente considerar disponível quando o vídeo/material estiver acessível",
       "source_page": 18,
       "note": "",
       "kind": "CGU",
@@ -4857,4 +4938,3 @@ export function normalizeFinalCguState(state){
  state.cguFinalPlan.migratedAt=state.cguFinalPlan.migratedAt||new Date().toISOString();
  return state;
 }
-

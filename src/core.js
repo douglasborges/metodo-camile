@@ -1,10 +1,10 @@
-import {FINAL_CGU_CYCLE_SUBJECTS,applyFinalCguCurriculum,migrateFinalCguCycle,PREVIOUS_FINAL_CGU_CYCLE} from './cgu-final-runtime.js';
+import {FINAL_CGU_CYCLE_SUBJECTS,applyFinalCguCurriculum,migrateFinalCguCycle,PREVIOUS_FINAL_CGU_CYCLE,PREVIOUS_FINAL_CGU_CYCLE_V6} from './cgu-final-runtime.js';
 export const KEY='metodo-et:camile:v1';
 export const LEGACY_CYCLE_V13=Object.freeze(['port','dcon','afo','ti','adm-publica','diversidade','afo','dad','politicas','auditoria','afo']);
 export const INTERIM_CYCLE_V14=Object.freeze(['afo','auditoria','adm-publica','dcon','dad','afo','politicas','port','ti','afo']);
 export const PRE_FINAL_CYCLE_V5=Object.freeze(['afo','auditoria','adm-publica','dcon','dad']);
-export const CYCLE_PLAN_VERSION=7;
-// Manter o getter da posição 13: não congelar uma cópia da disponibilidade.
+export const CYCLE_PLAN_VERSION=8;
+// Ciclo final definido no chat “Análise do curso CGU”.
 export const CYCLE=FINAL_CGU_CYCLE_SUBJECTS;
 export const RULES=Object.freeze({
  afo:{label:'AFO',minutes:90,checkpoint:3,unit:'módulo'},
@@ -144,7 +144,7 @@ export function normalizeMethodState(current){
  if(!Array.isArray(st.subjects))st.subjects=[];
  if(!st.cycle||!Number.isInteger(st.cycle.index))st.cycle={index:0,minutes:0};
  if(st.cyclePlanVersion!==CYCLE_PLAN_VERSION){
-  const previousCycle=st.cyclePlanVersion===6?PREVIOUS_FINAL_CGU_CYCLE:st.cyclePlanVersion===5?PRE_FINAL_CYCLE_V5:(st.cyclePlanVersion===4?INTERIM_CYCLE_V14:LEGACY_CYCLE_V13);
+  const previousCycle=st.cyclePlanVersion===7?PREVIOUS_FINAL_CGU_CYCLE:(st.cyclePlanVersion===6?PREVIOUS_FINAL_CGU_CYCLE_V6:(st.cyclePlanVersion===5?PRE_FINAL_CYCLE_V5:(st.cyclePlanVersion===4?INTERIM_CYCLE_V14:LEGACY_CYCLE_V13)));
   migrateFinalCguCycle(st,previousCycle);
   st.cyclePlanVersion=CYCLE_PLAN_VERSION;
  }

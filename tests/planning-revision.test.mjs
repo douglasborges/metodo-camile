@@ -7,26 +7,27 @@ import {applyFinalCguCurriculum,FINAL_CGU_CYCLE_SUBJECTS,PREVIOUS_FINAL_CGU_CYCL
 const camile=true;
 const seed=()=>JSON.parse(fs.readFileSync(new URL('../data/initial-state.json',import.meta.url)));
 const update=s=>camile?M.normalizeMethodState(s):applyFinalCguCurriculum(s);
-const previous=s=>{s.cyclePlanVersion=6;s.cguFinalPlan={...s.cguFinalPlan,cycleMigrated:true};delete s.cguFinalPlan.cycleRevision;return s;};
+const previous=s=>{s.cyclePlanVersion=7;s.cguFinalPlan={...s.cguFinalPlan,cycleMigrated:true,cycleRevision:'interleaved-20261021'};return s;};
 const artId=camile?'dcon-u-2':'ESTRATEGIA-DCON-04';
 const dcon=s=>s.subjects.find(x=>x.id==='dcon');
 test('ciclo solicitado: 13 posições, sem AFO/CPU consecutivas inclusive na volta',()=>{
- const expected=['afo','dcon','cpu',camile?'adm-publica':'adm','afo','dad','cpu',camile?'auditoria':'aud','afo','dad','cpu',camile?'auditoria':'aud',camile?'auditoria':'aud'];
+ const expected=['afo',camile?'auditoria':'aud','cgu7','cpu','dcon','cgu7','afo',camile?'adm-publica':'adm','cgu7','cpu',camile?'auditoria':'aud','cgu7','cgu7'];
  assert.deepEqual(M.CYCLE,expected);assert.deepEqual(FINAL_CGU_CYCLE_SUBJECTS,expected);
  for(let i=0;i<13;i++){
   assert.notDeepEqual(new Set([expected[i],expected[(i+1)%13]]),new Set(['afo','cpu']));
   assert.equal(finalCguSlot(i).subjectId,expected[i]);assert.equal(finalCguSlot(i).slot,i+1);
   assert.equal(finalCguSlot(i).discipline,finalCguSlot(i).label);
  }
- assert.match(finalCguSlot(12).label,/Auditoria.*reforço P3.*fallback 7 Fontes/);
- assert.match(finalCguSlot(9).label,/DAD.*7 Fontes P2/);
+ assert.match(finalCguSlot(2).label,/Direito Público Aplicado/);
+ assert.match(finalCguSlot(11).label,/Contratações e Responsabilização/);
+ assert.match(finalCguSlot(12).label,/Evidências, Dados, IA e residuais/);
 });
 test('migra todas as posições anteriores, preserva minutos e não migra de novo ao recarregar',()=>{
- const map=[0,2,7,5,4,6,3,11,8,10,1,12,9];
+ const map=[0,4,3,7,6,2,9,1,0,2,9,10,12];
  for(let index=0;index<13;index++){
   const s=previous(seed());s.cycle={index,minutes:47,marker:'preservar'};
   const next=update(s);
-  assert.equal(next.cycle.index,map[index]);assert.equal(M.CYCLE[next.cycle.index],PREVIOUS_FINAL_CGU_CYCLE[index]);
+  assert.equal(next.cycle.index,map[index]);
   assert.equal(next.cycle.minutes,47);assert.equal(next.cycle.marker,'preservar');
   assert.deepEqual(update(JSON.parse(JSON.stringify(next))).cycle,next.cycle);
  }
@@ -110,7 +111,7 @@ test('estados já intercalados mantêm as 13 posições e os minutos após corre
    assert.deepEqual(s.cycle,{index,minutes:47});assert.deepEqual(s.sessions,sessions);
   }
  }
- assert.equal(M.CYCLE[9],'dad');assert.equal(M.CYCLE[11],camile?'auditoria':'aud');assert.equal(M.CYCLE[12],camile?'auditoria':'aud');
+ assert.equal(M.CYCLE[2],'cgu7');assert.equal(M.CYCLE[5],'cgu7');assert.equal(M.CYCLE[8],'cgu7');assert.equal(M.CYCLE[11],'cgu7');assert.equal(M.CYCLE[12],'cgu7');
  const published=FINAL_CGU_LESSONS.filter(x=>x.source==='7F'&&x.availability==='PUBLICADA_NO_PRINT');
  assert.ok(published.some(x=>x.priority==='P3'));assert.equal(published.some(x=>x.priority==='P2'),false);
 });
@@ -119,4 +120,16 @@ test('manifest mantém início e atalhos sem build e sem campo id',()=>{
  assert.equal(manifest.start_url,'./');assert.equal(Object.hasOwn(manifest,'id'),false);
  assert.deepEqual(manifest.shortcuts.map(x=>x.url),['today','progress','data'].map(x=>(camile?'./#':'./index.html#')+x));
  const html=fs.readFileSync(new URL('../index.html',import.meta.url),'utf8');assert.match(html,/src\/app\.js\?v=/);
+});
+
+test('materiais 7 Fontes do chat Análise do curso CGU ficam vinculados às posições corretas',()=>{
+ assert.deepEqual(finalCguSlot(2).material_categories,['DIR']);
+ assert.deepEqual(finalCguSlot(4).material_categories,['ESTADO']);
+ assert.deepEqual(finalCguSlot(5).material_categories,['POL']);
+ assert.deepEqual(finalCguSlot(8).material_categories,['GOV','ETICA']);
+ assert.deepEqual(finalCguSlot(11).material_categories,['CONTR','INTEG']);
+ assert.deepEqual(finalCguSlot(12).material_categories,['DADOS','TRANS','SOC','ESTADO','ETICA']);
+ const dates=Object.fromEntries(FINAL_CGU_LESSONS.filter(x=>x.planned_release_date).map(x=>[x.id,x.planned_release_date]));
+ assert.equal(dates['7F-SOC-01'],'2026-10-22');assert.equal(dates['7F-SOC-06'],'2026-12-12');
+ assert.equal(dates['7F-CONTR-01'],'2026-11-11');assert.equal(dates['7F-CONTR-05'],'2026-12-09');
 });
