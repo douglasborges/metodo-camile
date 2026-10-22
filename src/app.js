@@ -238,7 +238,7 @@ function prioritiesPage(){
   const title=duplicate?'<s>'+esc(x.number+' · '+x.title)+'</s>':esc(x.number+' · '+x.title);
   const sourceNote=duplicate?'<div class="warning" style="margin-top:10px"><b>NÃO ESTUDAR — DUPLICADO.</b> '+esc(x.note||'Estudar o conteúdo pela fonte principal indicada.')+'</div>':
    x.status==='CONFERIR_COMPLEMENTO'?'<div class="warning" style="margin-top:10px"><b>CONFERIR COMPLEMENTO.</b> '+esc(x.note||'Verificar a diferença de cobertura antes de estudar.')+'</div>':'';
-  const availability=preparing?'<span class="badge">EM PREPARAÇÃO</span>':x.availability?'<span class="badge subtle">'+esc(x.availability.replaceAll('_',' '))+'</span>':'';
+  const availability=window.available?'<span class="badge">DISPONÍVEL</span>':preparing?'<span class="badge">EM PREPARAÇÃO</span>':x.availability?'<span class="badge subtle">'+esc(x.availability.replaceAll('_',' '))+'</span>':'';
   return '<article class="card" style="margin-bottom:14px;'+(duplicate?'opacity:.72':'')+'"><div class="page-head"><div><span class="eyebrow">'+esc(x.priority)+' · '+esc(x.kind||'CGU')+' · '+esc(x.category)+'</span><h3 style="margin:.35rem 0">'+title+'</h3><p class="muted">'+esc(x.teacher||'Professor não informado')+' · '+esc(x.course||'Curso não informado')+'</p></div><span class="badge">'+esc(status)+'</span></div>'+
    '<div class="statline"><span>Pré-requisitos: <b>'+esc(x.deps||'nenhum rígido')+'</b></span><span>Tempo: <b>'+M.hm(p.minutes)+'</b></span><span>Questões: <b>'+p.questions+(p.questions?' · '+p.correct+' acertos':'')+'</b></span><span>Data: <b>'+esc(p.date||'—')+'</b></span></div>'+
    '<p class="muted"><b>Tópico do edital:</b> '+esc(x.edital_topico||'não individualizado no catálogo; vinculado ao bloco/categoria do planejamento')+'</p>'+
@@ -346,7 +346,7 @@ function subjectsPage(){
  if(s.id==='cgu7'){
   const lessons=FINAL_CGU_LESSONS.filter(x=>x.source==='7F');
   const available=lessons.filter(x=>finalCguLessonWindow(x,M.day()).available).length;
-  const preparing=lessons.filter(x=>x.availability==='EM_PREPARACAO_NO_PRINT').length;
+  const preparing=lessons.filter(x=>x.availability==='EM_PREPARACAO_NO_PRINT'&&!finalCguLessonWindow(x,M.day()).available).length;
   const duplicates=lessons.filter(x=>x.status==='NAO_ESTUDAR_DUPLICADO').length;
   const complements=lessons.filter(x=>x.status==='CONFERIR_COMPLEMENTO').length;
   const rows=lessons.map((x,i)=>{
@@ -360,7 +360,7 @@ function subjectsPage(){
   tabs()+
   '<div class="grid metrics four"><div class="card metric"><small>CATÁLOGO</small><strong>'+lessons.length+'</strong><span class="sub">aulas previstas</span></div><div class="card metric"><small>DISPONÍVEIS</small><strong>'+available+'</strong><span class="sub">liberadas para estudo</span></div><div class="card metric"><small>EM PREPARAÇÃO</small><strong>'+preparing+'</strong></div><div class="card metric"><small>DUPLICADAS / COMPLEMENTO</small><strong>'+(duplicates+complements)+'</strong></div></div>'+
   '<section class="card"><p><b>Regra:</b> aulas em preparação aparecem para planejamento, mas não contam como disponíveis. Duplicadas permanecem visíveis e riscadas; não concluem o edital. “Conferir complemento” também não libera estudo automático.</p><a href="#priorities">Abrir Prioridades CGU →</a></section>'+
-  '<section class="card"><div class="page-head"><div><h2>'+lessons.length+' aulas no catálogo 7 Fontes</h2><p class="muted">Conteúdo planejado visível; o botão de estudo só aparece quando a aula estiver realmente publicada e marcada como ESTUDAR.</p></div><span class="badge">CATÁLOGO COMPLETO</span></div><div class="table-wrap"><table><thead><tr><th>#</th><th>AULA</th><th>BLOCO</th><th>PRIORIDADE</th><th>SITUAÇÃO</th><th>PREVISÃO 7F</th><th>ENTRA NA GRADE</th><th>CONTROLE</th></tr></thead><tbody>'+rows+'</tbody></table></div></section>';
+  '<section class="card"><div class="page-head"><div><h2>'+lessons.length+' aulas no catálogo 7 Fontes</h2><p class="muted">Conteúdo planejado visível; o botão de estudo aparece quando a aula estiver publicada ou atingir sua data operacional (+2 dias), desde que esteja marcada como ESTUDAR.</p></div><span class="badge">CATÁLOGO COMPLETO</span></div><div class="table-wrap"><table><thead><tr><th>#</th><th>AULA</th><th>BLOCO</th><th>PRIORIDADE</th><th>SITUAÇÃO</th><th>PREVISÃO 7F</th><th>ENTRA NA GRADE</th><th>CONTROLE</th></tr></thead><tbody>'+rows+'</tbody></table></div></section>';
  }
  const catalogUnits=(s.units||[]).filter(u=>u.catalog&&!u.hiddenFromRoute).sort((a,b)=>(a.order||0)-(b.order||0));
  const shown=catalogUnits.length?catalogUnits:units;
