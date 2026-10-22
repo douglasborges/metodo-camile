@@ -175,11 +175,32 @@ export function finalCguLessonProgress(state,lesson){
   subjectId:config?.subjectId||'',unitId:u?.id||''
  };
 }
-export function finalCguSlotLessons(index,{onlyAvailable=false}={}){
+function finalCguDateAdd(iso,days){
+ const m=String(iso||'').match(/^(\d{4})-(\d{2})-(\d{2})$/);if(!m)return'';
+ const d=new Date(Date.UTC(+m[1],+m[2]-1,+m[3]+days));
+ return d.toISOString().slice(0,10);
+}
+export function finalCguOperationalDate(lesson){
+ const planned=lesson?.planned_release_date||'';
+ if(!planned)return'';
+ const noMargin=String(lesson.release_rule||'').includes('DATA_REAL_7FONTES_SEM_MARGEM');
+ return finalCguDateAdd(planned,noMargin?0:2);
+}
+export function finalCguLessonWindow(lesson,iso=''){
+ const today=iso||new Date().toISOString().slice(0,10),planned=lesson?.planned_release_date||'',operational=finalCguOperationalDate(lesson);
+ if(lesson?.status==='NAO_ESTUDAR_DUPLICADO')return{available:false,state:'DUPLICADO',planned,operational};
+ if(lesson?.status==='CONFERIR_COMPLEMENTO')return{available:false,state:'CONFERIR_COMPLEMENTO',planned,operational};
+ if(lesson?.availability==='PUBLICADA_NO_PRINT'&&['ESTUDAR','ESTUDAR_ULTIMO'].includes(lesson?.status))return{available:true,state:'DISPONIVEL',planned,operational:operational||today};
+ if(operational&&today>=operational&&['ESTUDAR','ESTUDAR_ULTIMO'].includes(lesson?.status))return{available:true,state:'DISPONIVEL_REGRA_2D',planned,operational};
+ if(planned&&today>=planned)return{available:false,state:'AGUARDANDO_JANELA',planned,operational};
+ if(planned)return{available:false,state:'EM_BREVE',planned,operational};
+ return{available:false,state:'SEM_PREVISAO',planned,operational};
+}
+export function finalCguSlotLessons(index,{onlyAvailable=false,iso=''}={}){
  const slot=FINAL_CGU_PLAN.slot_cycle_13[index]||FINAL_CGU_PLAN.slot_cycle_13[0];
  const categories=Array.isArray(slot.material_categories)?slot.material_categories:[];
  let rows=FINAL_CGU_LESSONS.filter(x=>x.source==='7F'&&categories.includes(x.category));
- if(onlyAvailable)rows=rows.filter(x=>x.availability==='PUBLICADA_NO_PRINT'&&x.status==='ESTUDAR');
+ if(onlyAvailable)rows=rows.filter(x=>finalCguLessonWindow(x,iso).available);
  return rows;
 }
 export function finalCguSlot(index){

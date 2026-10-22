@@ -133,3 +133,19 @@ test('materiais 7 Fontes do chat Análise do curso CGU ficam vinculados às posi
  assert.equal(dates['7F-SOC-01'],'2026-10-22');assert.equal(dates['7F-SOC-06'],'2026-12-12');
  assert.equal(dates['7F-CONTR-01'],'2026-11-11');assert.equal(dates['7F-CONTR-05'],'2026-12-09');
 });
+
+test('cronograma Governança e Ética entra automaticamente na grade após +2 dias',()=>{
+ const expected={
+  '7F-ETICA-01':['2026-10-26','2026-10-28'],'7F-ETICA-02':['2026-11-05','2026-11-07'],'7F-ETICA-03':['2026-11-15','2026-11-17'],'7F-ETICA-04':['2026-11-25','2026-11-27'],'7F-ETICA-05':['2026-12-05','2026-12-07'],
+  '7F-GOV-01':['2026-10-26','2026-10-28'],'7F-GOV-02':['2026-11-09','2026-11-11'],'7F-GOV-03':['2026-11-16','2026-11-18'],'7F-GOV-04':['2026-11-23','2026-11-25'],'7F-GOV-05':['2026-11-30','2026-12-02']
+ };
+ for(const [id,[planned,operational]] of Object.entries(expected)){
+  const lesson=FINAL_CGU_LESSONS.find(x=>x.id===id);assert.equal(lesson.planned_release_date,planned);assert.equal(finalCguOperationalDate(lesson),operational);
+ }
+ const gov1=FINAL_CGU_LESSONS.find(x=>x.id==='7F-GOV-01');
+ assert.equal(finalCguLessonWindow(gov1,'2026-10-27').available,false);
+ assert.equal(finalCguLessonWindow(gov1,'2026-10-28').available,true);
+ const gov2=FINAL_CGU_LESSONS.find(x=>x.id==='7F-GOV-02');
+ assert.equal(gov2.status,'CONFERIR_COMPLEMENTO');assert.equal(finalCguLessonWindow(gov2,'2026-12-01').available,false);
+ assert.ok(finalCguSlotLessons(8,{onlyAvailable:true,iso:'2026-10-28'}).some(x=>x.id==='7F-GOV-01'));
+});

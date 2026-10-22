@@ -6,7 +6,7 @@ test('dashboard e catálogo exibem ciclo e exceção art. 5º com os dados inici
 
  await import('../src/app.js');await new Promise(r=>setImmediate(r));
  assert.doesNotMatch(get('#main').innerHTML,/Não foi possível abrir/);
- assert.match(get('#main').innerHTML,/13 posições/);
+ assert.match(get('#main').innerHTML,/13 posições/);assert.match(get('#main').innerHTML,/Curso:<\/b>/);
  for(const route of ['priorities','subjects','today','data']){
   location.hash='#'+route;listeners.hashchange();assert.doesNotMatch(get('#main').innerHTML,/undefined|NaN/);
   if(route==='priorities'){
