@@ -314,9 +314,23 @@ function subjectsPage(){
  let s=subject(); if(!s){selected='afo';s=subject('afo');}
  const units=M.methodUnits(s),cps=M.checkpoints(s);
  if(s.id==='cgu7'){
-  return heading('7 FONTES · CGU 2026','7 Fontes','A disponibilidade e a duplicação são controladas no catálogo final.')+
+  const lessons=FINAL_CGU_LESSONS.filter(x=>x.source==='7F');
+  const available=lessons.filter(x=>x.availability==='PUBLICADA_NO_PRINT'&&x.status==='ESTUDAR').length;
+  const preparing=lessons.filter(x=>x.availability==='EM_PREPARACAO_NO_PRINT').length;
+  const duplicates=lessons.filter(x=>x.status==='NAO_ESTUDAR_DUPLICADO').length;
+  const complements=lessons.filter(x=>x.status==='CONFERIR_COMPLEMENTO').length;
+  const rows=lessons.map((x,i)=>{
+   const p=finalCguLessonProgress(state,x),status=prioritiesStatusLabel(x,p),dup=x.status==='NAO_ESTUDAR_DUPLICADO',prep=x.availability==='EM_PREPARACAO_NO_PRINT';
+   const canStudy=!dup&&!prep&&x.status==='ESTUDAR'&&x.availability==='PUBLICADA_NO_PRINT'&&p.subjectId&&p.unitId;
+   const planned=x.planned_release_date?String(x.planned_release_date).split('-').reverse().join('/'):'—';
+   const title=dup?'<s>'+esc(x.number+' · '+x.title)+'</s>':esc(x.number+' · '+x.title);
+   return '<tr'+(dup?' style="opacity:.72"':'')+'><td class="numbers">'+String(i+1).padStart(3,'0')+'</td><td class="unit-title"><b>'+title+'</b><small style="display:block">'+esc(x.teacher||'Professor não informado')+'</small></td><td>'+esc(x.category||'—')+'</td><td>'+esc(x.priority||'—')+'</td><td>'+esc(status)+'</td><td>'+esc(planned)+'</td><td>'+(canStudy?'<button class="secondary small" data-action="catalog-study" data-subject="'+esc(p.subjectId)+'" data-unit="'+esc(p.unitId)+'">Registrar estudo</button>':'<span class="muted">Indisponível para estudo</span>')+'</td></tr>';
+  }).join('');
+  return heading('7 FONTES · CGU 2026','7 Fontes','O catálogo completo aparece mesmo quando as aulas ainda não estão liberadas.')+
   tabs()+
-  '<section class="card"><h2>Catálogo 7 Fontes</h2><p class="muted">As aulas “Em preparação” não entram na rota. Duplicadas ficam riscadas em Prioridades CGU e não concluem o conteúdo por si só. As aulas “Conferir complemento” permanecem como lacuna até verificação.</p><a href="#priorities">Abrir Prioridades CGU →</a></section>';
+  '<div class="grid metrics four"><div class="card metric"><small>CATÁLOGO</small><strong>'+lessons.length+'</strong><span class="sub">aulas previstas</span></div><div class="card metric"><small>DISPONÍVEIS</small><strong>'+available+'</strong><span class="sub">liberadas para estudo</span></div><div class="card metric"><small>EM PREPARAÇÃO</small><strong>'+preparing+'</strong></div><div class="card metric"><small>DUPLICADAS / COMPLEMENTO</small><strong>'+(duplicates+complements)+'</strong></div></div>'+
+  '<section class="card"><p><b>Regra:</b> aulas em preparação aparecem para planejamento, mas não contam como disponíveis. Duplicadas permanecem visíveis e riscadas; não concluem o edital. “Conferir complemento” também não libera estudo automático.</p><a href="#priorities">Abrir Prioridades CGU →</a></section>'+
+  '<section class="card"><div class="page-head"><div><h2>'+lessons.length+' aulas no catálogo 7 Fontes</h2><p class="muted">Conteúdo planejado visível; o botão de estudo só aparece quando a aula estiver realmente publicada e marcada como ESTUDAR.</p></div><span class="badge">CATÁLOGO COMPLETO</span></div><div class="table-wrap"><table><thead><tr><th>#</th><th>AULA</th><th>BLOCO</th><th>PRIORIDADE</th><th>SITUAÇÃO</th><th>PREVISÃO</th><th>CONTROLE</th></tr></thead><tbody>'+rows+'</tbody></table></div></section>';
  }
  const catalogUnits=(s.units||[]).filter(u=>u.catalog&&!u.hiddenFromRoute).sort((a,b)=>(a.order||0)-(b.order||0));
  const shown=catalogUnits.length?catalogUnits:units;

@@ -15,5 +15,11 @@ test('dashboard e catálogo exibem ciclo e exceção art. 5º com os dados inici
    assert.match(get('#main').innerHTML,/NÃO ESTUDAR o art. 5º pela Aula 02/);
   }
  }
+ location.hash='#subjects';listeners.hashchange();
+ listeners.click({target:{closest:()=>({dataset:{select:'cgu7'}})}});
+ assert.match(get('#main').innerHTML,/aulas no catálogo 7 Fontes/);
+ assert.match(get('#main').innerHTML,/EM PREPARAÇÃO/);
+ assert.match(get('#main').innerHTML,/Indisponível para estudo/);
+ assert.match(get('#main').innerHTML,/Desenvolvimento e realidade brasileira/);
  }finally{for(let k of globals)globalThis[k]=previous[k];}
 });
