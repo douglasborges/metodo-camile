@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import * as M from '../src/core.js';
 import {FINAL_CGU_PLAN,FINAL_CGU_LESSONS} from '../src/cgu-final-plan.js';
-import {applyFinalCguCurriculum,FINAL_CGU_CYCLE_SUBJECTS,PREVIOUS_FINAL_CGU_CYCLE,finalCguSlot,finalCguLessonProgress} from '../src/cgu-final-runtime.js';
+import {applyFinalCguCurriculum,FINAL_CGU_CYCLE_SUBJECTS,PREVIOUS_FINAL_CGU_CYCLE,finalCguSlot,finalCguLessonProgress,finalCguOperationalDate,finalCguLessonWindow,finalCguSlotLessons} from '../src/cgu-final-runtime.js';
 const camile=true;
 const seed=()=>JSON.parse(fs.readFileSync(new URL('../data/initial-state.json',import.meta.url)));
 const update=s=>camile?M.normalizeMethodState(s):applyFinalCguCurriculum(s);
