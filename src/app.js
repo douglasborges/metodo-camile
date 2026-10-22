@@ -210,10 +210,13 @@ function cguCheckPage(){
 function prioritiesStatusLabel(lesson,progress){
  if(lesson.status==='NAO_ESTUDAR_DUPLICADO')return 'NÃO ESTUDAR — DUPLICADO';
  if(lesson.status==='CONFERIR_COMPLEMENTO')return 'CONFERIR COMPLEMENTO';
- if(lesson.status==='ESTUDAR_ULTIMO')return 'ESTUDAR POR ÚLTIMO';
- if(lesson.availability==='EM_PREPARACAO_NO_PRINT')return 'EM PREPARAÇÃO';
  if(progress.status==='CONCLUIDO')return 'CONCLUÍDO';
  if(progress.status==='EM_ANDAMENTO')return 'EM ANDAMENTO';
+ const window=finalCguLessonWindow(lesson,M.day());
+ if(window.available)return lesson.status==='ESTUDAR_ULTIMO'?'DISPONÍVEL · ESTUDAR POR ÚLTIMO':'DISPONÍVEL';
+ if(window.state==='AGUARDANDO_JANELA')return 'AGUARDANDO +2 DIAS';
+ if(lesson.status==='ESTUDAR_ULTIMO')return 'ESTUDAR POR ÚLTIMO';
+ if(lesson.availability==='EM_PREPARACAO_NO_PRINT')return 'EM PREPARAÇÃO';
  return 'PENDENTE';
 }
 function dconPolicyCard(){return '<section class="card"><h2>DCON · exceção obrigatória do art. 5º</h2><p>Regra geral: Nelma Fontana — curso Cebraspe. Para o art. 5º, fonte teórica principal e exclusiva: <b>Estratégia Concursos — Nelma Fontana — Aula 04 — Art. 5º — 24 vídeos teóricos + exercícios.</b></p><p>Fundamentos e pré-requisitos → teoria geral dos direitos fundamentais → Estratégia Aula 04 → RETORNAR à Nelma/Cebraspe: Direitos Sociais → Direitos Políticos → Organização do Estado → demais aulas selecionadas, fiscalização/controle e Ordem Econômica.</p><p>NÃO ESTUDAR o art. 5º pela Aula 02 Cebraspe nem repetir sua teoria nesse curso. O progresso anterior permanece preservado.</p></section>';}
@@ -231,7 +234,7 @@ function prioritiesPage(){
  const rows=filtered.map(x=>{
   const p=finalCguLessonProgress(state,x),status=prioritiesStatusLabel(x,p);
   const duplicate=x.status==='NAO_ESTUDAR_DUPLICADO',preparing=x.availability==='EM_PREPARACAO_NO_PRINT';
-  const window=finalCguLessonWindow(x,M.day()),canStudy=!duplicate&&x.status==='ESTUDAR'&&window.available&&p.subjectId&&p.unitId;
+  const window=finalCguLessonWindow(x,M.day()),canStudy=!duplicate&&['ESTUDAR','ESTUDAR_ULTIMO'].includes(x.status)&&window.available&&p.subjectId&&p.unitId;
   const title=duplicate?'<s>'+esc(x.number+' · '+x.title)+'</s>':esc(x.number+' · '+x.title);
   const sourceNote=duplicate?'<div class="warning" style="margin-top:10px"><b>NÃO ESTUDAR — DUPLICADO.</b> '+esc(x.note||'Estudar o conteúdo pela fonte principal indicada.')+'</div>':
    x.status==='CONFERIR_COMPLEMENTO'?'<div class="warning" style="margin-top:10px"><b>CONFERIR COMPLEMENTO.</b> '+esc(x.note||'Verificar a diferença de cobertura antes de estudar.')+'</div>':'';
@@ -342,13 +345,13 @@ function subjectsPage(){
  const units=M.methodUnits(s),cps=M.checkpoints(s);
  if(s.id==='cgu7'){
   const lessons=FINAL_CGU_LESSONS.filter(x=>x.source==='7F');
-  const available=lessons.filter(x=>x.availability==='PUBLICADA_NO_PRINT'&&x.status==='ESTUDAR').length;
+  const available=lessons.filter(x=>finalCguLessonWindow(x,M.day()).available).length;
   const preparing=lessons.filter(x=>x.availability==='EM_PREPARACAO_NO_PRINT').length;
   const duplicates=lessons.filter(x=>x.status==='NAO_ESTUDAR_DUPLICADO').length;
   const complements=lessons.filter(x=>x.status==='CONFERIR_COMPLEMENTO').length;
   const rows=lessons.map((x,i)=>{
    const p=finalCguLessonProgress(state,x),status=prioritiesStatusLabel(x,p),dup=x.status==='NAO_ESTUDAR_DUPLICADO',prep=x.availability==='EM_PREPARACAO_NO_PRINT';
-   const window=finalCguLessonWindow(x,M.day()),canStudy=!dup&&x.status==='ESTUDAR'&&window.available&&p.subjectId&&p.unitId;
+   const window=finalCguLessonWindow(x,M.day()),canStudy=!dup&&['ESTUDAR','ESTUDAR_ULTIMO'].includes(x.status)&&window.available&&p.subjectId&&p.unitId;
    const planned=x.planned_release_date?String(x.planned_release_date).split('-').reverse().join('/'):'—',operational=finalCguOperationalDate(x)?formatBrDate(finalCguOperationalDate(x)):'—';
    const title=dup?'<s>'+esc(x.number+' · '+x.title)+'</s>':esc(x.number+' · '+x.title);
    return '<tr'+(dup?' style="opacity:.72"':'')+'><td class="numbers">'+String(i+1).padStart(3,'0')+'</td><td class="unit-title"><b>'+title+'</b><small style="display:block">'+esc(x.teacher||'Professor não informado')+'</small></td><td>'+esc(x.category||'—')+'</td><td>'+esc(x.priority||'—')+'</td><td>'+esc(status)+'</td><td>'+esc(planned)+'</td><td>'+(canStudy?'<button class="secondary small" data-action="catalog-study" data-subject="'+esc(p.subjectId)+'" data-unit="'+esc(p.unitId)+'">Registrar estudo</button>':'<span class="muted">Indisponível para estudo</span>')+'</td></tr>';
