@@ -1,14 +1,15 @@
-import * as M from './core.js?v=2.0.1-cgu-dcon-a05-20261027&repair=camile-afo-20261021';
-import {durationMinutes,progressMetrics} from './progress.js?v=2.0.1-cgu-dcon-a05-20261027';
-import { motivationForDay, saveReminder, normalizeExtras, LEGISLATION_QUEUE, legislationPair, goalSnapshot, completeGoal, FINAL_SPRINT, BIZURAFO_MODULES, bizurSnapshot, bizurStatusLabel, recordBizurAFO, setBizurModuleDone, endBizurFocus, resumeBizurFocus } from './personal.js?v=2.0.1-cgu-dcon-a05-20261027';
-import {CGU_SYLLABUS,CGU_CHECK_TOPICS,CGU_OPERATIONAL_TOTAL,CGU_OFFICIAL_TOTAL,CGU_CHECK_START,cguDaysRemaining} from './cgu-syllabus.js?v=2.0.1-cgu-dcon-a05-20261027';
-import {materialPlanFor,PHASE_PLAN,bookRoutesFor,GAP_REGISTER,SPECIAL_LAWS,INSTITUTIONAL_ROUTES,DEFERRED_MATERIALS} from './cgu-materials.js?v=2.0.1-cgu-dcon-a05-20261027';
-import {achievementSnapshot,progressText,CATEGORY_META} from './achievements.js?v=2.0.1-cgu-dcon-a05-20261027';
-import {analyticsSnapshot} from './analytics.js?v=2.0.1-cgu-dcon-a05-20261027';
-import {FINAL_CGU_PLAN,FINAL_CGU_LESSONS} from './cgu-final-plan.js?v=2.0.1-cgu-dcon-a05-20261027';
-import {finalCguLessonProgress,finalCguSlot,finalCguPhaseForDate,finalCguIsSunday,finalCguSlotLessons,finalCguLessonWindow,finalCguOperationalDate} from './cgu-final-runtime.js?v=2.0.1-cgu-dcon-a05-20261027';
-const APP_VERSION='2.0.1-cgu-dcon-a05-20261027';
-const APP_VERSION_LABEL='v2.0';
+import * as M from './core.js?v=2.0.2-pp-renno-20261027&repair=camile-afo-20261021';
+import {durationMinutes,progressMetrics} from './progress.js?v=2.0.2-pp-renno-20261027';
+import { motivationForDay, saveReminder, normalizeExtras, LEGISLATION_QUEUE, legislationPair, goalSnapshot, completeGoal, FINAL_SPRINT, BIZURAFO_MODULES, bizurSnapshot, bizurStatusLabel, recordBizurAFO, setBizurModuleDone, endBizurFocus, resumeBizurFocus } from './personal.js?v=2.0.2-pp-renno-20261027';
+import {CGU_SYLLABUS,CGU_CHECK_TOPICS,CGU_OPERATIONAL_TOTAL,CGU_OFFICIAL_TOTAL,CGU_CHECK_START,cguDaysRemaining} from './cgu-syllabus.js?v=2.0.2-pp-renno-20261027';
+import {materialPlanFor,PHASE_PLAN,bookRoutesFor,GAP_REGISTER,SPECIAL_LAWS,INSTITUTIONAL_ROUTES,DEFERRED_MATERIALS} from './cgu-materials.js?v=2.0.2-pp-renno-20261027';
+import {achievementSnapshot,progressText,CATEGORY_META} from './achievements.js?v=2.0.2-pp-renno-20261027';
+import {analyticsSnapshot} from './analytics.js?v=2.0.2-pp-renno-20261027';
+import {FINAL_CGU_PLAN,FINAL_CGU_LESSONS} from './cgu-final-plan.js?v=2.0.2-pp-renno-20261027';
+import {RENNO_COURSE,RENNO_TEACHER,RENNO_STEPS,RENNO_UNIT_IDS,RENNO_PACKAGE_URL,RENNO_7F_FIRST_ID} from './pp-renno.js?v=2.0.2-pp-renno-20261027';
+import {finalCguLessonProgress,finalCguSlot,finalCguPhaseForDate,finalCguIsSunday,finalCguSlotLessons,finalCguLessonWindow,finalCguOperationalDate} from './cgu-final-runtime.js?v=2.0.2-pp-renno-20261027';
+const APP_VERSION='2.0.2-pp-renno-20261027';
+const APP_VERSION_LABEL='v2.0.2';
 const $=q=>document.querySelector(q), esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])), label=id=>M.RULES[id]?.label||id.replace('legacy:',''), option=(v,t,selected)=>`<option value="${esc(v)}" ${v===selected?'selected':''}>${esc(t)}</option>`, checks=v=>v?'checked':'', cpLabel={done:'Concluído',due:'Checkpoint pendente',battery:'Baterias pendentes',audit:'Conferir histórico',planned:'Planejado'}, phaseLabel={new:'Estudo Novo',solid:'Estudo Sólido'};
 let state,page='today',selected='afo',pendingImport=null,timer=null,lawTimer=null,storedRaw=null,noticeTimeout,achievementCategoryFilter='all',achievementStatusFilter='all',progressView='overview',progressPeriod='all',progressSubject='all',goalView=null,cguPriorityFilter='P3',cguKindFilter='',cguStatusFilter='';
 const ACTIVE_SUBJECTS=['afo','cpu','auditoria','dad','adm-publica','dcon','cgu7','port','ti','politicas','diversidade'];
@@ -224,6 +225,22 @@ function prioritiesStatusLabel(lesson,progress){
  return 'PENDENTE';
 }
 function dconPolicyCard(){return '<section class="card"><h2>DCON · teoria obrigatória antes das questões Cebraspe</h2><p>Fonte: <b>Nelma Fontana no Estratégia Concursos</b>. Primeiro, Estratégia Concursos — Nelma Fontana — Aula 04 — Art. 5º — 24 vídeos teóricos + exercícios; depois, <b>Aula 05 · Remédios Constitucionais (8 vídeos)</b> — HC, HD, MS, MI e ação popular.</p><p><b>Sequência obrigatória: Estratégia A04 (24) → Estratégia A05 (8) → voltar à Aula 02 Cebraspe (questões).</b> NÃO ESTUDAR o art. 5º pela Aula 02 Cebraspe como segunda teoria; ela será retomada para questões. As demais aulas Cebraspe continuam depois.</p><p>O progresso antigo da Aula 04 e de DCON permanece preservado. A Aula 05 possui controle próprio dos oito vídeos, sem concluir etapas automaticamente.</p></section>';}
+function ppNivelamentoPanel(){
+ const pp=state.subjects.find(x=>x.id==='politicas');
+ const intro=RENNO_STEPS.map((step,i)=>{
+  const id=RENNO_UNIT_IDS[i],unit=pp?.units.find(x=>x.id===id);
+  const has=state.sessions.some(row=>row.subjectId==='politicas'&&row.unitId===id);
+  const status=unit?.theoryDone?'Teoria concluída':has?'Em andamento':'Pendente';
+  return '<article class="goal-task"><span>'+String(step.order).padStart(2,'0')+'</span><div><b>'+esc(step.title)+'</b><small>'+esc(status)+' · posição '+step.coursePosition+' na lista do curso (não é número oficial da aula)</small><div class="actions"><button class="secondary small" data-action="catalog-study" data-subject="politicas" data-unit="'+id+'">Registrar estudo</button></div></div></article>';
+ }).join('');
+ const next=FINAL_CGU_LESSONS.filter(x=>x.source==='7F'&&x.category==='POL').map(x=>{
+  const p=finalCguLessonProgress(state,x),status=p.status==='CONCLUIDO'?'Concluída':p.status==='EM_ANDAMENTO'?'Em andamento':'Não concluída';
+  return '<li><b>'+esc(x.title)+'</b><small style="display:block">'+status+' · '+M.hm(p.minutes)+' registrados</small></li>';
+ }).join('');
+ return '<section class="card"><h2>PREPARAÇÃO — ESTRATÉGIA | RODRIGO RENNÓ</h2><p><b>Curso:</b> '+esc(RENNO_COURSE)+' · '+esc(RENNO_TEACHER)+'</p><div class="goal-task-list">'+intro+'</div><p><a href="'+esc(RENNO_PACKAGE_URL)+'" target="_blank" rel="noopener noreferrer">Localizar curso no pacote Estratégia</a></p></section>'+
+ '<section class="card"><h2>APROFUNDAMENTO — 7 FONTES</h2><p>Após o nivelamento, retomar <b>'+esc(FINAL_CGU_LESSONS.find(x=>x.id===RENNO_7F_FIRST_ID)?.title||'Desenho de Políticas Públicas')+'</b>, mantendo o progresso já registrado pela Camile.</p><ul>'+next+'</ul><button class="secondary small" data-select="cgu7">Abrir aulas da 7 Fontes</button><p class="muted">Regra pedagógica sem bloqueio retroativo; Fase 1 e aprofundamentos Ex Ante, Ex Post, CMAP e simulados permanecem preservados.</p></section>';
+}
+function ppSevenFontesNotice(){return '<section class="card"><h3>Políticas Públicas · preparação antes da 7 Fontes</h3><p>Três etapas do Estratégia/Rodrigo Rennó antecedem a continuação do bloco Desenho de Políticas Públicas, sem reiniciar ou bloquear aulas já iniciadas.</p><button class="secondary small" data-select="politicas">Abrir nivelamento Estratégia</button></section>';}
 function prioritiesPage(){
  const filtered=FINAL_CGU_LESSONS.filter(x=>{
   if(cguPriorityFilter&&x.priority!==cguPriorityFilter)return false;
@@ -361,7 +378,7 @@ function subjectsPage(){
    return '<tr'+(dup?' style="opacity:.72"':'')+'><td class="numbers">'+String(i+1).padStart(3,'0')+'</td><td class="unit-title"><b>'+title+'</b><small style="display:block">'+esc(x.teacher||'Professor não informado')+'</small></td><td>'+esc(x.category||'—')+'</td><td>'+esc(x.priority||'—')+'</td><td>'+esc(status)+'</td><td>'+esc(planned)+'</td><td>'+(canStudy?'<button class="secondary small" data-action="catalog-study" data-subject="'+esc(p.subjectId)+'" data-unit="'+esc(p.unitId)+'">Registrar estudo</button>':'<span class="muted">Indisponível para estudo</span>')+'</td></tr>';
   }).join('');
   return heading('7 FONTES · CGU 2026','7 Fontes','O catálogo completo aparece mesmo quando as aulas ainda não estão liberadas.')+
-  tabs()+
+  tabs()+ppSevenFontesNotice()+
   '<div class="grid metrics four"><div class="card metric"><small>CATÁLOGO</small><strong>'+lessons.length+'</strong><span class="sub">aulas previstas</span></div><div class="card metric"><small>DISPONÍVEIS</small><strong>'+available+'</strong><span class="sub">liberadas para estudo</span></div><div class="card metric"><small>EM PREPARAÇÃO</small><strong>'+preparing+'</strong></div><div class="card metric"><small>DUPLICADAS / COMPLEMENTO</small><strong>'+(duplicates+complements)+'</strong></div></div>'+
   '<section class="card"><p><b>Regra:</b> aulas em preparação aparecem para planejamento, mas não contam como disponíveis. Duplicadas permanecem visíveis e riscadas; não concluem o edital. “Conferir complemento” também não libera estudo automático.</p><a href="#priorities">Abrir Prioridades CGU →</a></section>'+
   '<section class="card"><div class="page-head"><div><h2>'+lessons.length+' aulas no catálogo 7 Fontes</h2><p class="muted">Conteúdo planejado visível; o botão de estudo aparece quando a aula estiver publicada ou atingir sua data operacional (+2 dias), desde que esteja marcada como ESTUDAR.</p></div><span class="badge">CATÁLOGO COMPLETO</span></div><div class="table-wrap"><table><thead><tr><th>#</th><th>AULA</th><th>BLOCO</th><th>PRIORIDADE</th><th>SITUAÇÃO</th><th>PREVISÃO 7F</th><th>ENTRA NA GRADE</th><th>CONTROLE</th></tr></thead><tbody>'+rows+'</tbody></table></div></section>';
@@ -371,6 +388,7 @@ function subjectsPage(){
  return heading('PLANO FINAL · CGU 2026','Disciplinas','Aulas da fonte principal, pré-requisitos e progresso real preservado.')+
  tabs()+
  (s.id==='dcon'?dconPolicyCard():'')+
+ (s.id==='politicas'?ppNivelamentoPanel():'')+
  '<section class="card"><div class="page-head"><div><h2>'+esc(s.course)+'</h2><p>'+shown.length+' unidades ativas · '+esc(s.priority||'')+' · referência '+M.hm(s.slotMinutes)+'</p></div><span class="badge">PLANO FINAL</span></div>'+
  '<div class="statline"><span>Teoria <b>'+shown.filter(u=>u.theoryDone).length+'/'+shown.length+'</b></span><span>Baterias <b>'+shown.filter(u=>u.batteryDone).length+'/'+shown.length+'</b></span><span>Revisão geral <b>'+shown.filter(u=>u.generalDone).length+'/'+shown.length+'</b></span></div>'+
  '<div class="table-wrap"><table><thead><tr><th>#</th><th>AULA / MÓDULO</th><th>PRIORIDADE</th><th>PRÉ-REQUISITO</th><th>SITUAÇÃO</th><th>CONTROLE</th></tr></thead><tbody>'+
