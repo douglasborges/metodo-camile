@@ -213,14 +213,15 @@ export const MATERIAL_PLAN=Object.freeze({
   label:'Políticas Públicas e Avaliação',
   phase:'Fase 2',priority:'MANUTENÇÃO ALTA',active:true,
   principal:[
-   'Estratégia · Rodrigo Rennó · PP Aula 01 → PP Aula 02.',
+   'PREPARAÇÃO — Estratégia / Rodrigo Rennó: Políticas Públicas → Arranjos Institucionais para Coordenação e Implementação de Políticas Públicas → Avaliação de PP Ex Ante (introdução).',
+   'APROFUNDAMENTO — 7 Fontes: Desenho de Políticas Públicas (Problema Público, Teoria da Mudança, Modelo Lógico, Hipóteses e Avaliabilidade) → implementação → indicadores, sem reiniciar o histórico.',
    'Estratégia pós-edital · Arranjos Institucionais → Intersetorialidade → Instrumentos → Avaliação Ex Ante → Avaliação de Políticas Públicas/Comissão (2 aulas) → Avaliação Ex Post.',
    'Depois: CMAP seletivo → Passo A01/A02 → simulados.'
   ],
   complement:['PP A03/A04 apenas como reaproveitamento em B1 (intermediação/corrupção), não como segunda teoria de Políticas Públicas.'],
   books:[],
-  avoid:['Políticas Públicas é exclusivamente Estratégia na rota atual.','Não usar curso do site próprio do Rodrigo Rennó.','Não usar Direção PP se o conteúdo já estiver coberto.'],
-  order:'PP A01 → A02 → Arranjos Institucionais → Intersetorialidade → Instrumentos → Ex Ante → Avaliação Comissão 1/2 → Ex Post → CMAP seletivo → Passo A01/A02 → simulados.'
+  avoid:['Não duplicar a teoria do nivelamento; 7 Fontes permanece como continuação, com progresso próprio.','Não usar curso do site próprio do Rodrigo Rennó.','Não usar Direção PP se o conteúdo já estiver coberto.'],
+  order:'Estratégia/Rodrigo Rennó: Políticas Públicas → Arranjos Institucionais para Coordenação e Implementação de Políticas Públicas → Avaliação de PP Ex Ante (introdução) → 7 Fontes Desenho de Políticas Públicas (retomar progresso) → aprofundamentos Estratégia Ex Ante/Ex Post, Comissão, CMAP seletivo, Passo A01/A02 e simulados.'
  },
  auditoria:{
   label:'Auditoria Governamental / Contratações / Integridade aplicada',
