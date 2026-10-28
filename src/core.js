@@ -1,3 +1,4 @@
+import {RENNO_COURSE,RENNO_STEPS} from './pp-renno.js';
 import {FINAL_CGU_CYCLE_SUBJECTS,applyFinalCguCurriculum,migrateFinalCguCycle,PREVIOUS_FINAL_CGU_CYCLE,PREVIOUS_FINAL_CGU_CYCLE_V6} from './cgu-final-runtime.js';
 export const KEY='metodo-et:camile:v1';
 export const LEGACY_CYCLE_V13=Object.freeze(['port','dcon','afo','ti','adm-publica','diversidade','afo','dad','politicas','auditoria','afo']);
@@ -351,17 +352,22 @@ export function normalizeMethodState(current){
   ['A3.6','Conclusões, recomendações e uso dos resultados · Ex Post/pós-edital'],
   ['A3.7','Ética da investigação · GAP CONTROLADO']
  ];
- const ppBase=ppTopics.map((x,i)=>baseUnit('pp-cgu-'+(i+1),i+1,x[1],{source:i===8?'PENDENTE · material pós-edital específico':'Estratégia · Políticas Públicas/Avaliação',cguCodes:[x[0]],deferred:i===8}));
+ const ppBase=ppTopics.map((x,i)=>baseUnit('pp-cgu-'+(i+1),i===0?1:i+3,i===0?RENNO_STEPS[0].title:x[1],{
+  source:i===0?'Estratégia Concursos · Rodrigo Rennó':i===8?'PENDENTE · material pós-edital específico':'Estratégia · Políticas Públicas/Avaliação',
+  cguCodes:[x[0]],deferred:i===8,
+  ...(i===0?{stage:'nivelamento-renno',studyPlan:RENNO_COURSE+' · posição 1 na lista do curso; não presumir nº de aula.'}:{})
+ }));
  ppBase.push(
-  baseUnit('pp-arranjos',10,'Estratégia pós-edital · Arranjos Institucionais',{source:'Estratégia · rota atual',cguCodes:['A3.1','A3.2']}),
-  baseUnit('pp-intersetorialidade',11,'Estratégia pós-edital · Intersetorialidade',{source:'Estratégia · rota atual',cguCodes:['A3.2']}),
-  baseUnit('pp-instrumentos',12,'Estratégia pós-edital · Instrumentos de Políticas Públicas',{source:'Estratégia · rota atual',cguCodes:['A3.1','A3.2']}),
-  baseUnit('pp-avaliacao-comissao-1',13,'Estratégia pós-edital · Avaliação de Políticas Públicas / Comissão · Aula 1',{source:'Estratégia · rota atual',cguCodes:['A3.3','A3.6']}),
-  baseUnit('pp-avaliacao-comissao-2',14,'Estratégia pós-edital · Avaliação de Políticas Públicas / Comissão · Aula 2',{source:'Estratégia · rota atual',cguCodes:['A3.3','A3.6']}),
-  baseUnit('pp-passo',15,'Estratégia · Passo A01/A02 + simulados',{source:'Estratégia · consolidação',cguCodes:['A3.1','A3.2','A3.3','A3.4','A3.5','A3.6']}),
+  baseUnit('pp-arranjos',2,RENNO_STEPS[1].title,{source:'Estratégia Concursos · Rodrigo Rennó',stage:'nivelamento-renno',studyPlan:RENNO_COURSE+' · posição 2 na lista do curso.',cguCodes:['A3.1','A3.2']}),
+  baseUnit('pp-renno-exante-intro',3,RENNO_STEPS[2].title,{source:'Estratégia Concursos · Rodrigo Rennó',stage:'nivelamento-renno',studyPlan:RENNO_COURSE+' · quinta posição na lista do curso; introdução distinta do Ex Ante aprofundado.',cguCodes:['A3.1']}),
+  baseUnit('pp-intersetorialidade',12,'Estratégia pós-edital · Intersetorialidade',{source:'Estratégia · rota atual',cguCodes:['A3.2']}),
+  baseUnit('pp-instrumentos',13,'Estratégia pós-edital · Instrumentos de Políticas Públicas',{source:'Estratégia · rota atual',cguCodes:['A3.1','A3.2']}),
+  baseUnit('pp-avaliacao-comissao-1',14,'Estratégia pós-edital · Avaliação de Políticas Públicas / Comissão · Aula 1',{source:'Estratégia · rota atual',cguCodes:['A3.3','A3.6']}),
+  baseUnit('pp-avaliacao-comissao-2',15,'Estratégia pós-edital · Avaliação de Políticas Públicas / Comissão · Aula 2',{source:'Estratégia · rota atual',cguCodes:['A3.3','A3.6']}),
+  baseUnit('pp-passo',16,'Estratégia · Passo A01/A02 + simulados',{source:'Estratégia · consolidação',cguCodes:['A3.1','A3.2','A3.3','A3.4','A3.5','A3.6']}),
   baseUnit('pp-b1-reuse',90,'PP A03/A04 · reaproveitamento apenas em B1',{source:'Não é segunda teoria de Políticas Públicas',cguCodes:['B1.6','B1.7','B1.8'],hiddenFromRoute:true,deferred:true})
  );
- const politicas=ensureSubject(st,{id:'politicas',course:'Políticas Públicas e Avaliação — exclusivamente Estratégia · rota CGU 16/10',minutes:60,units:ppBase});
+ const politicas=ensureSubject(st,{id:'politicas',course:'Políticas Públicas e Métodos de Investigação e Avaliação · Estratégia/Rodrigo Rennó → 7 Fontes · Fase 2',minutes:60,units:ppBase});
  Object.assign(politicas,{studyPhase:2,priority:'MANUTENÇÃO ALTA',active:true});
 
  const auditTopics=[
