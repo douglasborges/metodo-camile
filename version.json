@@ -1,7 +1,7 @@
 {
-  "build": "2.0.1-cgu-dcon-a05-20261027",
+  "build": "2.0.2-pp-renno-20261027",
   "family": "v2.0",
   "publishedAt": "2026-10-27",
   "effectiveStudyStart": "2026-10-21",
-  "channel": "cgu-auditoria-dcon-a05"
+  "channel": "cgu-pp-renno-nivelamento"
 }
