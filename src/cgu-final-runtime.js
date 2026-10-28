@@ -1,4 +1,5 @@
-import {FINAL_CGU_PLAN,FINAL_CGU_LESSONS,normalizeFinalCguState} from './cgu-final-plan.js';
+import {FINAL_CGU_PLAN,FINAL_CGU_LESSONS} from './dcon-ordered-curriculum.js';
+import {normalizeFinalCguState} from './cgu-final-plan.js';
 
 export const FINAL_CGU_RUNTIME_VERSION='2.0.0-cgu-auditoria-final-20261021';
 export const FINAL_CGU_CYCLE_SUBJECTS=Object.freeze([
