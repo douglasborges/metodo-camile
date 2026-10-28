@@ -225,6 +225,22 @@ function prioritiesStatusLabel(lesson,progress){
  return 'PENDENTE';
 }
 function dconPolicyCard(){return '<section class="card"><h2>DCON · sequência A04 → A05 → A02</h2><p><b>Ordem correta:</b> Aula 01 do Cebraspe → <b>Aula 04 do Estratégia (art. 5º: 24 vídeos + exercícios)</b> → <b>Aula 05 do Estratégia (remédios constitucionais: 8 vídeos)</b> → <b>Aula 02 do Cebraspe (questões e consolidação)</b> → Aula 03 do Cebraspe e seguintes.</p><p>As questões da Aula 04 podem ser registradas durante a teoria, sem concluir antecipadamente a bateria. A Aula 02 Cebraspe não é pré-requisito da Aula 04 do Estratégia.</p><p>Os registros reais, as 24/8 videoaulas e as associações históricas permanecem preservados.</p></section>';}
+function ppNivelamentoPanel(){
+ const pp=state.subjects.find(x=>x.id==='politicas');
+ const intro=RENNO_STEPS.map((step,i)=>{
+  const id=RENNO_UNIT_IDS[i],unit=pp?.units.find(x=>x.id===id);
+  const has=state.sessions.some(row=>row.subjectId==='politicas'&&row.unitId===id);
+  const status=unit?.theoryDone?'Teoria concluída':has?'Em andamento':'Pendente';
+  return '<article class="goal-task"><span>'+String(step.order).padStart(2,'0')+'</span><div><b>'+esc(step.title)+'</b><small>'+esc(status)+' · posição '+step.coursePosition+' na lista do curso (não é número oficial da aula)</small><div class="actions"><button class="secondary small" data-action="catalog-study" data-subject="politicas" data-unit="'+id+'">Registrar estudo</button></div></div></article>';
+ }).join('');
+ const next=FINAL_CGU_LESSONS.filter(x=>x.source==='7F'&&x.category==='POL').map(x=>{
+  const p=finalCguLessonProgress(state,x),status=p.status==='CONCLUIDO'?'Concluída':p.status==='EM_ANDAMENTO'?'Em andamento':'Não concluída';
+  return '<li><b>'+esc(x.title)+'</b><small style="display:block">'+status+' · '+M.hm(p.minutes)+' registrados</small></li>';
+ }).join('');
+ return '<section class="card"><h2>PREPARAÇÃO — ESTRATÉGIA | RODRIGO RENNÓ</h2><p><b>Curso:</b> '+esc(RENNO_COURSE)+' · '+esc(RENNO_TEACHER)+'</p><div class="goal-task-list">'+intro+'</div><p><a href="'+esc(RENNO_PACKAGE_URL)+'" target="_blank" rel="noopener noreferrer">Localizar curso no pacote Estratégia</a></p></section>'+
+ '<section class="card"><h2>APROFUNDAMENTO — 7 FONTES</h2><p>Após o nivelamento, retomar <b>'+esc(FINAL_CGU_LESSONS.find(x=>x.id===RENNO_7F_FIRST_ID)?.title||'Desenho de Políticas Públicas')+'</b>, mantendo o progresso já registrado pela Camile.</p><ul>'+next+'</ul><button class="secondary small" data-select="cgu7">Abrir aulas da 7 Fontes</button><p class="muted">Regra pedagógica sem bloqueio retroativo; Fase 1 e aprofundamentos Ex Ante, Ex Post, CMAP e simulados permanecem preservados.</p></section>';
+}
+function ppSevenFontesNotice(){return '<section class="card"><h3>Políticas Públicas · preparação antes da 7 Fontes</h3><p>Três etapas do Estratégia/Rodrigo Rennó antecedem a continuação do bloco Desenho de Políticas Públicas, sem reiniciar ou bloquear aulas já iniciadas.</p><button class="secondary small" data-select="politicas">Abrir nivelamento Estratégia</button></section>';}
 function prioritiesPage(){
  const filtered=FINAL_CGU_LESSONS.filter(x=>{
   if(cguPriorityFilter&&x.priority!==cguPriorityFilter)return false;
