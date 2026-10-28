@@ -56,7 +56,7 @@ export const GOAL_MATERIAL_TARGETS=Object.freeze([
   'AFO: somente BizurAFO · M10 SOMENTE RAP → M11 → M13. M12 fica fora da rota.',
   'Pacelli/Netto: capítulos 8 → 9 → 10 → 15, respeitando LAI/LGPD/Conflito antes dos capítulos dependentes.',
   'DAD: U19 → U6 → chegar à U12 Licitações/Contratos; U8 PPP será seletivo.',
-  'Políticas: PP A01/A02 → Arranjos Institucionais → Intersetorialidade → Instrumentos → Ex Ante.',
+  'Políticas: Estratégia/Rodrigo Rennó — Políticas Públicas → Arranjos Institucionais → Avaliação de PP Ex Ante (intro) → 7 Fontes → aprofundamentos Ex Ante/Ex Post.',
   'CPU ainda não entra.'
  ],
  [
@@ -115,7 +115,7 @@ export const GOAL_FOCUS=Object.freeze([
   'AFO: M10 apenas RAP, M11 e M13; M12 fora.',
   'Rafael DAD deve alcançar U12 sem saltar a rota-base; U8 PPP é seletivo.',
   'Pacelli/Netto é leitura dirigida, nunca curso linear.',
-  'Políticas é exclusivamente Estratégia na rota atual.',
+  'Políticas: nivelamento Estratégia/Rodrigo Rennó antes da 7 Fontes; preservar Ex Ante/Ex Post aprofundados.',
   'CPU não entra antes da Fase 4.'
  ],
  [
