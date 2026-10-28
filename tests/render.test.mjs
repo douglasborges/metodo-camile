@@ -12,7 +12,7 @@ test('dashboard e catálogo exibem ciclo e exceção art. 5º com os dados inici
   if(route==='priorities'){
    assert.match(get('#main').innerHTML,/Aula 04 do Estratégia/);
    assert.match(get('#main').innerHTML,/Aula 02 do Cebraspe/);
-   assert.match(get('#main').innerHTML,/sem repetir teoria do art. 5º/);
+   assert.match(get('#main').innerHTML,/Aula 02 Cebraspe não é pré-requisito/);
   }
  }
  location.hash='#subjects';listeners.hashchange();
