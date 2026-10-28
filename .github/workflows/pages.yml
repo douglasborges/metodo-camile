@@ -62,8 +62,8 @@ jobs:
           node --check drive-sync.js
           node --check drive-sync-ui.js
 
-          grep -q "2.0.2-pp-renno-20261027" index.html
-          grep -q "APP_VERSION_LABEL='v2.0.2'" src/app.js
+          grep -q "2.0.3-dcon-ordem-20261028" index.html
+          grep -q "APP_VERSION_LABEL='v2.0.3'" src/app.js
           grep -q "function prioritiesPage()" src/app.js
           grep -q "Prioridades CGU" index.html
           grep -q "CYCLE_PLAN_VERSION=8" src/core.js

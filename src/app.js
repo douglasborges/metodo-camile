@@ -1,15 +1,15 @@
-import * as M from './core.js?v=2.0.2-pp-renno-20261027&repair=camile-afo-20261021';
-import {durationMinutes,progressMetrics} from './progress.js?v=2.0.2-pp-renno-20261027';
-import { motivationForDay, saveReminder, normalizeExtras, LEGISLATION_QUEUE, legislationPair, goalSnapshot, completeGoal, FINAL_SPRINT, BIZURAFO_MODULES, bizurSnapshot, bizurStatusLabel, recordBizurAFO, setBizurModuleDone, endBizurFocus, resumeBizurFocus } from './personal.js?v=2.0.2-pp-renno-20261027';
-import {CGU_SYLLABUS,CGU_CHECK_TOPICS,CGU_OPERATIONAL_TOTAL,CGU_OFFICIAL_TOTAL,CGU_CHECK_START,cguDaysRemaining} from './cgu-syllabus.js?v=2.0.2-pp-renno-20261027';
-import {materialPlanFor,PHASE_PLAN,bookRoutesFor,GAP_REGISTER,SPECIAL_LAWS,INSTITUTIONAL_ROUTES,DEFERRED_MATERIALS} from './cgu-materials.js?v=2.0.2-pp-renno-20261027';
-import {achievementSnapshot,progressText,CATEGORY_META} from './achievements.js?v=2.0.2-pp-renno-20261027';
-import {analyticsSnapshot} from './analytics.js?v=2.0.2-pp-renno-20261027';
-import {FINAL_CGU_PLAN,FINAL_CGU_LESSONS} from './cgu-final-plan.js?v=2.0.2-pp-renno-20261027';
-import {RENNO_COURSE,RENNO_TEACHER,RENNO_STEPS,RENNO_UNIT_IDS,RENNO_PACKAGE_URL,RENNO_7F_FIRST_ID} from './pp-renno.js?v=2.0.2-pp-renno-20261027';
-import {finalCguLessonProgress,finalCguSlot,finalCguPhaseForDate,finalCguIsSunday,finalCguSlotLessons,finalCguLessonWindow,finalCguOperationalDate} from './cgu-final-runtime.js?v=2.0.2-pp-renno-20261027';
-const APP_VERSION='2.0.2-pp-renno-20261027';
-const APP_VERSION_LABEL='v2.0.2';
+import * as M from './core.js?v=2.0.3-dcon-ordem-20261028&repair=camile-afo-20261021';
+import {durationMinutes,progressMetrics} from './progress.js?v=2.0.3-dcon-ordem-20261028';
+import { motivationForDay, saveReminder, normalizeExtras, LEGISLATION_QUEUE, legislationPair, goalSnapshot, completeGoal, FINAL_SPRINT, BIZURAFO_MODULES, bizurSnapshot, bizurStatusLabel, recordBizurAFO, setBizurModuleDone, endBizurFocus, resumeBizurFocus } from './personal.js?v=2.0.3-dcon-ordem-20261028';
+import {CGU_SYLLABUS,CGU_CHECK_TOPICS,CGU_OPERATIONAL_TOTAL,CGU_OFFICIAL_TOTAL,CGU_CHECK_START,cguDaysRemaining} from './cgu-syllabus.js?v=2.0.3-dcon-ordem-20261028';
+import {materialPlanFor,PHASE_PLAN,bookRoutesFor,GAP_REGISTER,SPECIAL_LAWS,INSTITUTIONAL_ROUTES,DEFERRED_MATERIALS} from './cgu-materials.js?v=2.0.3-dcon-ordem-20261028';
+import {achievementSnapshot,progressText,CATEGORY_META} from './achievements.js?v=2.0.3-dcon-ordem-20261028';
+import {analyticsSnapshot} from './analytics.js?v=2.0.3-dcon-ordem-20261028';
+import {FINAL_CGU_PLAN,FINAL_CGU_LESSONS} from './dcon-ordered-curriculum.js?v=2.0.3-dcon-ordem-20261028';
+import {RENNO_COURSE,RENNO_TEACHER,RENNO_STEPS,RENNO_UNIT_IDS,RENNO_PACKAGE_URL,RENNO_7F_FIRST_ID} from './pp-renno.js?v=2.0.3-dcon-ordem-20261028';
+import {finalCguLessonProgress,finalCguSlot,finalCguPhaseForDate,finalCguIsSunday,finalCguSlotLessons,finalCguLessonWindow,finalCguOperationalDate} from './cgu-final-runtime.js?v=2.0.3-dcon-ordem-20261028';
+const APP_VERSION='2.0.3-dcon-ordem-20261028';
+const APP_VERSION_LABEL='v2.0.3';
 const $=q=>document.querySelector(q), esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])), label=id=>M.RULES[id]?.label||id.replace('legacy:',''), option=(v,t,selected)=>`<option value="${esc(v)}" ${v===selected?'selected':''}>${esc(t)}</option>`, checks=v=>v?'checked':'', cpLabel={done:'Concluído',due:'Checkpoint pendente',battery:'Baterias pendentes',audit:'Conferir histórico',planned:'Planejado'}, phaseLabel={new:'Estudo Novo',solid:'Estudo Sólido'};
 let state,page='today',selected='afo',pendingImport=null,timer=null,lawTimer=null,storedRaw=null,noticeTimeout,achievementCategoryFilter='all',achievementStatusFilter='all',progressView='overview',progressPeriod='all',progressSubject='all',goalView=null,cguPriorityFilter='P3',cguKindFilter='',cguStatusFilter='';
 const ACTIVE_SUBJECTS=['afo','cpu','auditoria','dad','adm-publica','dcon','cgu7','port','ti','politicas','diversidade'];
@@ -224,7 +224,7 @@ function prioritiesStatusLabel(lesson,progress){
  if(lesson.availability==='EM_PREPARACAO_NO_PRINT')return 'EM PREPARAÇÃO';
  return 'PENDENTE';
 }
-function dconPolicyCard(){return '<section class="card"><h2>DCON · teoria obrigatória antes das questões Cebraspe</h2><p>Fonte: <b>Nelma Fontana no Estratégia Concursos</b>. Primeiro, Estratégia Concursos — Nelma Fontana — Aula 04 — Art. 5º — 24 vídeos teóricos + exercícios; depois, <b>Aula 05 · Remédios Constitucionais (8 vídeos)</b> — HC, HD, MS, MI e ação popular.</p><p><b>Sequência obrigatória: Estratégia A04 (24) → Estratégia A05 (8) → voltar à Aula 02 Cebraspe (questões).</b> NÃO ESTUDAR o art. 5º pela Aula 02 Cebraspe como segunda teoria; ela será retomada para questões. As demais aulas Cebraspe continuam depois.</p><p>O progresso antigo da Aula 04 e de DCON permanece preservado. A Aula 05 possui controle próprio dos oito vídeos, sem concluir etapas automaticamente.</p></section>';}
+function dconPolicyCard(){return '<section class="card"><h2>DCON · sequência A04 → A05 → A02</h2><p><b>Ordem correta:</b> Aula 01 do Cebraspe → <b>Aula 04 do Estratégia (art. 5º: 24 vídeos + exercícios)</b> → <b>Aula 05 do Estratégia (remédios constitucionais: 8 vídeos)</b> → <b>Aula 02 do Cebraspe (questões e consolidação)</b> → Aula 03 do Cebraspe e seguintes.</p><p>As questões da Aula 04 podem ser registradas durante a teoria, sem concluir antecipadamente a bateria. A Aula 02 Cebraspe não é pré-requisito da Aula 04 do Estratégia.</p><p>Os registros reais, as 24/8 videoaulas e as associações históricas permanecem preservados.</p></section>';}
 function ppNivelamentoPanel(){
  const pp=state.subjects.find(x=>x.id==='politicas');
  const intro=RENNO_STEPS.map((step,i)=>{

@@ -10,9 +10,9 @@ test('dashboard e catálogo exibem ciclo e exceção art. 5º com os dados inici
  for(const route of ['priorities','subjects','today','data']){
   location.hash='#'+route;listeners.hashchange();assert.doesNotMatch(get('#main').innerHTML,/undefined|NaN/);
   if(route==='priorities'){
-   assert.match(get('#main').innerHTML,/Estratégia Concursos — Nelma Fontana — Aula 04 — Art. 5º — 24 vídeos teóricos/);
-   assert.match(get('#main').innerHTML,/voltar à Aula 02 Cebraspe/);
-   assert.match(get('#main').innerHTML,/NÃO ESTUDAR o art. 5º pela Aula 02/);
+   assert.match(get('#main').innerHTML,/Aula 04 do Estratégia/);
+   assert.match(get('#main').innerHTML,/Aula 02 do Cebraspe/);
+   assert.match(get('#main').innerHTML,/Aula 02 Cebraspe não é pré-requisito/);
   }
  }
  location.hash='#subjects';listeners.hashchange();
