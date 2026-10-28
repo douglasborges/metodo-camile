@@ -4627,9 +4627,9 @@ export const FINAL_CGU_PLAN={
       "course": "7 Fontes CGU Auditoria - Políticas Públicas e Métodos de Investigação e Avaliação",
       "availability": "EM_PREPARACAO_NO_PRINT",
       "source_page": 16,
-      "note": "",
+      "note": "Retomar após a preparação conceitual, sem bloquear ou reiniciar aulas já iniciadas, sem apagar histórico e sem substituir Ex Ante/Ex Post aprofundados.",
       "kind": "CGU",
-      "deps": "",
+      "deps": "Nivelamento recomendado: Rodrigo Rennó (Estratégia) — Políticas Públicas → Arranjos Institucionais para Coordenação e Implementação de Políticas Públicas → Avaliação de PP Ex Ante.",
       "progress": "NAO_INFERIR"
     },
     {
