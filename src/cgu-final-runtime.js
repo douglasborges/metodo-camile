@@ -75,6 +75,7 @@ function newUnit(lesson,order){
   deps:lesson.deps||'',catalogStatus:lesson.status,availability:lesson.availability||'',plannedReleaseDate:lesson.planned_release_date||'',releaseRule:lesson.release_rule||'',
   sourcePage:lesson.source_page??null,note:lesson.note||'',
   ...(lesson.exclusiveArt5?{totalBlocks:24,studyPlan:lesson.note}:{}),
+  ...(lesson.remediesArt5?{totalBlocks:8,blockTitles:lesson.blockTitles,completedBlocks:[],blocksCompleted:0,studyPlan:lesson.note}:{}),
   hiddenFromRoute:lesson.source==='7F' && !(lesson.availability==='PUBLICADA_NO_PRINT' && lesson.status==='ESTUDAR')
  };
 }
@@ -126,7 +127,8 @@ function ensureSubject(state,config,lessons){
    const fresh=newUnit(lesson,index+1);
    const preserved={
     theoryDone:u.theoryDone,theoryDate:u.theoryDate,batteryDone:u.batteryDone,generalDone:u.generalDone,
-    materialReady:u.materialReady,battery:u.battery,general:u.general,legacy:u.legacy,marks:u.marks
+    materialReady:u.materialReady,battery:u.battery,general:u.general,legacy:u.legacy,marks:u.marks,
+    completedBlocks:Array.isArray(u.completedBlocks)?clone(u.completedBlocks):fresh.completedBlocks,blocksCompleted:u.blocksCompleted??fresh.blocksCompleted
    };
    Object.assign(u,fresh,preserved);
   }

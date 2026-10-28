@@ -46,129 +46,129 @@ export const FINAL_CGU_PLAN={
     "seven_fontes_alternatives": "Direção/Estratégia são apenas alternativas futuras; não incluir automaticamente nesta rota."
   },
   "slot_cycle_13": [
-  {
-    "slot": 1,
-    "discipline": "AFO · Pacelli",
-    "priority": "P3",
-    "material_source": "Giovanni Pacelli",
-    "material_categories": [],
-    "material_note": "AFO — curso regular Pacelli."
-  },
-  {
-    "slot": 2,
-    "discipline": "Auditoria Governamental · Marcelo Soares",
-    "priority": "P3",
-    "material_source": "Marcelo Soares",
-    "material_categories": [],
-    "material_note": "Auditoria Governamental — Marcelo Soares."
-  },
-  {
-    "slot": 3,
-    "discipline": "Direito Público Aplicado · 7 Fontes",
-    "priority": "P2",
-    "material_source": "7 Fontes · Rodrigo Morais de Amorim",
-    "material_categories": [
-      "DIR"
-    ],
-    "material_note": "Atuação administrativa; devido processo; sistemas de controle/CGU; responsabilização; assédio e discriminação."
-  },
-  {
-    "slot": 4,
-    "discipline": "Contabilidade Pública · Pacelli",
-    "priority": "P3",
-    "material_source": "Giovanni Pacelli",
-    "material_categories": [],
-    "material_note": "Contabilidade Pública — curso regular Pacelli."
-  },
-  {
-    "slot": 5,
-    "discipline": "Constitucional e Ciência Política · Nelma / 7 Fontes",
-    "priority": "P1",
-    "material_source": "Nelma Fontana + 7 Fontes",
-    "material_categories": [
-      "ESTADO"
-    ],
-    "material_note": "Constitucional pela Nelma; Ciência Política residual pela 7 Fontes (Estado, democracia, direitos e Ciência Política)."
-  },
-  {
-    "slot": 6,
-    "discipline": "Políticas Públicas · 7 Fontes",
-    "priority": "P3",
-    "material_source": "7 Fontes · Daniel Almeida",
-    "material_categories": [
-      "POL"
-    ],
-    "material_note": "Ciclo, implementação, gestão, coordenação, avaliação ex ante/ex post, indicadores e resultados."
-  },
-  {
-    "slot": 7,
-    "discipline": "AFO · Pacelli",
-    "priority": "P3",
-    "material_source": "Giovanni Pacelli",
-    "material_categories": [],
-    "material_note": "AFO — curso regular Pacelli."
-  },
-  {
-    "slot": 8,
-    "discipline": "Administração Pública · Marcelo Soares",
-    "priority": "P1",
-    "material_source": "Marcelo Soares",
-    "material_categories": [],
-    "material_note": "Administração Pública — Marcelo Soares."
-  },
-  {
-    "slot": 9,
-    "discipline": "Governança, Riscos e Ética · 7 Fontes",
-    "priority": "P2",
-    "material_source": "7 Fontes · Orlando Cames / Ana Cristina Furtado Sobrinho",
-    "material_categories": [
-      "GOV",
-      "ETICA"
-    ],
-    "material_note": "Governança pública, gestão de riscos e controles, integridade pública/privada, cultura de integridade e ética."
-  },
-  {
-    "slot": 10,
-    "discipline": "Contabilidade Pública · Pacelli",
-    "priority": "P3",
-    "material_source": "Giovanni Pacelli",
-    "material_categories": [],
-    "material_note": "Contabilidade Pública — curso regular Pacelli."
-  },
-  {
-    "slot": 11,
-    "discipline": "Auditoria Governamental · Marcelo Soares",
-    "priority": "P3",
-    "material_source": "Marcelo Soares",
-    "material_categories": [],
-    "material_note": "Auditoria Governamental — Marcelo Soares."
-  },
-  {
-    "slot": 12,
-    "discipline": "Contratações e Responsabilização · 7 Fontes",
-    "priority": "P3",
-    "material_source": "7 Fontes · Orlando Cames / Rodrigo Morais de Amorim",
-    "material_categories": [
-      "CONTR",
-      "INTEG"
-    ],
-    "material_note": "Contratações e transferências + responsabilização/integridade, PAD, PAR, leniência e TAC."
-  },
-  {
-    "slot": 13,
-    "discipline": "Evidências, Dados, IA e residuais · 7 Fontes",
-    "priority": "P2/P1",
-    "material_source": "7 Fontes · Guilherme Neves / Bruno Guilhen + residuais",
-    "material_categories": [
-      "DADOS",
-      "TRANS",
-      "SOC",
-      "ESTADO",
-      "ETICA"
-    ],
-    "material_note": "Evidências, dados e IA; residuais de Transparência, Ética, Ciência Política e Sociedade Brasileira. Estudar apenas pendências não concluídas nos blocos anteriores."
-  }
-],
+    {
+      "slot": 1,
+      "discipline": "AFO · Pacelli",
+      "priority": "P3",
+      "material_source": "Giovanni Pacelli",
+      "material_categories": [],
+      "material_note": "AFO — curso regular Pacelli."
+    },
+    {
+      "slot": 2,
+      "discipline": "Auditoria Governamental · Marcelo Soares",
+      "priority": "P3",
+      "material_source": "Marcelo Soares",
+      "material_categories": [],
+      "material_note": "Auditoria Governamental — Marcelo Soares."
+    },
+    {
+      "slot": 3,
+      "discipline": "Direito Público Aplicado · 7 Fontes",
+      "priority": "P2",
+      "material_source": "7 Fontes · Rodrigo Morais de Amorim",
+      "material_categories": [
+        "DIR"
+      ],
+      "material_note": "Atuação administrativa; devido processo; sistemas de controle/CGU; responsabilização; assédio e discriminação."
+    },
+    {
+      "slot": 4,
+      "discipline": "Contabilidade Pública · Pacelli",
+      "priority": "P3",
+      "material_source": "Giovanni Pacelli",
+      "material_categories": [],
+      "material_note": "Contabilidade Pública — curso regular Pacelli."
+    },
+    {
+      "slot": 5,
+      "discipline": "Constitucional e Ciência Política · Nelma / 7 Fontes",
+      "priority": "P1",
+      "material_source": "Nelma Fontana + 7 Fontes",
+      "material_categories": [
+        "ESTADO"
+      ],
+      "material_note": "Constitucional pela Nelma; Ciência Política residual pela 7 Fontes (Estado, democracia, direitos e Ciência Política)."
+    },
+    {
+      "slot": 6,
+      "discipline": "Políticas Públicas · 7 Fontes",
+      "priority": "P3",
+      "material_source": "7 Fontes · Daniel Almeida",
+      "material_categories": [
+        "POL"
+      ],
+      "material_note": "Ciclo, implementação, gestão, coordenação, avaliação ex ante/ex post, indicadores e resultados."
+    },
+    {
+      "slot": 7,
+      "discipline": "AFO · Pacelli",
+      "priority": "P3",
+      "material_source": "Giovanni Pacelli",
+      "material_categories": [],
+      "material_note": "AFO — curso regular Pacelli."
+    },
+    {
+      "slot": 8,
+      "discipline": "Administração Pública · Marcelo Soares",
+      "priority": "P1",
+      "material_source": "Marcelo Soares",
+      "material_categories": [],
+      "material_note": "Administração Pública — Marcelo Soares."
+    },
+    {
+      "slot": 9,
+      "discipline": "Governança, Riscos e Ética · 7 Fontes",
+      "priority": "P2",
+      "material_source": "7 Fontes · Orlando Cames / Ana Cristina Furtado Sobrinho",
+      "material_categories": [
+        "GOV",
+        "ETICA"
+      ],
+      "material_note": "Governança pública, gestão de riscos e controles, integridade pública/privada, cultura de integridade e ética."
+    },
+    {
+      "slot": 10,
+      "discipline": "Contabilidade Pública · Pacelli",
+      "priority": "P3",
+      "material_source": "Giovanni Pacelli",
+      "material_categories": [],
+      "material_note": "Contabilidade Pública — curso regular Pacelli."
+    },
+    {
+      "slot": 11,
+      "discipline": "Auditoria Governamental · Marcelo Soares",
+      "priority": "P3",
+      "material_source": "Marcelo Soares",
+      "material_categories": [],
+      "material_note": "Auditoria Governamental — Marcelo Soares."
+    },
+    {
+      "slot": 12,
+      "discipline": "Contratações e Responsabilização · 7 Fontes",
+      "priority": "P3",
+      "material_source": "7 Fontes · Orlando Cames / Rodrigo Morais de Amorim",
+      "material_categories": [
+        "CONTR",
+        "INTEG"
+      ],
+      "material_note": "Contratações e transferências + responsabilização/integridade, PAD, PAR, leniência e TAC."
+    },
+    {
+      "slot": 13,
+      "discipline": "Evidências, Dados, IA e residuais · 7 Fontes",
+      "priority": "P2/P1",
+      "material_source": "7 Fontes · Guilherme Neves / Bruno Guilhen + residuais",
+      "material_categories": [
+        "DADOS",
+        "TRANS",
+        "SOC",
+        "ESTADO",
+        "ETICA"
+      ],
+      "material_note": "Evidências, dados e IA; residuais de Transparência, Ética, Ciência Política e Sociedade Brasileira. Estudar apenas pendências não concluídas nos blocos anteriores."
+    }
+  ],
   "users": [
     "Douglas",
     "Camile"
@@ -382,7 +382,7 @@ export const FINAL_CGU_PLAN={
       "teacher": "Nelma Fontana",
       "course": "Direito Constitucional Cebraspe, 16 aulas",
       "deps": "01",
-      "note": "NÃO ESTUDAR o art. 5º pela Aula 02 Cebraspe. Para o art. 5º, usar exclusivamente Estratégia Concursos — Nelma Fontana — Aula 04: 24 vídeos teóricos + exercícios.",
+      "note": "NÃO ESTUDAR o art. 5º pela Aula 02 Cebraspe. Etapa de questões da Aula 02 Cebraspe: voltar SOMENTE após concluir a teoria da Aula 04 (24 vídeos) E da Aula 05 (8 vídeos) no Estratégia/Nelma. Preservar a base teórica e o histórico anteriores.",
       "kind": "CGU",
       "availability": "GRADE PUBLICADA",
       "source_page": null,
@@ -399,12 +399,41 @@ export const FINAL_CGU_PLAN={
       "teacher": "Nelma Fontana",
       "course": "Estratégia Concursos — Nelma Fontana — Aula 04 — Art. 5º",
       "deps": "Nelma 01 → teoria geral dos direitos fundamentais (Nelma 02, sem art. 5º)",
-      "note": "Fonte principal e exclusiva da teoria do art. 5º: 24 vídeos teóricos + exercícios. Depois, RETORNAR à Nelma/Cebraspe: Direitos Sociais → Direitos Políticos → Organização do Estado → demais aulas selecionadas, fiscalização/controle e Ordem Econômica. Não repetir o art. 5º no Cebraspe.",
+      "note": "Fonte principal e exclusiva da teoria do art. 5º: 24 vídeos teóricos + exercícios. Depois de concluir também a Aula 05 do Estratégia (8 vídeos de remédios constitucionais), RETORNAR à Nelma/Cebraspe: Direitos Sociais → Direitos Políticos → Organização do Estado → demais aulas selecionadas, fiscalização/controle e Ordem Econômica. Não repetir o art. 5º no Cebraspe.",
       "kind": "CGU",
       "availability": "GRADE PUBLICADA",
       "source_page": null,
       "progress": "NAO_INFERIR",
       "exclusiveArt5": true
+    },
+    {
+      "id": "ESTRATEGIA-DCON-05",
+      "source": "NELMA",
+      "category": "DCON",
+      "number": "05 · Estratégia",
+      "title": "Estratégia — Nelma Fontana — Aula 05 — Remédios Constitucionais — 8 vídeos teóricos",
+      "priority": "P1",
+      "status": "ESTUDAR",
+      "teacher": "Nelma Fontana",
+      "course": "Estratégia Concursos — Nelma Fontana — Aula 05 — Remédios Constitucionais",
+      "deps": "Estratégia/Nelma Aula 04 — 24 vídeos do art. 5º",
+      "note": "Segunda etapa obrigatória do art. 5º: estudar os 8 vídeos de remédios constitucionais (HC, HD, MS, MI e ação popular) ANTES de voltar às questões da Aula 02 do curso Nelma/Cebraspe. Sem reaproveitar automaticamente a conclusão da Aula 04.",
+      "kind": "CGU",
+      "availability": "GRADE PUBLICADA",
+      "source_page": null,
+      "progress": "NAO_INFERIR",
+      "remediesArt5": true,
+      "totalBlocks": 8,
+      "blockTitles": [
+        "Remédios Constitucionais - Introdução",
+        "Remédios Constitucionais - Habeas Corpus - Parte 01",
+        "Remédios Constitucionais - Habeas Corpus - Parte 02",
+        "Remédios Constitucionais - Habeas Data",
+        "Remédios Constitucionais - Mandado de Segurança",
+        "Remédios Constitucionais - Mandado de Segurança Coletivo",
+        "Remédios Constitucionais - Mandado de Injunção Individual e Coletivo",
+        "Remédios Constitucionais - Ação Popular"
+      ]
     },
     {
       "id": "NELMA-DCON-03",
@@ -416,7 +445,7 @@ export const FINAL_CGU_PLAN={
       "status": "ESTUDAR",
       "teacher": "Nelma Fontana",
       "course": "Direito Constitucional Cebraspe, 16 aulas",
-      "deps": "Teoria geral (02) → Estratégia/Nelma Aula 04 — Art. 5º; depois retornar ao Cebraspe",
+      "deps": "Teoria geral (02) → Estratégia/Nelma Aula 04 (24 vídeos) → Estratégia/Nelma Aula 05 (8 vídeos) → questões da Aula 02 Cebraspe",
       "note": "",
       "kind": "CGU",
       "availability": "GRADE PUBLICADA",

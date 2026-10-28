@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import * as M from '../src/core.js';
+import {FINAL_CGU_LESSONS} from '../src/cgu-final-plan.js';
+const id='ESTRATEGIA-DCON-05';
+const prepare=()=>M.normalizeMethodState(JSON.parse(fs.readFileSync(new URL('../data/initial-state.json',import.meta.url))));
+const u=s=>s.subjects.find(x=>x.id==='dcon').units.find(x=>x.id===id);
+test('Aula 05 tem oito vídeos próprios após os 24 da Aula 04',()=>{const a=FINAL_CGU_LESSONS.findIndex(x=>x.id==='dcon-u-2');assert.equal(FINAL_CGU_LESSONS[a+1].id,id);assert.equal(FINAL_CGU_LESSONS[a+1].blockTitles.length,8);});
+test('Aula 05 registra cada vídeo sem fechar teoria antes de 8/8; recarga preserva',()=>{let s=prepare(),base={subjectId:'dcon',unitId:id,activity:'theory',date:M.day(),minutes:12,applyCycle:false};assert.equal(u(s).theoryDone,false);for(let i=1;i<=8;i++){s=M.session(s,{...base,title:'Vídeo '+i+' — '+u(s).blockTitles[i-1],blockCompleted:'on'});assert.equal(u(s).blocksCompleted,i);assert.equal(u(s).theoryDone,i===8);s=M.normalizeMethodState(s);assert.equal(u(s).blocksCompleted,i);}assert.deepEqual(u(s).completedBlocks,[1,2,3,4,5,6,7,8]);assert.throws(()=>M.session(s,{...base,title:'Vídeo 1 — '+u(s).blockTitles[0],blockCompleted:'on'}),/já está concluído/);});

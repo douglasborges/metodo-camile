@@ -500,6 +500,16 @@ export function session(current,input){
  let start=input.start===''||input.start==null?null:Number(input.start),end=input.end===''||input.end==null?null:Number(input.end);
  if((start!==null||end!==null)&&(!Number.isFinite(start)||!Number.isFinite(end)||start<0||end<start))throw Error('Preencha início e fim válidos do conteúdo.');
  const entry={id:uid(),subjectId:s.id,unitId:u?.id||'',title:String(input.title||'').trim()||u?.title||'',date:input.date,createdAt:new Date().toISOString(),activity:input.activity,minutes,questions:q,correct,medium:input.medium||'',start,end,notes:String(input.notes||''),legacy:false,cycleApplied:false};
+ if(u?.id==='ESTRATEGIA-DCON-05'&&input.blockCompleted){
+  if(input.activity!=='theory')throw Error('A conclusão de vídeo requer atividade Teoria.');
+  const number=Number(String(input.title||'').match(/^Vídeo ([0-9]+) —/)?.[1]);
+  if(!Number.isInteger(number)||number<1||number>8)throw Error('Selecione um dos oito vídeos da Aula 05.');
+  const completed=Array.isArray(u.completedBlocks)?u.completedBlocks:[];
+  if(completed.includes(number))throw Error('Este vídeo já está concluído; registre revisão sem marcar novamente.');
+  u.completedBlocks=[...completed,number].sort((a,b)=>a-b);
+  u.blocksCompleted=u.completedBlocks.length;
+  if(u.blocksCompleted===8){u.theoryDone=true;u.theoryDate=input.date;}
+ }
  if(s.id==='dcon'&&u?.id==='dcon-u-2'){
   const match=(String(input.title||'')+' '+String(input.notes||'')).match(/bloco\s*(\d+)\s+conclu[ií]do\b/i);
   const completed=Number(u.blocksCompleted)||0;
@@ -519,6 +529,7 @@ export function setUnit(current,sid,id,values){let st=copy(current),{s,u}=getUni
  if(theory&&(!validDay(values.theoryDate)||values.theoryDate>day()))throw Error('Informe a data real da conclusão da teoria.');
  if(battery&&(!theory||u.battery.attempted<30))throw Error('A primeira bateria exige teoria concluída e ao menos 30 questões registradas.');
  if(general&&(!methodUnits(s).every(v=>v.id===u.id?theory&&battery:v.theoryDone&&v.batteryDone)||!checkpoints(s).every(c=>c.status==='done')))throw Error('Conclua teoria, baterias e checkpoints antes da revisão geral.');
+ if(u.id==='ESTRATEGIA-DCON-05'&&theory&&(u.completedBlocks?.length||0)!==8)throw Error('Conclua os oito vídeos da Aula 05 antes de marcar teoria completa.');
  Object.assign(u,{theoryDone:theory,theoryDate:theory?values.theoryDate:'',batteryDone:battery&&theory,generalDone:general&&battery&&theory,materialReady:material});
  if(!theory||!battery){let cp=checkpoints(s).find(c=>c.units.some(v=>v.id===id));if(cp)delete s.checkpoints[cp.id];for(let x of s.units)x.generalDone=false;}
  if(theory)markCguCodes(st,u.cguCodes,'auto-unit');if(s.id==='dcon')dconHistoricalProgress(st,s);if(s.phase==='solid'&&!canSolid(s))s.phase='new';return st;
