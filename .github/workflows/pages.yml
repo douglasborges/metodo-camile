@@ -31,7 +31,6 @@ jobs:
       - run: npm run build
 
       - name: Configurar GitHub Pages
-        if: github.event_name == 'workflow_dispatch'
         uses: actions/configure-pages@v5
         with:
           enablement: true
@@ -61,7 +60,7 @@ jobs:
           node --check drive-sync.js
           node --check drive-sync-ui.js
 
-          grep -q "2.0.0-cgu-auditoria-final-20261021" index.html
+          grep -q "2.0.1-cgu-dcon-a05-20261027" index.html
           grep -q "APP_VERSION_LABEL='v2.0'" src/app.js
           grep -q "function prioritiesPage()" src/app.js
           grep -q "Prioridades CGU" index.html
@@ -91,13 +90,11 @@ jobs:
           grep -q "https://douglasborges.github.io" drive-sync.js
 
       - name: Empacotar site
-        if: github.event_name == 'workflow_dispatch'
         uses: actions/upload-pages-artifact@v3
         with:
           path: dist
 
       - name: Publicar
-        if: github.event_name == 'workflow_dispatch'
         id: deployment
         uses: actions/deploy-pages@v4
 

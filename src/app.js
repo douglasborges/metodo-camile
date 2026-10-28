@@ -1,13 +1,13 @@
-import * as M from './core.js?v=2.0.0-cgu-auditoria-final-20261021&repair=camile-afo-20261021';
-import {durationMinutes,progressMetrics} from './progress.js?v=2.0.0-cgu-auditoria-final-20261021';
-import { motivationForDay, saveReminder, normalizeExtras, LEGISLATION_QUEUE, legislationPair, goalSnapshot, completeGoal, FINAL_SPRINT, BIZURAFO_MODULES, bizurSnapshot, bizurStatusLabel, recordBizurAFO, setBizurModuleDone, endBizurFocus, resumeBizurFocus } from './personal.js?v=2.0.0-cgu-auditoria-final-20261021';
-import {CGU_SYLLABUS,CGU_CHECK_TOPICS,CGU_OPERATIONAL_TOTAL,CGU_OFFICIAL_TOTAL,CGU_CHECK_START,cguDaysRemaining} from './cgu-syllabus.js?v=2.0.0-cgu-auditoria-final-20261021';
-import {materialPlanFor,PHASE_PLAN,bookRoutesFor,GAP_REGISTER,SPECIAL_LAWS,INSTITUTIONAL_ROUTES,DEFERRED_MATERIALS} from './cgu-materials.js?v=2.0.0-cgu-auditoria-final-20261021';
-import {achievementSnapshot,progressText,CATEGORY_META} from './achievements.js?v=2.0.0-cgu-auditoria-final-20261021';
-import {analyticsSnapshot} from './analytics.js?v=2.0.0-cgu-auditoria-final-20261021';
-import {FINAL_CGU_PLAN,FINAL_CGU_LESSONS} from './cgu-final-plan.js?v=2.0.0-cgu-auditoria-final-20261021';
-import {finalCguLessonProgress,finalCguSlot,finalCguPhaseForDate,finalCguIsSunday,finalCguSlotLessons,finalCguLessonWindow,finalCguOperationalDate} from './cgu-final-runtime.js?v=2.0.0-cgu-auditoria-final-20261021';
-const APP_VERSION='2.0.0-cgu-auditoria-final-20261021';
+import * as M from './core.js?v=2.0.1-cgu-dcon-a05-20261027&repair=camile-afo-20261021';
+import {durationMinutes,progressMetrics} from './progress.js?v=2.0.1-cgu-dcon-a05-20261027';
+import { motivationForDay, saveReminder, normalizeExtras, LEGISLATION_QUEUE, legislationPair, goalSnapshot, completeGoal, FINAL_SPRINT, BIZURAFO_MODULES, bizurSnapshot, bizurStatusLabel, recordBizurAFO, setBizurModuleDone, endBizurFocus, resumeBizurFocus } from './personal.js?v=2.0.1-cgu-dcon-a05-20261027';
+import {CGU_SYLLABUS,CGU_CHECK_TOPICS,CGU_OPERATIONAL_TOTAL,CGU_OFFICIAL_TOTAL,CGU_CHECK_START,cguDaysRemaining} from './cgu-syllabus.js?v=2.0.1-cgu-dcon-a05-20261027';
+import {materialPlanFor,PHASE_PLAN,bookRoutesFor,GAP_REGISTER,SPECIAL_LAWS,INSTITUTIONAL_ROUTES,DEFERRED_MATERIALS} from './cgu-materials.js?v=2.0.1-cgu-dcon-a05-20261027';
+import {achievementSnapshot,progressText,CATEGORY_META} from './achievements.js?v=2.0.1-cgu-dcon-a05-20261027';
+import {analyticsSnapshot} from './analytics.js?v=2.0.1-cgu-dcon-a05-20261027';
+import {FINAL_CGU_PLAN,FINAL_CGU_LESSONS} from './cgu-final-plan.js?v=2.0.1-cgu-dcon-a05-20261027';
+import {finalCguLessonProgress,finalCguSlot,finalCguPhaseForDate,finalCguIsSunday,finalCguSlotLessons,finalCguLessonWindow,finalCguOperationalDate} from './cgu-final-runtime.js?v=2.0.1-cgu-dcon-a05-20261027';
+const APP_VERSION='2.0.1-cgu-dcon-a05-20261027';
 const APP_VERSION_LABEL='v2.0';
 const $=q=>document.querySelector(q), esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])), label=id=>M.RULES[id]?.label||id.replace('legacy:',''), option=(v,t,selected)=>`<option value="${esc(v)}" ${v===selected?'selected':''}>${esc(t)}</option>`, checks=v=>v?'checked':'', cpLabel={done:'Concluído',due:'Checkpoint pendente',battery:'Baterias pendentes',audit:'Conferir histórico',planned:'Planejado'}, phaseLabel={new:'Estudo Novo',solid:'Estudo Sólido'};
 let state,page='today',selected='afo',pendingImport=null,timer=null,lawTimer=null,storedRaw=null,noticeTimeout,achievementCategoryFilter='all',achievementStatusFilter='all',progressView='overview',progressPeriod='all',progressSubject='all',goalView=null,cguPriorityFilter='P3',cguKindFilter='',cguStatusFilter='';
@@ -59,6 +59,10 @@ function actionsButton(text,act,extra=''){return `<button data-action="${act}" $
 function archivedStudyOSStates(){return (state.archive||[]).map(a=>a?.payload?.state||a?.payload).filter(src=>Array.isArray(src?.topics));}
 function afoVideoLessons(s,u){if(s?.id!=='afo'||!u)return[];let prefix=String(u.title||'').trim()+' — ',found=new Map();for(let src of archivedStudyOSStates())for(let t of src.topics||[]){if(t?.disciplineId!=='afo')continue;let full=String(t.title||'').trim();if(!full.startsWith(prefix))continue;let text=String(t.details||full.slice(prefix.length)).trim();if(!text||/^PDF\s*—/i.test(text))continue;let order=Number(t.order)||999999;if(!found.has(text)||order<found.get(text))found.set(text,order);}for(let e of u.legacy||[]){let full=String(e.title||'').trim();if(!full.startsWith(prefix))continue;let text=full.slice(prefix.length).trim();if(text&&!/^PDF\s*—/i.test(text)&&!found.has(text))found.set(text,999999+found.size);}return [...found.entries()].sort((a,b)=>a[1]-b[1]||a[0].localeCompare(b[0],'pt-BR')).map(([title])=>title);}
 function sessionContentField(s,u,selected=''){
+ if(s?.id==='dcon'&&u?.id==='ESTRATEGIA-DCON-05'&&Array.isArray(u.blockTitles)){
+  const done=new Set(u.completedBlocks||[]),items=u.blockTitles.map((name,i)=>'Vídeo '+(i+1)+' — '+name);
+  return `<label class="full">Aula 05 · Remédios Constitucionais · vídeo<select name="title" id="session-content">${option('','Selecionar vídeo',selected)}${items.map(t=>option(t,t,selected)).join('')}</select></label><small class="full">Progresso individual: ${done.size}/8 vídeos concluídos. Ordem: Aula 04 (24 vídeos) → Aula 05 (8 vídeos) → questões da Aula 02 Cebraspe.</small><label class="check full"><input type="checkbox" name="blockCompleted"> Concluí integralmente este vídeo (marcar apenas após assistir)</label>`;
+ }
  if(s?.id==='dcon'&&u?.id==='dcon-u-2'){
   const blocks=Array.from({length:24},(_,i)=>'Bloco '+String(i+1).padStart(2,'0'));
   return `<label class="full">Bloco do Art. 5º · Estratégia<select name="title" id="session-content">${option('','Selecionar bloco',selected)}${blocks.map(t=>option(t,t,selected)).join('')}</select></label><small class="full">São 24 blocos de videoaulas. Ao registrar o Bloco 24, a teoria do Art. 5º é reconhecida como concluída.</small>`;
@@ -219,7 +223,7 @@ function prioritiesStatusLabel(lesson,progress){
  if(lesson.availability==='EM_PREPARACAO_NO_PRINT')return 'EM PREPARAÇÃO';
  return 'PENDENTE';
 }
-function dconPolicyCard(){return '<section class="card"><h2>DCON · exceção obrigatória do art. 5º</h2><p>Regra geral: Nelma Fontana — curso Cebraspe. Para o art. 5º, fonte teórica principal e exclusiva: <b>Estratégia Concursos — Nelma Fontana — Aula 04 — Art. 5º — 24 vídeos teóricos + exercícios.</b></p><p>Fundamentos e pré-requisitos → teoria geral dos direitos fundamentais → Estratégia Aula 04 → RETORNAR à Nelma/Cebraspe: Direitos Sociais → Direitos Políticos → Organização do Estado → demais aulas selecionadas, fiscalização/controle e Ordem Econômica.</p><p>NÃO ESTUDAR o art. 5º pela Aula 02 Cebraspe nem repetir sua teoria nesse curso. O progresso anterior permanece preservado.</p></section>';}
+function dconPolicyCard(){return '<section class="card"><h2>DCON · teoria obrigatória antes das questões Cebraspe</h2><p>Fonte: <b>Nelma Fontana no Estratégia Concursos</b>. Primeiro, Estratégia Concursos — Nelma Fontana — Aula 04 — Art. 5º — 24 vídeos teóricos + exercícios; depois, <b>Aula 05 · Remédios Constitucionais (8 vídeos)</b> — HC, HD, MS, MI e ação popular.</p><p><b>Sequência obrigatória: Estratégia A04 (24) → Estratégia A05 (8) → voltar à Aula 02 Cebraspe (questões).</b> As demais aulas Cebraspe continuam depois, sem duplicar a teoria do art. 5º.</p><p>O progresso antigo da Aula 04 e de DCON permanece preservado. A Aula 05 inicia separadamente em 0/8.</p></section>';}
 function prioritiesPage(){
  const filtered=FINAL_CGU_LESSONS.filter(x=>{
   if(cguPriorityFilter&&x.priority!==cguPriorityFilter)return false;
@@ -314,7 +318,7 @@ function todayPage(){
  '<div class="grid two"><div class="stack"><section class="card hero"><span class="eyebrow">'+(timer?'SESSÃO EM ANDAMENTO':sunday?'DOMINGO · REVISÃO':'AGORA NO CICLO')+'</span><h2>'+esc(timer?.subjectId?label(timer.subjectId):slot.label)+' <span class="phase">'+esc(phaseLabel[s.phase]||'Estudo')+'</span></h2><p class="muted">'+esc(timer?timer.title:(sunday?'Não avance o ciclo; registre revisão, questões, erros ou escrita.':cycleNextAction(s)))+'</p><div class="timer" id="clock">00:00:00</div><div class="actions">'+(timer?actionsButton(timer.running?'Pausar':'Continuar','timer-toggle')+actionsButton('Registrar tempo','timer-save','class="secondary"'):actionsButton('Iniciar foco','timer-start')+actionsButton('Ver disciplina','go-subject','class="secondary"'))+'</div><div class="statline"><span>Hoje: <b>'+M.hm(t.day)+'</b></span><span>Ocorrências concluídas: <b>'+slots+'</b></span><span>Depois: <b>'+esc(next.label)+'</b></span></div></section>'+
  '<section class="card"><h2>Ciclo final · 13 posições</h2><p class="muted">Domingo preserva a posição atual. Nos demais dias, avance quando concluir a etapa real.</p><div class="cycle">'+FINAL_CGU_PLAN.slot_cycle_13.map((x,i)=>'<span class="'+(i===state.cycle.index?'current':'')+'">'+String(i+1).padStart(2,'0')+'. '+esc(finalCguSlot(i).label)+'</span>').join('')+'</div></section></div>'+
  '<div class="stack"><section class="card"><span class="eyebrow">REVISÃO NOTURNA</span><h2 style="margin-top:10px">Fechamento do dia</h2><p class="muted">5 a 10 minutos por disciplina estudada.</p>'+(nt.length?nt.map(n=>'<div class="row"><div class="title">'+esc(label(n.id))+'<small>'+(n.done?'Revisão registrada':'Pendente')+'</small></div>'+(n.done?'<span class="badge">✓ Feita</span>':'<button class="secondary small" data-action="night" data-id="'+esc(n.id)+'">Revisar</button>')+'</div>').join(''):'<div class="empty">As disciplinas aparecem após o primeiro estudo do dia.</div>')+'</section>'+
- '<section class="card"><span class="eyebrow">PLANO FINAL</span><h2>Prioridades CGU</h2><p class="muted">264 unidades integradas · P3 primeiro, P2 depois, P1 por último; pré-requisitos podem antecipar conteúdo.</p><div class="actions"><a href="#priorities">Abrir Prioridades CGU →</a></div></section></div></div>';
+ '<section class="card"><span class="eyebrow">PLANO FINAL</span><h2>Prioridades CGU</h2><p class="muted">266 unidades integradas · P3 primeiro, P2 depois, P1 por último; pré-requisitos podem antecipar conteúdo.</p><div class="actions"><a href="#priorities">Abrir Prioridades CGU →</a></div></section></div></div>';
 }
 function supportRoutesPanel(id){
  const showInstitutional=['adm-publica','auditoria'].includes(id);
