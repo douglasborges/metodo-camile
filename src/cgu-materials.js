@@ -215,7 +215,7 @@ export const MATERIAL_PLAN=Object.freeze({
   principal:[
    'PREPARAÇÃO — Estratégia / Rodrigo Rennó: Políticas Públicas → Arranjos Institucionais para Coordenação e Implementação de Políticas Públicas → Avaliação de PP Ex Ante (introdução).',
    'APROFUNDAMENTO — 7 Fontes: Desenho de Políticas Públicas (Problema Público, Teoria da Mudança, Modelo Lógico, Hipóteses e Avaliabilidade) → implementação → indicadores, sem reiniciar o histórico.',
-   'Estratégia pós-edital · Arranjos Institucionais → Intersetorialidade → Instrumentos → Avaliação Ex Ante → Avaliação de Políticas Públicas/Comissão (2 aulas) → Avaliação Ex Post.',
+   'Estratégia pós-edital · Intersetorialidade → Instrumentos → Avaliação Ex Ante aprofundada → Avaliação de Políticas Públicas/Comissão (2 aulas) → Avaliação Ex Post.',
    'Depois: CMAP seletivo → Passo A01/A02 → simulados.'
   ],
   complement:['PP A03/A04 apenas como reaproveitamento em B1 (intermediação/corrupção), não como segunda teoria de Políticas Públicas.'],
