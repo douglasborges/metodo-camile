@@ -47,6 +47,7 @@ jobs:
           cp src/cgu-materials.js /tmp/cgu-materials.mjs
           cp src/cgu-final-plan.js /tmp/cgu-final-plan.mjs
           cp src/cgu-final-runtime.js /tmp/cgu-final-runtime.mjs
+          cp src/pp-renno.js /tmp/pp-renno.mjs
           node --check /tmp/app.mjs
           node --check /tmp/core.mjs
           node --check /tmp/personal.mjs
@@ -57,11 +58,12 @@ jobs:
           node --check /tmp/cgu-materials.mjs
           node --check /tmp/cgu-final-plan.mjs
           node --check /tmp/cgu-final-runtime.mjs
+          node --check /tmp/pp-renno.mjs
           node --check drive-sync.js
           node --check drive-sync-ui.js
 
-          grep -q "2.0.1-cgu-dcon-a05-20261027" index.html
-          grep -q "APP_VERSION_LABEL='v2.0'" src/app.js
+          grep -q "2.0.2-pp-renno-20261027" index.html
+          grep -q "APP_VERSION_LABEL='v2.0.2'" src/app.js
           grep -q "function prioritiesPage()" src/app.js
           grep -q "Prioridades CGU" index.html
           grep -q "CYCLE_PLAN_VERSION=8" src/core.js
