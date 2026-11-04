@@ -1,1 +1,7 @@
-{"build":"2.0.3-dcon-ordem-20261028","family":"v2.0","publishedAt":"2026-10-28","effectiveStudyStart":"2026-10-21","channel":"cgu-dcon-ordem"}
+{
+  "build": "2.0.4-dcon-nelma-20261103",
+  "family": "v2.0.4",
+  "publishedAt": "2026-11-03",
+  "effectiveStudyStart": "2026-10-21",
+  "channel": "cgu-dcon-ordem"
+}
