@@ -10,7 +10,7 @@ import {FINAL_CGU_PLAN,FINAL_CGU_LESSONS} from './dcon-ordered-curriculum.js?v=2
 import {RENNO_COURSE,RENNO_TEACHER,RENNO_STEPS,RENNO_UNIT_IDS,RENNO_PACKAGE_URL,RENNO_7F_FIRST_ID} from './pp-renno.js?v=2.0.4-dcon-nelma-20261103';
 import {finalCguLessonProgress,finalCguSlot,finalCguPhaseForDate,finalCguIsSunday,finalCguSlotLessons,finalCguLessonWindow,finalCguOperationalDate} from './cgu-final-runtime.js?v=2.0.4-dcon-nelma-20261103';
 const APP_VERSION='2.0.4-dcon-nelma-20261103';
-const APP_VERSION_LABEL='v2.0.3';
+const APP_VERSION_LABEL='v2.0.4';
 const $=q=>document.querySelector(q), esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])), label=id=>M.RULES[id]?.label||id.replace('legacy:',''), option=(v,t,selected)=>`<option value="${esc(v)}" ${v===selected?'selected':''}>${esc(t)}</option>`, checks=v=>v?'checked':'', cpLabel={done:'Concluído',due:'Checkpoint pendente',battery:'Baterias pendentes',audit:'Conferir histórico',planned:'Planejado'}, phaseLabel={new:'Estudo Novo',solid:'Estudo Sólido'};
 let state,page='today',selected='afo',pendingImport=null,timer=null,lawTimer=null,storedRaw=null,noticeTimeout,achievementCategoryFilter='all',achievementStatusFilter='all',progressView='overview',progressPeriod='all',progressSubject='all',goalView=null,cguPriorityFilter='P3',cguKindFilter='',cguStatusFilter='';
 const ACTIVE_SUBJECTS=['afo','cpu','auditoria','dad','adm-publica','dcon','cgu7','port','ti','politicas','diversidade'];
