@@ -499,10 +499,6 @@ export function session(current,input){
  let u=input.unitId?getUnit(st,s.id,input.unitId).u:null;
  if(['theory','battery','general','checkpoint'].includes(input.activity)&&!u)throw Error('Selecione a aula ou módulo.');
  if(u?.programPhase==='avancado'&&u.hiddenFromRoute&&input.activity==='theory')throw Error('O curso DCON Avançado só começa após a conclusão integral do Cebraspe e das Aulas 04/05 do Estratégia.');
- if(s.id==='dcon'&&u?.id==='ESTRATEGIA-DCON-05'&&input.activity==='theory'){
-  const a4=s.units.find(x=>x.id==='dcon-u-2');
-  if(!a4?.theoryDone||!a4.exerciseVideoDone)throw Error('Conclua os 24 blocos e a VA 25 de exercícios da Aula 04 do Estratégia antes da Aula 05.');
- }
  if(s.id==='dcon'&&u?.id==='NELMA-DCON-02'&&input.activity==='theory'){
   const a4=s.units.find(x=>x.id==='dcon-u-2'),a5=s.units.find(x=>x.id==='ESTRATEGIA-DCON-05');
   if(!a4?.theoryDone||!a4.exerciseVideoDone||!a5?.theoryDone)throw Error('Antes da Aula 02 Cebraspe, conclua a Aula 04 do Estratégia (24 vídeos e exercícios) e a Aula 05 (8 vídeos).');
