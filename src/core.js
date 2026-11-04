@@ -1,6 +1,7 @@
 import {RENNO_COURSE,RENNO_STEPS} from './pp-renno.js';
 import {FINAL_CGU_CYCLE_SUBJECTS,applyFinalCguCurriculum,migrateFinalCguCycle,PREVIOUS_FINAL_CGU_CYCLE,PREVIOUS_FINAL_CGU_CYCLE_V6} from './cgu-final-runtime.js';
 import {andresanLesson,isAndresanQuestionActivity} from './portugues-andresan-catalog.js';
+import {veonQuestionTarget} from './veon-info-dados-20261104.js';
 export const KEY='metodo-et:camile:v1';
 export const LEGACY_CYCLE_V13=Object.freeze(['port','dcon','afo','ti','adm-publica','diversidade','afo','dad','politicas','auditoria','afo']);
 export const INTERIM_CYCLE_V14=Object.freeze(['afo','auditoria','adm-publica','dcon','dad','afo','politicas','port','ti','afo']);
@@ -15,7 +16,8 @@ export const RULES=Object.freeze({
  ti:{label:'TI / Dados',minutes:60,checkpoint:4,unit:'aula'},
  port:{label:'Português',minutes:60,checkpoint:4,unit:'aula'},
  dcon:{label:'DCON',minutes:60,checkpoint:4,unit:'aula'},
- info:{label:'Informática (arquivo anterior)',minutes:60,checkpoint:4,unit:'aula'},
+ info:{label:'Informática · Fase 1',minutes:60,checkpoint:4,unit:'módulo'},
+ 'dados-rodrigo':{label:'TI / Dados · Fase 2 (RFB)',minutes:60,checkpoint:4,unit:'módulo'},
  'adm-publica':{label:'Adm. Pública',minutes:60,checkpoint:4,unit:'aula'},
  diversidade:{label:'Diversidade',minutes:60,checkpoint:4,unit:'aula'},
  politicas:{label:'Políticas Públicas',minutes:60,checkpoint:4,unit:'aula'},
@@ -562,13 +564,13 @@ export function session(current,input){
   entry.cycleApplied=true;
   entry.slotComplete=true;
  }
- st.sessions.push(entry);if(u&&(['battery','general'].includes(input.activity)||input.activity==='andresan'&&u.questionOnly)){const category=input.activity==='andresan'?'battery':input.activity;u[category].attempted+=q;u[category].correct+=correct;if(category==='battery'&&u.theoryDone&&u.battery.attempted>=30)u.batteryDone=true;}if(u&&input.date>=CGU_CHECK_START&&input.activity!=='night'&&(u.theoryDone||['battery','general','checkpoint'].includes(input.activity)))markCguCodes(st,u.cguCodes,'auto-study');if(s.id==='dcon')dconHistoricalProgress(st,s);return st;
+ st.sessions.push(entry);if(u&&(['battery','general'].includes(input.activity)||input.activity==='andresan'&&u.questionOnly)){const category=input.activity==='andresan'?'battery':input.activity;u[category].attempted+=q;u[category].correct+=correct;if(category==='battery'&&u.theoryDone&&u.battery.attempted>=(u.veonCatalog?veonQuestionTarget(u):30))u.batteryDone=true;}if(u&&input.date>=CGU_CHECK_START&&input.activity!=='night'&&(u.theoryDone||['battery','general','checkpoint'].includes(input.activity)))markCguCodes(st,u.cguCodes,'auto-study');if(s.id==='dcon')dconHistoricalProgress(st,s);return st;
 }
 export function setUnit(current,sid,id,values){let st=copy(current),{s,u}=getUnit(st,sid,id);
  let theory=!!values.theoryDone,battery=!!values.batteryDone,general=!!values.generalDone,material=!!values.materialReady;
  // Modo flexível Camile: a conclusão pode ser informada fora da ordem para reconstruir histórico.
  if(theory&&(!validDay(values.theoryDate)||values.theoryDate>day()))throw Error('Informe a data real da conclusão da teoria.');
- if(battery&&(!theory||u.battery.attempted<30))throw Error('A primeira bateria exige teoria concluída e ao menos 30 questões registradas.');
+ if(battery&&(!theory||u.battery.attempted<(u.veonCatalog?veonQuestionTarget(u):30)))throw Error('A primeira bateria exige teoria concluída e o mínimo de questões do módulo (10, 20 ou 30 conforme extensão).');
  if(general&&(!methodUnits(s).every(v=>v.id===u.id?theory&&battery:v.theoryDone&&v.batteryDone)||!checkpoints(s).every(c=>c.status==='done')))throw Error('Conclua teoria, baterias e checkpoints antes da revisão geral.');
  if(u.id==='ESTRATEGIA-DCON-05'&&theory&&(u.completedBlocks?.length||0)!==8)throw Error('Conclua os oito vídeos da Aula 05 antes de marcar teoria completa.');
  if(sid==='dcon'&&u.id==='dcon-u-2'&&theory&&Number(u.blocksCompleted)<24)throw Error('Conclua os 24 blocos da Aula 04 do Estratégia.');

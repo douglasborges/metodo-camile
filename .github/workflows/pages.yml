@@ -35,7 +35,7 @@ jobs:
         with:
           enablement: true
 
-      - name: Validar Método Camile · v2.0.5 · DCON Nelma
+      - name: Validar Método Camile · v2.0.6 · DCON Nelma
         run: |
           cp src/app.js /tmp/app.mjs
           cp src/core.js /tmp/core.mjs
@@ -61,11 +61,15 @@ jobs:
           node --check /tmp/cgu-final-runtime.mjs
           node --check /tmp/pp-renno.mjs
           node --check /tmp/dcon-programacao-20261103.mjs
+          node --check src/veon-combo-catalog.js
+          node --check src/veon-rfb-catalog.js
+          node --check src/veon-info-dados-20261104.js
+          node --check src/veon-ui.js
           node --check drive-sync.js
           node --check drive-sync-ui.js
 
-          grep -q "2.0.5-port-andresan-20261103" index.html
-          grep -q "APP_VERSION_LABEL='v2.0.5'" src/app.js
+          grep -q "2.0.6-veon-info-dados-20261104" index.html
+          grep -q "APP_VERSION_LABEL='v2.0.6'" src/app.js
           grep -q "function prioritiesPage()" src/app.js
           grep -q "Prioridades CGU" index.html
           grep -q "CYCLE_PLAN_VERSION=8" src/core.js

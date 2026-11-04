@@ -1,7 +1,7 @@
 {
-  "build": "2.0.5-port-andresan-20261103",
-  "family": "v2.0.4",
-  "publishedAt": "2026-11-03",
+  "build": "2.0.6-veon-info-dados-20261104",
+  "family": "v2.0.6",
+  "publishedAt": "2026-11-04",
   "effectiveStudyStart": "2026-10-21",
-  "channel": "cgu-dcon-ordem"
+  "channel": "camile-info-dados-rodrigo"
 }

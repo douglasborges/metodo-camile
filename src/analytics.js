@@ -1,6 +1,6 @@
 import * as M from './core.js?v=2.0.0-cgu-auditoria-final-20261021';
 
-const ACTIVE=['port','dcon','afo','ti','adm-publica','diversidade','dad','politicas','auditoria'];
+const ACTIVE=['port','dcon','afo','ti','info','dados-rodrigo','adm-publica','diversidade','dad','politicas','auditoria'];
 const shift=(date,days)=>{const d=new Date(date+'T12:00:00');d.setDate(d.getDate()+days);return M.day(d);};
 const monthStart=date=>date.slice(0,7)+'-01';
 const monthShift=(date,months)=>{const d=new Date(date.slice(0,7)+'-01T12:00:00');d.setMonth(d.getMonth()+months);return M.day(d);};
@@ -39,7 +39,7 @@ function statsBetween(st,start,end,subjectId='all'){
 }
 function subjectAnalytics(st,period,today){
   const bounds=periodBounds(period,today);
-  return ACTIVE.map(id=>{
+  return ACTIVE.filter(id=>st.subjects.some(s=>s.id===id)).map(id=>{
     const s=st.subjects.find(x=>x.id===id),rows=(st.sessions||[]).filter(x=>x.activity!=='night'&&x.subjectId===id&&x.date<=today&&(!bounds.start||x.date>=bounds.start)),results=resultRows(rows);
     const cps=M.checkpoints(s),last=(st.sessions||[]).filter(x=>x.activity!=='night'&&x.subjectId===id&&x.date<=today).map(x=>x.date).sort().at(-1)||'';
     const total=s.units.length,theory=s.units.filter(u=>u.theoryDone).length,batteries=s.units.filter(u=>u.batteryDone).length,general=s.units.filter(u=>u.generalDone).length,material=s.units.filter(u=>u.materialReady).length,cpDone=cps.filter(c=>c.status==='done').length;
