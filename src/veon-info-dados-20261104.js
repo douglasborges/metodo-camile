@@ -106,7 +106,7 @@ export function veonQuestionTarget(u){
  return Number(u?.totalBlocks||1)>=8?30:Number(u?.totalBlocks||1)>=4?20:10;
 }
 export function veonProgress(s){
- const all=(s?.units||[]).filter(u=>u.veonCatalog),main=all.filter(u=>!u.hiddenFromRoute);
+ const all=(s?.units||[]).filter(u=>u.veonCatalog),main=all.filter(u=>!u.hiddenFromRoute).sort((a,b)=>(a.order||0)-(b.order||0));
  return {all,main,requiredVideos:main.reduce((n,u)=>n+u.parts.length,0),
   requiredDone:main.reduce((n,u)=>n+u.parts.filter(p=>p.done).length,0),
   next:main.find(u=>!u.theoryDone),questionGroup:all.find(u=>u.questionOnly)};
