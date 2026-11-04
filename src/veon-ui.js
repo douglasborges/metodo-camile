@@ -13,13 +13,14 @@ function listCard(u,sid,esc){
   '<p>Meta de bateria da unidade: <b>'+veonQuestionTarget(u)+' questões</b> após a teoria. Registradas: '+pt(u.battery?.attempted)+
   '. '+(u.batteryDone?'Bateria concluída.':'Bateria ainda não concluída.')+'</p>')+
   '<p style="font-size:12px">Curso: <a href="'+esc(u.sourceURL)+'" target="_blank" rel="noopener noreferrer">Abrir VEON</a>. Cada aula abaixo corresponde ao número mostrado no PDF; títulos individuais não foram fornecidos.</p>'+
-  partRows+'</details>';
+  (!u.questionOnly?'<p><button class="secondary small" data-action="veon-unit" data-sid="'+esc(sid)+'" data-uid="'+esc(u.id)+'">Controle ET: bateria, revisão, material</button></p>':'')+partRows+'</details>';
 }
-export function veonSubjectPanel(s,esc){
+export function veonSubjectPanel(s,esc,checkpoints){
  const p=veonProgress(s),isBase=s.id==='info',
   reserved=p.all.filter(u=>!u.questionOnly&&u.hiddenFromRoute),
   main=p.main,question=p.questionGroup;
  const completedMain=main.filter(u=>u.theoryDone).length,
+  cps=typeof checkpoints==='function'?checkpoints(s):[],
   old=(s.units||[]).filter(u=>u.originalStudyRoutePreserved);
  const header=isBase?
   '<p><b>Fase 1 — base para prefeituras, câmaras, administrativos e policiais.</b> Estudar 131 aulas essenciais e 8 de ponte para Dados. As 83 restantes permanecem em reserva/sob edital, sem bloquear progresso.</p>'+
@@ -38,7 +39,8 @@ export function veonSubjectPanel(s,esc){
   header+'<p><b>Próxima unidade recomendada:</b> '+esc(p.next?.title||'Teoria priorizada concluída. Reforçar questões e revisões.')+'</p>'+
   '<p><b>Regra do Método ET:</b> registrar horas/minutos reais, praticar, revisar em 24h e em 7 dias, resolver baterias por módulo e consolidar erros. Não há conclusão automática por visita à página.</p>'+links+'</section>'+
   counts+'<section class="section-title"><h2>Roteiro principal — ordem recomendada</h2><p class="muted">Somente unidades obrigatórias e ponte nesta lista; leia o módulo e registre cada videoaula estudada. O progresso individual é preservado.</p>'+
-  main.map(u=>listCard(u,s.id,esc)).join('')+'</section>'+
+  main.map(u=>listCard(u,s.id,esc)).join('')+'</section>'+ 
+  '<section class="card section-title"><h2>Checkpoints do Método ET</h2><p class="muted">Após cada grupo de quatro módulos, completar teoria e baterias para liberar o checkpoint de revisão.</p>'+cps.map(c=>'<div class="row" style="padding:8px 0"><span><b>Checkpoint '+c.number+'</b> · '+esc(c.status)+' · '+esc(c.units[0]?.title||'')+' a '+esc(c.units.at(-1)?.title||'')+'</span><button class="secondary small" data-action="veon-checkpoint" data-sid="'+esc(s.id)+'" data-id="'+esc(c.id)+'">Abrir</button></div>').join('')+'</section>'+
   '<section class="section-title"><h2>Questões comentadas — ao longo da teoria</h2><p class="muted">Assistir às resoluções conforme os tópicos já vistos, não esperar terminar todos os módulos.</p>'+
   (question?listCard(question,s.id,esc):'')+'</section>'+
   (isBase?'<section class="section-title"><details class="card" style="padding:16px"><summary><b>83 videoaulas sob edital / reserva — NÃO estudar na primeira volta</b></summary>'+

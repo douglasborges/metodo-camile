@@ -1,7 +1,7 @@
 {
-  "build": "2.0.6-veon-info-dados-20261104",
-  "family": "v2.0.6",
+  "build": "2.0.7-veon-et-roadmap-20261104",
+  "family": "v2.0.7",
   "publishedAt": "2026-11-04",
   "effectiveStudyStart": "2026-10-21",
-  "channel": "camile-info-dados-rodrigo"
+  "channel": "veon-metodo-et-checkpoints"
 }
