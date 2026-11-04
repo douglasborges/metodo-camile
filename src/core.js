@@ -498,6 +498,11 @@ export function session(current,input){
  if(input.activity==='andresan'&&(s.id!=='port'||q<1))throw Error('Andresan: registre em Português e informe ao menos 1 questão resolvida.');
  let u=input.unitId?getUnit(st,s.id,input.unitId).u:null;
  if(['theory','battery','general','checkpoint'].includes(input.activity)&&!u)throw Error('Selecione a aula ou módulo.');
+ if(u?.programPhase==='avancado'&&u.hiddenFromRoute&&input.activity==='theory')throw Error('O curso DCON Avançado só começa após a conclusão integral do Cebraspe e das Aulas 04/05 do Estratégia.');
+ if(s.id==='dcon'&&u?.id==='NELMA-DCON-02'&&input.activity==='theory'){
+  const a4=s.units.find(x=>x.id==='dcon-u-2'),a5=s.units.find(x=>x.id==='ESTRATEGIA-DCON-05');
+  if(!a4?.theoryDone||!a4.exerciseVideoDone||!a5?.theoryDone)throw Error('Antes da Aula 02 Cebraspe, conclua a Aula 04 do Estratégia (24 vídeos e exercícios) e a Aula 05 (8 vídeos).');
+ }
  if(input.activity==='solid'&&s.phase!=='solid')throw Error('Conclua o Estudo Novo antes de registrar sessões do Estudo Sólido.');
  if(input.activity==='night'&&st.sessions.filter(v=>v.subjectId===s.id&&v.date===input.date&&v.activity==='night').reduce((a,v)=>a+v.minutes,0)+minutes>10)throw Error('A revisão noturna totaliza de 5 a 10 minutos por disciplina no dia.');
  if(input.activity==='checkpoint'&&!checkpoints(s).some(c=>c.units.some(v=>v.id===u.id)&&['due','done'].includes(c.status)))throw Error('Conclua teoria e baterias do bloco antes do checkpoint.');
@@ -517,9 +522,32 @@ export function session(current,input){
   if(u.blocksCompleted===8){u.theoryDone=true;u.theoryDate=input.date;}
  }
  if(s.id==='dcon'&&u?.id==='dcon-u-2'){
-  const match=(String(input.title||'')+' '+String(input.notes||'')).match(/bloco\s*(\d+)\s+conclu[ií]do\b/i);
   const completed=Number(u.blocksCompleted)||0;
-  if(match&&Number(match[1])===completed+1&&completed<24)u.blocksCompleted=completed+1;
+  if(input.blockCompleted){
+   if(input.activity!=='theory')throw Error('Concluir bloco requer atividade Teoria.');
+   const n=Number(String(input.title||'').match(/^Bloco (\d{2})$/)?.[1]);
+   if(!Number.isInteger(n)||n!==completed+1||n>24)throw Error('Conclua sequencialmente o próximo bloco: '+String(Math.min(completed+1,24)).padStart(2,'0')+'.');
+   u.blocksCompleted=n;u.completedBlocks=Array.from({length:n},(_,i)=>i+1);
+   entry.blockComplete=true;
+   if(n===24){u.theoryDone=true;u.theoryDate=input.date;}
+  }else{
+   // Compatibilidade com registros históricos: sem inferir a conclusão da aula.
+   const match=(String(input.title||'')+' '+String(input.notes||'')).match(/bloco\s*(\d+)\s+conclu[ií]do\b/i);
+   if(match&&Number(match[1])===completed+1&&completed<24)u.blocksCompleted=completed+1;
+  }
+  if(input.exerciseVideoComplete){
+   if(input.title!=='VA 25 · Exercícios da Aula 04'||input.activity!=='theory'||Number(u.blocksCompleted)<24)throw Error('Conclua os 24 blocos; selecione a VA 25 e a atividade Teoria.');
+   u.exerciseVideoDone=true;entry.exerciseVideoComplete=true;
+  }
+ }
+ if(s.id==='dcon'&&u?.programPhase==='avancado'&&input.blockCompleted){
+  if(input.activity!=='theory')throw Error('Concluir bloco requer atividade Teoria.');
+  const part=u.parts?.find(p=>p.title===String(input.title||''));
+  const next=u.parts?.find(p=>!p.done);
+  if(!part||part.id!==next?.id)throw Error('Selecione o primeiro bloco pendente do curso avançado.');
+  part.done=true;part.completedOn=input.date;entry.partId=part.id;entry.partComplete=true;
+  u.completedBlocks=u.parts.filter(p=>p.done).map(p=>p.number);u.blocksCompleted=u.completedBlocks.length;
+  if(u.parts.every(p=>p.done)){u.theoryDone=true;u.theoryDate=input.date;}
  }
  if(input.applyCycle&&!['night','andresan'].includes(input.activity)&&input.date===day()&&new Date(input.date+'T12:00:00').getDay()!==0&&CYCLE[st.cycle.index]===s.id){
   st.cycle.minutes=0;
@@ -536,6 +564,9 @@ export function setUnit(current,sid,id,values){let st=copy(current),{s,u}=getUni
  if(battery&&(!theory||u.battery.attempted<30))throw Error('A primeira bateria exige teoria concluída e ao menos 30 questões registradas.');
  if(general&&(!methodUnits(s).every(v=>v.id===u.id?theory&&battery:v.theoryDone&&v.batteryDone)||!checkpoints(s).every(c=>c.status==='done')))throw Error('Conclua teoria, baterias e checkpoints antes da revisão geral.');
  if(u.id==='ESTRATEGIA-DCON-05'&&theory&&(u.completedBlocks?.length||0)!==8)throw Error('Conclua os oito vídeos da Aula 05 antes de marcar teoria completa.');
+ if(sid==='dcon'&&u.id==='dcon-u-2'&&theory&&Number(u.blocksCompleted)<24)throw Error('Conclua os 24 blocos da Aula 04 do Estratégia.');
+ if(sid==='dcon'&&u.programPhase==='avancado'&&theory&&u.parts?.some(p=>!p.done))throw Error('Conclua todos os blocos reais desta aula avançada antes de marcar a teoria completa.');
+ if(sid==='dcon'&&u.programPhase==='avancado'&&u.hiddenFromRoute&&theory)throw Error('Curso avançado ainda bloqueado: finalize os cursos regulares.');
  Object.assign(u,{theoryDone:theory,theoryDate:theory?values.theoryDate:'',batteryDone:battery&&theory,generalDone:general&&battery&&theory,materialReady:material});
  if(!theory||!battery){let cp=checkpoints(s).find(c=>c.units.some(v=>v.id===id));if(cp)delete s.checkpoints[cp.id];for(let x of s.units)x.generalDone=false;}
  if(theory)markCguCodes(st,u.cguCodes,'auto-unit');if(s.id==='dcon')dconHistoricalProgress(st,s);if(s.phase==='solid'&&!canSolid(s))s.phase='new';return st;
