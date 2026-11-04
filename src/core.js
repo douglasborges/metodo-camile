@@ -1,5 +1,6 @@
 import {RENNO_COURSE,RENNO_STEPS} from './pp-renno.js';
 import {FINAL_CGU_CYCLE_SUBJECTS,applyFinalCguCurriculum,migrateFinalCguCycle,PREVIOUS_FINAL_CGU_CYCLE,PREVIOUS_FINAL_CGU_CYCLE_V6} from './cgu-final-runtime.js';
+import {andresanLesson,isAndresanQuestionActivity} from './portugues-andresan-catalog.js';
 export const KEY='metodo-et:camile:v1';
 export const LEGACY_CYCLE_V13=Object.freeze(['port','dcon','afo','ti','adm-publica','diversidade','afo','dad','politicas','auditoria','afo']);
 export const INTERIM_CYCLE_V14=Object.freeze(['afo','auditoria','adm-publica','dcon','dad','afo','politicas','port','ti','afo']);
@@ -494,9 +495,14 @@ export function session(current,input){
  let st=copy(current),s=st.subjects.find(s=>s.id===input.subjectId),minutes=Number(input.minutes),q=Number(input.questions||0),correct=Number(input.correct||0);
  if(!s||!validDay(input.date)||input.date>day()||!Number.isInteger(minutes)||minutes<1||minutes>1440||!ACTIVITIES[input.activity])throw Error('Confira disciplina, data, atividade e duração.');
  if(!Number.isInteger(q)||!Number.isInteger(correct)||q<0||correct<0||correct>q)throw Error('Confira questões e acertos.');
+ if(input.andresanLessonId&&(!andresanLesson(input.andresanLessonId)||s.id!=='port'||!isAndresanQuestionActivity(input.activity)))throw Error('Selecione uma aula válida do Andresan no estudo de questões de Português.');
+ const andresanSelected=andresanLesson(input.andresanLessonId);
+ if(input.activity==='andresan'&&(!andresanSelected||q<1))throw Error('Andresan: selecione a aula por assunto e informe ao menos 1 questão resolvida.');
  if(input.activity==='night'&&(minutes<5||minutes>10))throw Error('Revisão noturna: de 5 a 10 minutos por disciplina.');
- if(input.activity==='andresan'&&(s.id!=='port'||q<1))throw Error('Andresan: registre em Português e informe ao menos 1 questão resolvida.');
+
  let u=input.unitId?getUnit(st,s.id,input.unitId).u:null;
+ if(andresanSelected&&(!u||u.questionOnly&&u.id!==andresanSelected.id))throw Error('Selecione a aula do Andresan correspondente ao tópico de questões.');
+ if(s.id==='port'&&u?.questionOnly&&isAndresanQuestionActivity(input.activity)&&(!andresanSelected||u.id!==andresanSelected.id))throw Error('Selecione o tópico do Andresan para registrar esta aula.');
  if(['theory','battery','general','checkpoint'].includes(input.activity)&&!u)throw Error('Selecione a aula ou módulo.');
  if(u?.programPhase==='avancado'&&u.hiddenFromRoute&&input.activity==='theory')throw Error('O curso DCON Avançado só começa após a conclusão integral do Cebraspe e das Aulas 04/05 do Estratégia.');
  if(s.id==='dcon'&&u?.id==='NELMA-DCON-02'&&input.activity==='theory'){
@@ -511,6 +517,7 @@ export function session(current,input){
  let start=input.start===''||input.start==null?null:Number(input.start),end=input.end===''||input.end==null?null:Number(input.end);
  if((start!==null||end!==null)&&(!Number.isFinite(start)||!Number.isFinite(end)||start<0||end<start))throw Error('Preencha início e fim válidos do conteúdo.');
  const entry={id:uid(),subjectId:s.id,unitId:u?.id||'',title:String(input.title||'').trim()||u?.title||'',date:input.date,createdAt:new Date().toISOString(),activity:input.activity,minutes,questions:q,correct,medium:input.medium||'',start,end,notes:String(input.notes||''),legacy:false,cycleApplied:false};
+ if(andresanSelected){entry.andresanLessonId=andresanSelected.id;entry.courseId=andresanSelected.courseId;entry.teacher='Andresan Machado';entry.title='[Andresan] [Cebraspe] Questões · '+andresanSelected.title;}
  if(u?.id==='ESTRATEGIA-DCON-05'&&input.blockCompleted){
   if(input.activity!=='theory')throw Error('A conclusão de vídeo requer atividade Teoria.');
   const number=Number(String(input.title||'').match(/^Vídeo ([0-9]+) —/)?.[1]);
@@ -555,7 +562,7 @@ export function session(current,input){
   entry.cycleApplied=true;
   entry.slotComplete=true;
  }
- st.sessions.push(entry);if(u&&['battery','general'].includes(input.activity)){u[input.activity].attempted+=q;u[input.activity].correct+=correct;if(input.activity==='battery'&&u.theoryDone&&u.battery.attempted>=30)u.batteryDone=true;}if(u&&input.date>=CGU_CHECK_START&&input.activity!=='night'&&(u.theoryDone||['battery','general','checkpoint'].includes(input.activity)))markCguCodes(st,u.cguCodes,'auto-study');if(s.id==='dcon')dconHistoricalProgress(st,s);return st;
+ st.sessions.push(entry);if(u&&(['battery','general'].includes(input.activity)||input.activity==='andresan'&&u.questionOnly)){const category=input.activity==='andresan'?'battery':input.activity;u[category].attempted+=q;u[category].correct+=correct;if(category==='battery'&&u.theoryDone&&u.battery.attempted>=30)u.batteryDone=true;}if(u&&input.date>=CGU_CHECK_START&&input.activity!=='night'&&(u.theoryDone||['battery','general','checkpoint'].includes(input.activity)))markCguCodes(st,u.cguCodes,'auto-study');if(s.id==='dcon')dconHistoricalProgress(st,s);return st;
 }
 export function setUnit(current,sid,id,values){let st=copy(current),{s,u}=getUnit(st,sid,id);
  let theory=!!values.theoryDone,battery=!!values.batteryDone,general=!!values.generalDone,material=!!values.materialReady;
