@@ -35,7 +35,7 @@ jobs:
         with:
           enablement: true
 
-      - name: Validar Método Camile · v2.0 Plano Final CGU
+      - name: Validar Método Camile · v2.0.4 · DCON Nelma
         run: |
           cp src/app.js /tmp/app.mjs
           cp src/core.js /tmp/core.mjs
@@ -48,6 +48,7 @@ jobs:
           cp src/cgu-final-plan.js /tmp/cgu-final-plan.mjs
           cp src/cgu-final-runtime.js /tmp/cgu-final-runtime.mjs
           cp src/pp-renno.js /tmp/pp-renno.mjs
+          cp src/dcon-programacao-20261103.js /tmp/dcon-programacao-20261103.mjs
           node --check /tmp/app.mjs
           node --check /tmp/core.mjs
           node --check /tmp/personal.mjs
@@ -59,11 +60,12 @@ jobs:
           node --check /tmp/cgu-final-plan.mjs
           node --check /tmp/cgu-final-runtime.mjs
           node --check /tmp/pp-renno.mjs
+          node --check /tmp/dcon-programacao-20261103.mjs
           node --check drive-sync.js
           node --check drive-sync-ui.js
 
-          grep -q "2.0.3-dcon-ordem-20261028" index.html
-          grep -q "APP_VERSION_LABEL='v2.0.3'" src/app.js
+          grep -q "2.0.4-dcon-nelma-20261103" index.html
+          grep -q "APP_VERSION_LABEL='v2.0.4'" src/app.js
           grep -q "function prioritiesPage()" src/app.js
           grep -q "Prioridades CGU" index.html
           grep -q "CYCLE_PLAN_VERSION=8" src/core.js
