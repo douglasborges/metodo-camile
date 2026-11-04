@@ -397,6 +397,49 @@ function materialPlanPanel(id){
  }).join('');
  return `<section class="card material-plan"><div class="page-head"><div><span class="eyebrow">PLANO MESTRE FINAL · V1.6.1</span><h2>${esc(p.label)}</h2><p>Um tópico do edital = uma fonte principal. Complemento somente depois; sem repetir teoria já coberta.</p></div>${phase}</div>${inactive}${deferred}<div class="material-grid">${list('FONTE PRINCIPAL',p.principal,'principal')}${list('LIVROS / LEITURA DIRIGIDA',p.books,'books')}${list('COMPLEMENTO',p.complement,'complement')}${list('NÃO ESTUDAR / DUPLICADO',p.avoid,'avoid')}</div><div class="material-order"><b>Ordem:</b> ${esc(p.order)}</div></section>${supportRoutesPanel(id)}${bookCards}`;
 }
+
+function veonLessonDialog(sid,uid,pid){
+ const ss=subject(sid),u=ss?.units.find(x=>x.id===uid),part=u?.parts?.find(x=>x.id===pid);
+ if(!u?.veonCatalog||!part){toast('Aula VEON não encontrada.',true);return;}
+ selected=sid;
+ const done=!!part.done,question=!!u.questionOnly,defaultActivity=question?'battery':'theory';
+ open('<h2>'+esc(u.title)+' · '+esc(part.title)+'</h2>'+
+  '<p class="muted">Fonte: Rodrigo Schaeffer / VEON · PDF pág. '+esc(u.sourcePage)+
+  '. Informe SOMENTE o tempo real estudado. '+(done?'Esta aula já está marcada como concluída; registre apenas revisão.':'Marque a conclusão apenas depois de assistir à aula.')+'</p>'+
+  '<p><a href="'+esc(u.sourceURL)+'" target="_blank" rel="noopener noreferrer">Abrir curso original VEON</a></p>'+
+  '<form id="veon-lesson-form" class="form-grid">'+
+  '<label>Data real<input required type="date" name="date" value="'+M.day()+'" max="'+M.day()+'"></label>'+
+  '<label>Atividade<select name="activity">'+option('theory','Teoria / videoaula',defaultActivity)+option('battery','Questões / bateria',defaultActivity)+option('micro','Revisão',defaultActivity)+'</select></label>'+
+  '<div class="duration-fields"><label>Horas<input type="number" min="0" max="24" name="hours" value="0" required></label><label>Minutos<input type="number" min="0" max="59" name="minutes" value="0" required></label></div>'+
+  '<label>Questões resolvidas<input type="number" min="0" step="1" name="questions" value="0"></label>'+
+  '<label>Acertos<input type="number" min="0" step="1" name="correct" value="0"></label>'+
+  (!done?'<label class="check full"><input type="checkbox" name="complete" checked> Concluí esta videoaula (registrar somente se realmente assistida)</label>':
+  '<p class="muted full">Concluída anteriormente: não duplicar conclusão.</p>')+
+  '<label class="full">Anotações / erros / próximo passo<textarea name="notes" rows="3"></textarea></label>'+
+  '<p class="muted full">Para fechar a bateria do módulo inteiro são '+veonQuestionTarget(u)+' questões (10/20/30 conforme extensão). Os vídeos de questões podem ser usados em paralelo.</p>'+
+  '<button class="full" type="submit">Registrar estudo real</button></form>');
+ $('#veon-lesson-form').onsubmit=e=>{
+  e.preventDefault();
+  const f=e.target.elements;let minutes;
+  try{minutes=durationMinutes(f.hours.value,f.minutes.value);}catch(error){toast(error.message,true);return;}
+  const finish=!done&&!!f.complete?.checked;
+  if(change(()=>{
+    let next=M.session(state,{
+      subjectId:sid,unitId:uid,title:u.title+' · '+part.title,
+      date:f.date.value,activity:f.activity.value,minutes,
+      questions:Number(f.questions.value)||0,correct:Number(f.correct.value)||0,
+      notes:f.notes.value,medium:question?'video':'video',applyCycle:false
+    });
+    const entry=next.sessions[next.sessions.length-1];
+    entry.veonPartId=pid;entry.courseId=u.courseId;entry.teacher='Rodrigo Schaeffer';
+    next=markVeonLesson(next,sid,uid,pid,f.date.value,finish);
+    const saved=next.subjects.find(x=>x.id===sid)?.units.find(x=>x.id===uid);
+    if(saved?.theoryDone&&!saved.questionOnly&&saved.battery.attempted>=veonQuestionTarget(saved))saved.batteryDone=true;
+    return next;
+  },finish?'Videoaula concluída e tempo registrado.':'Estudo/revisão registrado sem duplicar conclusão.',false))close();
+ };
+}
+
 function subjectsPage(){
  let s=subject(); if(!s){selected='afo';s=subject('afo');}
  const units=M.methodUnits(s),cps=M.checkpoints(s);
