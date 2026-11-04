@@ -496,7 +496,7 @@ export function session(current,input){
  if(!s||!validDay(input.date)||input.date>day()||!Number.isInteger(minutes)||minutes<1||minutes>1440||!ACTIVITIES[input.activity])throw Error('Confira disciplina, data, atividade e duração.');
  if(!Number.isInteger(q)||!Number.isInteger(correct)||q<0||correct<0||correct>q)throw Error('Confira questões e acertos.');
  if(input.andresanLessonId&&(!andresanLesson(input.andresanLessonId)||s.id!=='port'||!isAndresanQuestionActivity(input.activity)))throw Error('Selecione uma aula válida do Andresan no estudo de questões de Português.');
- const andresanSelected=andresanLesson(input.andresanLessonId);
+ const andresanSelected=andresanLesson(input.andresanLessonId||(s.id==='port'&&isAndresanQuestionActivity(input.activity)?input.unitId:''));
  if(input.activity==='andresan'&&(!andresanSelected||q<1))throw Error('Andresan: selecione a aula por assunto e informe ao menos 1 questão resolvida.');
  if(input.activity==='night'&&(minutes<5||minutes>10))throw Error('Revisão noturna: de 5 a 10 minutos por disciplina.');
 
