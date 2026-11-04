@@ -1,0 +1,55 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import * as M from '../src/core.js';
+import {COMBO_GROUPS,COMBO_QUESTIONS,COMBO_COUNTS} from '../src/veon-combo-catalog.js';
+import {RFB_GROUPS,RFB_COUNTS} from '../src/veon-rfb-catalog.js';
+import {reconcileVeonCurriculum,markVeonLesson,veonProgress,veonQuestionTarget} from '../src/veon-info-dados-20261104.js';
+
+const initial=()=>JSON.parse(fs.readFileSync(new URL('../data/initial-state.json',import.meta.url)));
+test('catálogo fiel: 222+32 e 37+20; primeira volta 131+8; 83 de reserva',()=>{
+ assert.equal(COMBO_GROUPS.length,67);
+ assert.equal(COMBO_COUNTS.theory,222);assert.equal(COMBO_QUESTIONS.length,32);
+ assert.equal(COMBO_COUNTS.base,131);assert.equal(COMBO_COUNTS.bridge,8);
+ assert.equal(COMBO_COUNTS.theory-COMBO_COUNTS.base-COMBO_COUNTS.bridge,83);
+ assert.equal(RFB_GROUPS.length,12);assert.equal(RFB_COUNTS.theory,37);
+ assert.equal(RFB_COUNTS.questionVideos,20);
+ assert.equal(new Set(COMBO_GROUPS.map(x=>x.id)).size,67);
+ assert.equal(new Set(RFB_GROUPS.map(x=>x.id)).size,12);
+});
+test('reconciliação preserva todo histórico e libera trilha nova em duas disciplinas',()=>{
+ const old=initial(),savedSession={id:'hist-1',subjectId:'info',unitId:'info-u-1',date:'2026-10-18',activity:'theory',minutes:60,questions:12,correct:10};
+ old.sessions.push(savedSession);old.subjects.find(s=>s.id==='info').units[0].theoryDone=true;
+ old.goals={...old.goals,fixture:'nao-alterar'};
+ const before=JSON.parse(JSON.stringify(old));
+ const st=reconcileVeonCurriculum(old),info=st.subjects.find(s=>s.id==='info'),dados=st.subjects.find(s=>s.id==='dados-rodrigo');
+ assert.deepEqual(old,before);assert.deepEqual(st.sessions,old.sessions);
+ assert.deepEqual(st.goals,old.goals);
+ assert.ok(info.units.find(u=>u.id==='info-u-1').theoryDone);
+ assert.ok(info.units.find(u=>u.id==='info-u-1').hiddenFromRoute);
+ assert.equal(info.units.filter(u=>u.veonCatalog).length,68);
+ assert.equal(dados.units.filter(u=>u.veonCatalog).length,13);
+ assert.equal(M.methodUnits(info).length,40);
+ assert.equal(M.methodUnits(dados).length,12);
+ assert.equal(veonProgress(info).requiredVideos,139);
+ assert.equal(veonProgress(dados).requiredVideos,37);
+ assert.equal(veonProgress(info).questionGroup.parts.length,32);
+ assert.equal(veonProgress(dados).questionGroup.parts.length,20);
+ assert.equal(M.validate(st),st);
+ const again=reconcileVeonCurriculum(st);
+ assert.deepEqual(again,st,'migração idempotente');
+});
+test('conclusão ocorre somente ao registrar parte explicitamente e não cria sessões',()=>{
+ const st=reconcileVeonCurriculum(initial()),info=st.subjects.find(s=>s.id==='info');
+ const first=info.units.find(u=>u.id==='rs-info-01'),date='2026-11-04',part=first.parts[0];
+ const after=markVeonLesson(st,'info',first.id,part.id,date,true);
+ const u=after.subjects.find(s=>s.id==='info').units.find(u=>u.id===first.id);
+ assert.equal(u.parts.filter(x=>x.done).length,1);
+ assert.equal(u.theoryDone,false);
+ assert.equal(after.sessions.length,st.sessions.length);
+ assert.equal(st.subjects.find(s=>s.id==='info').units.find(u=>u.id===first.id).parts[0].done,false);
+ assert.throws(()=>markVeonLesson(after,'info',first.id,part.id,date,true),/já está concluída/);
+ assert.equal(veonQuestionTarget(first),30);
+ assert.equal(veonQuestionTarget(info.units.find(u=>u.id==='rs-info-03')),20);
+ assert.equal(veonQuestionTarget(info.units.find(u=>u.id==='rs-info-11')),10);
+});
