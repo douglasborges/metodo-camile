@@ -113,11 +113,7 @@ Não estudar como segunda teoria: Gestão por Resultados/Governança/Planejament
 
 ### Direito Constitucional
 
-Rota:
-**Nelma A01 → Teoria dos Direitos → Estratégia A04 Art. 5º (24 vídeos + exercícios) → Direitos Sociais → Direitos Políticos → Organização do Estado → A06 seletivo → A08 → A09 seletivo → A15 Ordem Econômica.**
-
-Pular na rota atual: **A02, A07 e A10–A14**. A16 fica em reserva.
-O progresso histórico conhecido permanece preservado.
+Fonte principal: **Nelma Fontana — Cebraspe**, com inserção obrigatória das aulas 04 e 05 do Estratégia **após a Aula 01 e antes da Aula 02**. A trilha base seguirá até a Aula 16 Cebraspe; só então passará ao **curso avançado de DCON da Nelma (16 aulas)**. O histórico da Camile e seus blocos já registrados são preservados; a antiga rota seletiva CGU deixou de ser a ordem curricular geral de DCON.
 
 ### Direito Administrativo
 
@@ -220,3 +216,15 @@ B1, C1, A1, CD1 etc. são **códigos internos da matriz**, não siglas oficiais 
 - **Meta 07:** início da Fase 4, quando o núcleo prioritário estiver sob controle — CPU Pacelli **M06 → M07 → M08** + início de Sociedade Brasileira/Diversidade.
 - **Meta 08:** CPU Pacelli **M13 → M14 → M15** + continuidade/fechamento de Sociedade Brasileira/Diversidade, além da consolidação final.
 - O fechamento das Metas continua baseado em 30h reais e no ciclo prioritário já definido; a Fase 4 aparece como orientação de material final sem apagar o histórico anterior.
+
+## Direito Constitucional · roteiro de 03/11/2026
+
+Fonte: documento "DCON - Nelma.pdf" (24 páginas, fornecido em 03/11/2026).
+
+**Regra de sequência única:** Nelma Cebraspe **A01** (2 blocos) → Estratégia/Nelma **A04** (art. 5º: 24 VAs teóricas + VA 25 de exercícios) → Estratégia/Nelma **A05** (8 VAs de remédios constitucionais) → Nelma Cebraspe **A02–A16**, na ordem → Nelma **Avançado A01–A16**.
+
+O avançado constitui **segunda etapa** da mesma disciplina e fica cadastrado, mas fora da rota ativa até a conclusão de teoria e bateria da base, inclusive exercícios da A04. As 16 aulas avançadas têm contagem de blocos conforme o documento (30 blocos ao todo). Não inferir conclusões, criar sessões fictícias, alterar tempo de estudo real ou reiniciar progresso. O histórico da Aula 04 da Camile usa o ID original `dcon-u-2`; o de Douglas usa `ESTRATEGIA-DCON-04`.
+
+O catálogo técnico encontra-se em `src/dcon-programacao-20261103.js`; ele é reconciliado durante o carregamento e a persistência. A grade do PDF limita a identificação de **títulos e quantidade de blocos**; não detalha os nomes de cada vídeo do curso avançado, que aparecem identificados por número.
+
+Links de estudo: [Cebraspe](https://nelmafontana.com.br/cursos/direito-constitucional-cebraspe/), [Estratégia](https://concursos.estrategia.com/curso/curso-regular-nelma-fontana/), [Avançado](https://nelmafontana.com.br/cursos/direito-constitucional-avancado/).
