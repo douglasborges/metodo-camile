@@ -223,7 +223,7 @@ Fonte: documento "DCON - Nelma.pdf" (24 páginas, fornecido em 03/11/2026).
 
 **Regra de sequência única:** Nelma Cebraspe **A01** (2 blocos) → Estratégia/Nelma **A04** (art. 5º: 24 VAs teóricas + VA 25 de exercícios) → Estratégia/Nelma **A05** (8 VAs de remédios constitucionais) → Nelma Cebraspe **A02–A16**, na ordem → Nelma **Avançado A01–A16**.
 
-O avançado constitui **segunda etapa** da mesma disciplina e fica cadastrado, mas fora da rota ativa até a conclusão de teoria e bateria da base, inclusive exercícios da A04. As 16 aulas avançadas têm contagem de blocos conforme o documento (30 blocos ao todo). Não inferir conclusões, criar sessões fictícias, alterar tempo de estudo real ou reiniciar progresso. O histórico da Aula 04 da Camile usa o ID original `dcon-u-2`; o de Douglas usa `ESTRATEGIA-DCON-04`.
+O avançado constitui **segunda etapa** da mesma disciplina e fica cadastrado, mas fora da rota ativa até a conclusão de teoria e bateria da base, inclusive exercícios da A04. As 16 aulas avançadas têm contagem de blocos conforme o documento (28 blocos ao todo). Não inferir conclusões, criar sessões fictícias, alterar tempo de estudo real ou reiniciar progresso. O histórico da Aula 04 da Camile usa o ID original `dcon-u-2`; o de Douglas usa `ESTRATEGIA-DCON-04`.
 
 O catálogo técnico encontra-se em `src/dcon-programacao-20261103.js`; ele é reconciliado durante o carregamento e a persistência. A grade do PDF limita a identificação de **títulos e quantidade de blocos**; não detalha os nomes de cada vídeo do curso avançado, que aparecem identificados por número.
 
