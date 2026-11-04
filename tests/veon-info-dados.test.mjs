@@ -32,6 +32,9 @@ test('reconciliação preserva todo histórico e libera trilha nova em duas disc
  assert.equal(M.methodUnits(info).length,40);
  assert.equal(M.methodUnits(dados).length,12);
  assert.equal(veonProgress(info).requiredVideos,139);
+ assert.deepEqual(veonProgress(info).main.map(u=>u.order),Array.from({length:40},(_,i)=>i+1));
+ assert.deepEqual(veonProgress(dados).main.map(u=>u.order),Array.from({length:12},(_,i)=>i+1));
+ assert.equal(veonProgress(info).next.id,'rs-info-01');
  assert.equal(veonProgress(dados).requiredVideos,37);
  assert.equal(veonProgress(info).questionGroup.parts.length,32);
  assert.equal(veonProgress(dados).questionGroup.parts.length,20);
@@ -49,6 +52,7 @@ test('conclusão ocorre somente ao registrar parte explicitamente e não cria se
  assert.equal(after.sessions.length,st.sessions.length);
  assert.equal(st.subjects.find(s=>s.id==='info').units.find(u=>u.id===first.id).parts[0].done,false);
  assert.throws(()=>markVeonLesson(after,'info',first.id,part.id,date,true),/já está concluída/);
+ assert.throws(()=>M.setUnit(after,'info',first.id,{theoryDone:true,theoryDate:'2026-11-04',batteryDone:false,generalDone:false,materialReady:false}),/Conclua cada videoaula real/);
  assert.equal(veonQuestionTarget(first),30);
  assert.equal(veonQuestionTarget(info.units.find(u=>u.id==='rs-info-03')),20);
  assert.equal(veonQuestionTarget(info.units.find(u=>u.id==='rs-info-11')),10);
