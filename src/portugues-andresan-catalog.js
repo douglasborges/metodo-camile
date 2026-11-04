@@ -22,7 +22,7 @@ export const ANDRESAN_COURSES=Object.freeze([
  {id:'andresan-cebraspe-redacao-discursiva',name:'[Andresan] [Cebraspe] Redação Cebraspe',lessons:5,available:false}
 ].map(c=>Object.freeze(c)));
 export function andresanLesson(id){return ANDRESAN_LESSONS.find(x=>x.id===id)||null;}
-export function isAndresanQuestionActivity(activity){return ['battery','reviewBattery','andresan'].includes(activity);}
+export function isAndresanQuestionActivity(activity){return ['battery','reviewBattery','andresan','solid'].includes(activity);}
 export function reconcilePortugueseAndresan(current){
  const st=JSON.parse(JSON.stringify(current));
  const port=st.subjects?.find(s=>s.id==='port');
