@@ -62,7 +62,7 @@ export function dconProgramStatus(st){
     s.units.find(x=>['ESTRATEGIA-DCON-04','dcon-u-2'].includes(x.id));
  const ids=[DCON_CEBRASPE[0].id,art4?.id,'ESTRATEGIA-DCON-05',...DCON_CEBRASPE.slice(1).map(x=>x.id)];
  const completed=ids.filter(id=>{const u=s.units.find(x=>x.id===id);return !!(u?.theoryDone&&u?.batteryDone);}).length;
- const exerciseReady=art4?.exerciseVideoDone!==false;
+ const exerciseReady=!!art4?.exerciseVideoDone;
  const baseDone=completed===18&&exerciseReady;
  const advancedFinished=DCON_AVANCADO.filter(row=>{const u=s.units.find(x=>x.id===row.id);return u?.theoryDone&&u?.batteryDone;}).length;
  return {baseDone,advancedDone:advancedFinished===16,baseFinished:completed,baseTotal:18,advancedFinished,advancedTotal:16,exerciseReady};
@@ -74,7 +74,6 @@ export function reconcileDconProgram(current){
  const art4=s.units.find(x=>x.id==='ESTRATEGIA-DCON-04')||s.units.find(x=>x.id==='dcon-u-2');
  const a4id=art4?.id||'ESTRATEGIA-DCON-04';
  const order=[DCON_CEBRASPE[0].id,a4id,'ESTRATEGIA-DCON-05',...DCON_CEBRASPE.slice(1).map(x=>x.id),...DCON_AVANCADO.map(x=>x.id)];
- const regById=new Map(DCON_CEBRASPE.map(x=>[x.id,x]));
  for(const row of [...DCON_CEBRASPE,...DCON_AVANCADO]){
   let u=s.units.find(x=>x.id===row.id);
   const phase=row.course==='Avançado'?'avancado':'cebraspe',ord=order.indexOf(row.id)+1;
