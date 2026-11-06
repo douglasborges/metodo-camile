@@ -22,6 +22,10 @@ export const RULES=Object.freeze({
  diversidade:{label:'Diversidade',minutes:60,checkpoint:4,unit:'aula'},
  politicas:{label:'Políticas Públicas',minutes:60,checkpoint:4,unit:'aula'},
  auditoria:{label:'Auditoria',minutes:75,checkpoint:4,unit:'aula'},
+ 'ti-ima':{label:'TI · IMA (Rodrigo)',minutes:60,checkpoint:3,unit:'tema'},
+ 'leg-ambiental':{label:'Legislação Ambiental · IMA',minutes:60,checkpoint:3,unit:'norma'},
+ 'rl-ima':{label:'RL · IMA (Enxutos)',minutes:60,checkpoint:3,unit:'tema'},
+ 'licita-ima':{label:'Licitações · IMA',minutes:60,checkpoint:2,unit:'módulo'},
  cgu7:{label:'7 Fontes CGU',minutes:60,checkpoint:4,unit:'aula'}
 });
 export const ACTIVITIES={free:'Estudo livre',theory:'Teoria',micro:'Microrrevisão',battery:'Revisão + primeira bateria',checkpoint:'Checkpoint',general:'Revisão geral',solid:'Questões — Estudo Sólido',andresan:'Andresan · questões Cebraspe',night:'Revisão noturna'};

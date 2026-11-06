@@ -1,19 +1,18 @@
+import {IMA_LAWS,imaLegislationPair,IMA_LAW_START} from './ima-sc-curriculum-20261105.js';
 import {copy,day,validDay,uid,CYCLE,RULES} from './core.js?v=2.0.0-cgu-auditoria-final-20261021';
 import {cycleSourceLabel} from './cgu-materials.js?v=2.0.0-cgu-auditoria-final-20261021';
 export const REMINDER_STATUS={todo:'A fazer',done:'Feito',future:'Futuramente'};
-export const LEGISLATION_QUEUE=[
+// Perfil IMA: duas normas por dia, 15 min cada; preservar catálogo CGU histórico.
+const LEGACY_LAWS=[
  {id:'cf88',short:'CF/88',title:'Constituição Federal de 1988'},
  {id:'lai',short:'LAI',title:'Lei 12.527/2011 — Lei de Acesso à Informação'},
  {id:'cgu',short:'Leg. CGU',title:'Sistema de Controle Interno e Auditoria — Lei 10.180/2001, Decreto 3.591/2000 e IN SFC/CGU 3/2017'},
  {id:'lgpd',short:'LGPD',title:'Lei 13.709/2018 — Lei Geral de Proteção de Dados Pessoais'}
 ];
-export const LEGISLATION_PAIRS=Object.freeze([['cf88','lai'],['cgu','lgpd']]);
-export const LAW_PLAN_START='2026-10-12';
-export function legislationPair(date=day()){
- const serial=s=>{const [y,m,d]=s.split('-').map(Number);return Date.UTC(y,m-1,d)/86400000;};
- const index=Math.max(0,serial(date)-serial(LAW_PLAN_START))%LEGISLATION_PAIRS.length;
- return LEGISLATION_PAIRS[index].map(id=>LEGISLATION_QUEUE.find(x=>x.id===id));
-}
+export const LEGISLATION_QUEUE=[...IMA_LAWS,...LEGACY_LAWS];
+export const LEGISLATION_PAIRS=Object.freeze([['ima-dcon-cf-1-4','ima-env-cf225'],['ima-dad-6745-t1','ima-env-cf225']]);
+export const LAW_PLAN_START=IMA_LAW_START;
+export function legislationPair(date=day()){return imaLegislationPair(date);}
 export const GOAL_PLAN_VERSION=3;
 export const GOAL_PLAN_START='2026-10-13T00:00:00-03:00';
 export const GOAL_CYCLES_PER_META=4;
@@ -382,19 +381,14 @@ export function normalizeExtras(current){
  if(st.motivationStartDay===undefined)st.motivationStartDay=day();
  if(!validDay(st.motivationStartDay))throw Error('Data de motivação inválida.');
 
- if(st.legislation===undefined)st.legislation={queue:copy(LEGISLATION_QUEUE),current:0,sessions:[],completed:[],planVersion:2,planStart:LAW_PLAN_START};
+ if(st.legislation===undefined)st.legislation={queue:copy(LEGISLATION_QUEUE),current:0,sessions:[],completed:[],planVersion:3,planStart:LAW_PLAN_START};
  if(!Array.isArray(st.legislation.sessions))st.legislation.sessions=[];
  if(!Array.isArray(st.legislation.completed))st.legislation.completed=[];
- if(st.legislation.planVersion!==2){
-  st.legislation.queue=copy(LEGISLATION_QUEUE);
-  st.legislation.current=0;
-  st.legislation.planVersion=2;
-  st.legislation.planStart=LAW_PLAN_START;
- }
- if(!Array.isArray(st.legislation.queue)||!st.legislation.queue.length)st.legislation.queue=copy(LEGISLATION_QUEUE);
- for(const norm of LEGISLATION_QUEUE)if(!st.legislation.queue.some(x=>x.id===norm.id))st.legislation.queue.push(copy(norm));
- st.legislation.queue=LEGISLATION_QUEUE.map(norm=>({...norm}));
- st.legislation.current=0;
+ const oldQueue=Array.isArray(st.legislation.queue)?st.legislation.queue:[];
+ const known=new Set(LEGISLATION_QUEUE.map(x=>x.id));
+ st.legislation.queue=[...LEGISLATION_QUEUE.map(copy),...oldQueue.filter(x=>!known.has(x.id)).map(copy)];
+ st.legislation.planVersion=3;st.legislation.planStart=LAW_PLAN_START;
+ st.legislation.current=Math.min(Math.max(Number(st.legislation.current)||0,0),st.legislation.queue.length-1);
  for(const x of st.legislation.sessions){if(typeof x.id!=='string'||!validDay(x.date)||!Number.isInteger(x.minutes)||x.minutes<1||x.minutes>1440||typeof x.normId!=='string')throw Error('Registro de legislação inválido no backup.');}
 
  if(st.cguCheck===undefined)st.cguCheck={version:2,startedAt:'2026-10-12',examDate:'2026-12-13',checked:{}};
