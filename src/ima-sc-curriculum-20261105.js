@@ -1,0 +1,91 @@
+// IMA/SC 2026 — Analista Administrativo (ANA), Edital 001/2026, Anexo V, pp. 56-59.
+// Catálogo aditivo. Não alterar históricos de CGU/TCU; modo IMA usa trilhas distintas.
+export const IMA_EXAM_DATE='2027-02-14';
+export const IMA_WEEKS_MINUTES=1800;
+export const IMA_LAW_START='2026-11-06';
+export const IMA_LAW_DAYS_PER_ROTATION=5;
+export const IMA_ENVIRONMENTAL=Object.freeze([
+ {id:'ima-env-cf225',short:'CF art. 225',title:'CF/88 — Título VIII, Capítulo VI, Meio Ambiente',group:'ambiental',edital:'ANA Ambiental',source:'CF/88'},
+ {id:'ima-env-lc140',short:'LC 140/11',title:'LC 140/2011 — Cooperação ambiental federativa',group:'ambiental',edital:'ANA Ambiental'},
+ {id:'ima-env-pnma',short:'Lei 6.938',title:'Lei 6.938/1981 — PNMA, SISNAMA e instrumentos',group:'ambiental',edital:'ANA Ambiental'},
+ {id:'ima-env-sc14675-t1',short:'SC 14.675 T.I',title:'SC Lei 14.675/2009 — somente Título I',group:'ambiental',edital:'ANA Ambiental'},
+ {id:'ima-env-sc14675-t2',short:'SC 14.675 T.II',title:'SC Lei 14.675/2009 — somente Título II',group:'ambiental',edital:'ANA Ambiental'},
+ {id:'ima-env-ima17354',short:'SC 17.354',title:'SC Lei 17.354/2017 — criação, estrutura e atribuições do IMA',group:'ambiental',edital:'ANA Ambiental'}
+]);
+export const IMA_DCON_LAWS=Object.freeze([
+ {id:'ima-dcon-cf-1-4',short:'CF 1–4',title:'CF/88 — Princípios Fundamentais (arts. 1º–4º)',group:'dcon'},
+ {id:'ima-dcon-cf-5',short:'CF art. 5º',title:'CF/88 — Direitos e garantias fundamentais (art. 5º)',group:'dcon'},
+ {id:'ima-dcon-cf-6-17',short:'CF 6–17',title:'CF/88 — Direitos sociais, nacionalidade e direitos políticos',group:'dcon'},
+ {id:'ima-dcon-cf-18-43',short:'CF 18–43',title:'CF/88 — Organização do Estado e Administração Pública',group:'dcon'},
+ {id:'ima-dcon-cf-44-135',short:'CF Poderes',title:'CF/88 — Organização dos Poderes e Funções Essenciais',group:'dcon'},
+ {id:'ima-dcon-cf-165-169',short:'CF 165–169',title:'CF/88 — Orçamento (arts. 165 a 169)',group:'dcon'},
+ {id:'ima-dcon-cf-social',short:'CF Ordem Social',title:'CF/88 — Ordem social, seguridade e meio ambiente',group:'dcon'}
+]);
+export const IMA_DAD_LAWS=Object.freeze([
+ {id:'ima-dad-6745-t1',short:'SC 6.745 T.I',title:'SC Lei 6.745/1985 — Disposições iniciais',group:'dad'},
+ {id:'ima-dad-6745-t2',short:'SC 6.745 T.II',title:'SC Lei 6.745/1985 — Admissão, reingresso e vacância',group:'dad'},
+ {id:'ima-dad-6745-t5',short:'SC 6.745 T.V',title:'SC Lei 6.745/1985 — Deveres e responsabilidades',group:'dad'},
+ {id:'ima-dad-8429',short:'Lei 8.429',title:'Lei 8.429/1992 — Improbidade Administrativa',group:'dad'},
+ {id:'ima-dad-9784',short:'Lei 9.784',title:'Lei 9.784/1999 — Processo Administrativo',group:'dad'},
+ {id:'ima-dad-lai',short:'LAI',title:'Lei 12.527/2011 — Acesso à Informação',group:'dad'},
+ {id:'ima-dad-lgpd',short:'LGPD',title:'Lei 13.709/2018 — Proteção de Dados Pessoais',group:'dad'},
+ {id:'ima-dad-anticor',short:'Lei 12.846',title:'Lei 12.846/2013 — Anticorrupção',group:'dad'},
+ {id:'ima-dad-lindb',short:'LINDB',title:'Decreto-Lei 4.657/1942 — LINDB',group:'dad'},
+ {id:'ima-dad-lc741',short:'SC LC 741',title:'SC LC 741/2019 — Organização administrativa estadual',group:'dad'},
+ {id:'ima-dad-14133',short:'Lei 14.133',title:'Lei 14.133/2021 — Licitações e contratos',group:'dad'}
+]);
+export const IMA_LAWS=Object.freeze([...IMA_ENVIRONMENTAL,...IMA_DCON_LAWS,...IMA_DAD_LAWS]);
+const ordinal=d=>Math.floor(Date.UTC(...d.split('-').map((x,i)=>i===1?Number(x)-1:Number(x)))/86400000);
+export function imaLegislationPair(date=IMA_LAW_START){
+ const block=Math.max(0,Math.floor((ordinal(date)-ordinal(IMA_LAW_START))/IMA_LAW_DAYS_PER_ROTATION));
+ // Alternar CF+ambiental (dia 1) e DAD+ambiental (dia 2);
+ // alterar os textos de DCON e DAD a cada 5 dias, independentemente da alternância.
+ const currentDay=Math.max(0,ordinal(date)-ordinal(IMA_LAW_START));
+ const group=currentDay%2===0?IMA_DCON_LAWS:IMA_DAD_LAWS;
+ return [group[block%group.length],IMA_ENVIRONMENTAL[block%IMA_ENVIRONMENTAL.length]];
+}
+export const IMA_WEEKLY_MINUTES=Object.freeze({
+ 'dad':300,'licita-ima':240,'afo':240,'dcon':180,'port':240,
+ 'rl-ima':240,'adm-publica':120,'ti-ima':120,'leg-ambiental':120
+}); // 1800 min / 30h; adaptar após leitura específica de Ambiental.
+export const IMA_TECH_COURSE=Object.freeze([
+ {id:'rs-info-67',source:'Rodrigo Schaeffer · Combo',topic:'Inteligência Artificial e Aprendizado de Máquina',videos:5,status:'SELETIVO'},
+ {id:'rs-info-49',source:'Rodrigo Schaeffer · Combo',topic:'Sistemas de suporte à decisão',videos:1,status:'ESTUDAR'},
+ {id:'rs-info-15',source:'Rodrigo Schaeffer · Combo',topic:'Segurança da informação',videos:8,status:'SELETIVO'}
+]);
+export const IMA_MARCELO=Object.freeze([
+ {id:'MARC_ADM-ADM-AP-05',course:'Faixa Preta · Administração Pública',topic:'Transparência e accountability',status:'ESTUDAR (tópico próprio de APU)'},
+ {id:'MARC_ADM-ADM-AP-04',course:'Faixa Preta · Administração Pública',topic:'Excelência nos serviços públicos',status:'EM ESPERA (apoio, não conteúdo literal independente)'},
+ {id:'MARC_ADM-ADM-AP-03',course:'Faixa Preta · Administração Pública',topic:'Gestão para resultados',status:'EM ESPERA (apoio)'}
+]);
+function unit(row,order){return{id:row.id,order,title:row.title,source:row.source||'Edital IMA/SC — ANA',
+  studyPlan:row.note||'',theoryDone:false,theoryDate:'',batteryDone:false,generalDone:false,
+  materialReady:false,battery:{attempted:0,correct:0},general:{attempted:0,correct:0},
+  legacy:[],marks:[],hiddenFromRoute:!!row.wait,deferred:!!row.wait,ima:true};}
+export function reconcileImaSubjects(current){
+ const st=JSON.parse(JSON.stringify(current));st.subjects=Array.isArray(st.subjects)?st.subjects:[];
+ const items=[
+  {id:'leg-ambiental',course:'IMA/SC — Legislação Ambiental Aplicada (ANA)',minutes:120,topics:IMA_ENVIRONMENTAL.map(x=>({...x,source:'Edital ANA — Anexo V'}))},
+  {id:'ti-ima',course:'IMA/SC — TI: IA e Segurança da Informação (Rodrigo)',minutes:120,topics:[
+    {id:'ima-ti-ia',title:'IA, automação e transformação digital no setor público',source:'Rodrigo · Combo Grupo 67 · 5 aulas; selecionar conforme tópico'},
+    {id:'ima-ti-apoio',title:'Sistemas de suporte à decisão',source:'Rodrigo · Combo Grupo 49 · 1 aula'},
+    {id:'ima-ti-seg',title:'Segurança da informação aplicada à IA',source:'Rodrigo · Combo Grupo 15 · seleção entre 8 aulas'}
+  ]},
+  {id:'rl-ima',course:'IMA/SC — RL-Matemática (Guilherme Neves, Enxutos)',minutes:240,topics:[
+    {id:'ima-rl-log',title:'Enxuto RL — proposições, tabelas-verdade, equivalências, argumentos',source:'Guilherme · A01–A04'},
+    {id:'ima-rl-comb',title:'Enxuto RL — análise combinatória e probabilidade',source:'Guilherme · A06–A07'},
+    {id:'ima-rl-seq',title:'Enxuto RL — sequências',source:'Guilherme · A08'},
+    {id:'ima-rl-mat',title:'Alfabetização Matemática Enxuta — inteiros, frações, proporções, porcentagem, medidas, conjuntos e médias',source:'Guilherme · módulos seletivos'}
+  ]},
+  {id:'licita-ima',course:'IMA/SC — Licitações e Contratos (Thallius)',minutes:240,topics:[
+    {id:'ima-lic-14',title:'Lei 14.133/2021 — licitações, PNCP, sanções e recursos',source:'Thallius · Pasta 14, 21 aulas',note:'Após DAD pastas 01–08'},
+    {id:'ima-lic-15',title:'Contratos administrativos e crimes em licitações',source:'Thallius · Pasta 15, 8 aulas',note:'Após DAD pastas 01–08'}
+  ]}
+ ];
+ for(const row of items){let s=st.subjects.find(x=>x.id===row.id);if(!s){s={id:row.id,phase:'new',course:row.course,slotMinutes:row.minutes,units:[],checkpoints:{},notebooks:[],andresanComplete:false};st.subjects.push(s);}
+  s.course=row.course;s.slotMinutes=row.minutes;s.units=Array.isArray(s.units)?s.units:[];
+  for(let i=0;i<row.topics.length;i++){const v=row.topics[i],exist=s.units.find(u=>u.id===v.id);if(!exist)s.units.push(unit({id:v.id,title:v.title||v.title,source:v.source,note:v.note},i+1));}
+ }
+ st.imaProfile={version:'2026-11-05-v1',examDate:IMA_EXAM_DATE,weeklyMinimum:1800,environmentalHours:2,subjects:['dad','licita-ima','afo','dcon','port','rl-ima','adm-publica','ti-ima','leg-ambiental'],status:'IMA_ACTIVE',scope:'Edital 001/2026, Anexo V, ANA'};
+ return st;
+}
