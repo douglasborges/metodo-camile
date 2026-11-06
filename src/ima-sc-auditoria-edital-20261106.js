@@ -275,7 +275,9 @@ export const IMA_WEEK_SCHEDULE_FOUNDATION=Object.freeze([
 ]);
 export function imaWeekScheduleFor(state){return imaLicitationStatus(state).unlocked?IMA_WEEK_SCHEDULE:IMA_WEEK_SCHEDULE_FOUNDATION;}
 export function imaWeeklyMinutesFor(state){
- const totals={};for(const day of imaWeekScheduleFor(state))for(const [id,minutes] of day.slots)totals[id]=(totals[id]||0)+minutes;
+ // Manter Licitações visível com 0h na Fase 1; não ocultar a disciplina bloqueada.
+ const totals=Object.fromEntries(['dad','licita-ima','afo','dcon','port','rl-ima','adm-publica','ti-ima','leg-ambiental'].map(id=>[id,0]));
+ for(const day of imaWeekScheduleFor(state))for(const [id,minutes] of day.slots)totals[id]+=minutes;
  return totals;
 }
 export const IMA_WELCOME='Bem-vida, Camile, Analista do IMA-SC, aprovada em 1º lugar!';
