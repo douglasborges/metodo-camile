@@ -82,6 +82,16 @@ export const IMA_AUDIT=Object.freeze({
  s('IMA-RL-M41','Orientação espacial','Guilherme Neves','Módulo regular 41, questões seletivas','COMPLEMENTO'),
  s('IMA-RL-FORM','Formação e classificação de conceitos','Questões FURB + material complementar','Enunciados de classificação, discriminação e critérios lógicos','COMPLEMENTO')
  ],
+ licita:[
+ s('IMA-LIC-P01','Lei 14.133/2021: aplicação, princípios, definições e agentes','Thallius','Pasta 14, aulas 01–21','CONTEUDO_COMPARTILHADO','Reaproveitar unidade ima-lic-14, sem duplicar VAs'),
+ s('IMA-LIC-P02','Licitações: modalidades, fases e procedimentos','Thallius','Pasta 14, aulas 01–21','CONTEUDO_COMPARTILHADO','Controle por checklist dentro da pasta'),
+ s('IMA-LIC-P03','Contratação direta e alienação','Thallius','Pasta 14, aulas 01–21','CONTEUDO_COMPARTILHADO','Confirmar aulas pertinentes em sua plataforma'),
+ s('IMA-LIC-P04','Instrumentos auxiliares de contratação','Thallius','Pasta 14, aulas 01–21','CONTEUDO_COMPARTILHADO'),
+ s('IMA-LIC-P05','Contratos administrativos: cláusulas, execução e extinção','Thallius','Pasta 15, aulas 01–08','CONTEUDO_COMPARTILHADO','Reaproveitar unidade ima-lic-15'),
+ s('IMA-LIC-P06','Infrações, sanções, impugnação, recursos, controle','Thallius + Lei 14.133','Pastas 14–15 + lei seca','PARCIAL','Não há divisão por assunto nos títulos exibidos'),
+ s('IMA-LIC-P07','PNCP e transparência das contratações','Lei 14.133','Lei seca e questões da FURB','COMPLEMENTO','Não há videoaula específica comprovada'),
+ s('IMA-LIC-P08','Crimes em licitações e contratos (CP 337-E a 337-P)','Código Penal','Leitura da lei penal e questões de provas','COMPLEMENTO','Não há aula penal específica demonstrada no curso do Thallius')
+ ],
  apu:[
  s('IMA-APU-MARC-T01','Transparência ativa, passiva e publicidade','Marcelo Soares','Faixa Preta Administração Pública, Transparência e Accountability — T01 Transparência na Administração Pública','DIRETO','O módulo tem 2 VAs, ebook e flashcards, não 4 videoaulas'),
  s('IMA-APU-MARC-T02','Controle social, prestação de contas e accountability','Marcelo Soares','Mesmo módulo — T01 Accountability Cebraspe','DIRETO','Questões FURB devem predominar'),
@@ -178,3 +188,13 @@ export function refineImaCurriculum(current){
   cautions:['Curso Gran declara exclusões e não representa cobertura completa','FURB cobra cinco alternativas, não itens Cebraspe','Arquivos do aluno são ementas, não demonstram conclusão']};
  return st;
 }
+
+export const IMA_WEEK_SCHEDULE=Object.freeze([
+ {day:'Segunda',slots:[['dad',60],['licita-ima',60],['port',60],['rl-ima',60]],law:30},
+ {day:'Terça',slots:[['afo',60],['dcon',60],['adm-publica',60],['ti-ima',60]],law:30},
+ {day:'Quarta',slots:[['dad',60],['licita-ima',60],['port',60],['rl-ima',60]],law:30},
+ {day:'Quinta',slots:[['afo',60],['dcon',30],['adm-publica',60],['ti-ima',60]],law:30},
+ {day:'Sexta',slots:[['dad',60],['licita-ima',60],['port',60],['rl-ima',60]],law:30},
+ {day:'Sábado',slots:[['dad',60],['licita-ima',60],['port',60],['afo',60],['leg-ambiental',60]],law:30},
+ {day:'Domingo',slots:[['dcon',60],['leg-ambiental',60]],law:30}
+]);
