@@ -44,10 +44,11 @@ export function imaLegislationPair(date=IMA_LAW_START){
  const group=currentDay%2===0?IMA_DCON_LAWS:IMA_DAD_LAWS;
  return [group[block%group.length],IMA_ENVIRONMENTAL[block%IMA_ENVIRONMENTAL.length]];
 }
+// 26h30 de disciplinas + 3h30 de legislação seca (7 × 30 min) = 30h semanais.
 export const IMA_WEEKLY_MINUTES=Object.freeze({
- 'dad':300,'licita-ima':240,'afo':240,'dcon':180,'port':240,
- 'rl-ima':240,'adm-publica':120,'ti-ima':120,'leg-ambiental':120
-}); // 1800 min / 30h; adaptar após leitura específica de Ambiental.
+ 'dad':240,'licita-ima':240,'afo':180,'dcon':150,'port':240,
+ 'rl-ima':180,'adm-publica':120,'ti-ima':120,'leg-ambiental':120
+});
 export const IMA_TECH_COURSE=Object.freeze([
  {id:'rs-info-67',source:'Rodrigo Schaeffer · Combo',topic:'Inteligência Artificial e Aprendizado de Máquina',videos:5,status:'SELETIVO'},
  {id:'rs-info-49',source:'Rodrigo Schaeffer · Combo',topic:'Sistemas de suporte à decisão',videos:1,status:'ESTUDAR'},
