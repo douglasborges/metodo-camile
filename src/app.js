@@ -353,7 +353,7 @@ function imaPage(){
   return `<tr><td>Parte ${k+1} de 6</td><td>${minutes?M.hm(minutes)+' registrada(s)':'Sem registro'}</td><td>
     <button class="secondary small" data-action="ima-rafael-part" data-id="${esc(u.id)}" ${foundation?'disabled':''}>Registrar aula</button></td></tr>`;
  }).join('');
- return heading('EDITAL 001/2026 · FURB · ANALISTA ADMINISTRATIVO (ANA)',esc(IMA_WELCOME),
+ return heading('Plano IMA-SC · EDITAL 001/2026 · FURB · ANALISTA ADMINISTRATIVO (ANA)',esc(IMA_WELCOME),
  'Ciclo de 30h líquidas/semana, com legislação seca registrada EXTRA-CICLO. Prova: 14/02/2027.')+
  `<section class="card"><h2>${foundation?'FASE 1 · Fundamentação':'FASE 2 · Licitações liberadas'}</h2>
  <p>${foundation?'Até a conclusão da Pasta 08 de Direito Administrativo (depois das Pastas 02–07), DAD e DCON recebem 6h semanais cada. As 4h reservadas a Licitações são divididas entre essas duas disciplinas.':'Após a base de DAD, DAD, DCON e Licitações passam a ter 4h semanais cada. AFO mantém 4h nas duas fases.'}</p>
