@@ -149,6 +149,46 @@ export function refineImaCurriculum(current){
    }
   }
  }
+ // Evitar títulos duplicados em aulas que já existem na base anterior.
+ for(const [subjectId,prefix,currentPrefix] of [
+  ['dad','IMA-DAD-','ima-tha-dad-'],
+  ['dcon','IMA-DCON-','NELMA-DCON-']
+ ]){
+  const sub=subjects.find(x=>x.id===subjectId);if(!sub)continue;
+  for(const u of sub.units){
+   if(!u.id.startsWith(prefix))continue;
+   const suffix=u.id.slice(prefix.length),sourceId=currentPrefix+suffix;
+   const old=sub.units.find(x=>x.id===sourceId);
+   if(old){
+    old.imaAuditTopic=u.editalTopic;old.imaAuditSourceLesson=u.sourceLesson;
+    old.imaAuditCoverage=u.coverageStatus;
+    u.hiddenFromRoute=true;u.deferred=true;u.storedAsChecklist=true;
+   }
+  }
+ }
+ const dconLegacy=subjects.find(x=>x.id==='dcon');
+ if(dconLegacy)for(const u of dconLegacy.units){
+   if(/^dcon-u-(?!2$)[0-9]+$/.test(u.id)){
+    u.hiddenFromRoute=true;u.deferred=true;u.imaLegacyStatus='Base anterior preservada — curso Nelma catalogado na versão 2026';
+   }
+ }
+ for(const subjectId of ['rl-ima','ti-ima']){
+   const subject=subjects.find(x=>x.id===subjectId);if(!subject)continue;
+   for(const u of subject.units){
+    if(subjectId==='rl-ima'&&String(u.id).startsWith('ima-rl-') ||
+       subjectId==='ti-ima'&&String(u.id).startsWith('ima-ti-')){
+      u.hiddenFromRoute=true;u.deferred=true;u.imaLegacyStatus='Agrupamento antigo — usar aula individual auditada';
+    }
+   }
+ }
+ const environment=subjects.find(x=>x.id==='leg-ambiental');
+ if(environment)for(const u of environment.units)if(String(u.id).startsWith('IMA-ENV-')){
+  u.hiddenFromRoute=true;u.deferred=true;u.storedAsChecklist=true;
+ }
+ const port=subjects.find(x=>x.id==='port');
+ if(port)for(const u of port.units)if(u.id==='IMA-PORT-BASE'){
+  u.hiddenFromRoute=true;u.deferred=true;u.storedAsChecklist=true;
+ }
  const dad=subjects.find(x=>x.id==='dad');
  if(dad)for(const u of dad.units){
    if(String(u.id)==='ima-tha-dad-01'){u.hiddenFromRoute=true;u.deferred=true;u.imaLegacyStatus='Material de consulta, não videoaula';}
