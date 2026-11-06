@@ -132,7 +132,7 @@ const defaultUnit=(r,order)=>({
  sourceProof:'Anexo V IMA/SC e ementa PDF de '+r.source
 });
 export function refineImaCurriculum(current){
- const st=clone(current),subjects=st.subjects||[],idToSubject={dcon:'dcon',dad:'dad',afo:'afo',rl:'rl-ima',apu:'adm-publica',ti:'ti-ima',ambiental:'leg-ambiental',port:'port'};
+ const st=clone(current),subjects=st.subjects||[],idToSubject={dcon:'dcon',dad:'dad',afo:'afo',rl:'rl-ima',licita:'licita-ima',apu:'adm-publica',ti:'ti-ima',ambiental:'leg-ambiental',port:'port'};
  for(const [group,rows] of Object.entries(IMA_AUDIT)){
   const id=idToSubject[group];
   let subj=subjects.find(x=>x.id===id);
