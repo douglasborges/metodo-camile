@@ -140,7 +140,7 @@ export function reconcileImaSubjects(current){
    if(x.id==='port')for(const u of x.units||[])if(u.courseId?.includes('andresan')||String(u.id).startsWith('ANDRESAN-')){u.hiddenFromRoute=true;u.deferred=true;u.imaLegacyStatus='[EM ESPERA]';}
    if(x.id==='dcon')for(const u of x.units||[])if(String(u.id).includes('-AV-')){u.hiddenFromRoute=true;u.deferred=true;u.imaLegacyStatus='[EM ESPERA]';}
    if(x.id==='afo')for(const u of x.units||[]){
-     const m=String(u.id).match(/^afo-cgu-(\\d{2})$/);
+     const m=String(u.id).match(/^afo-cgu-([0-9]{2})$/);
      const active=m&&relevantAfo.has(m[1]);
      if(!active){u.hiddenFromRoute=true;u.deferred=true;u.imaLegacyStatus='[EM ESPERA]';}
    }
