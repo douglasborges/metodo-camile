@@ -1,3 +1,4 @@
+import {imaLicitationStatus} from './ima-sc-auditoria-edital-20261106.js';
 import {RENNO_COURSE,RENNO_STEPS} from './pp-renno.js';
 import {FINAL_CGU_CYCLE_SUBJECTS,applyFinalCguCurriculum,migrateFinalCguCycle,PREVIOUS_FINAL_CGU_CYCLE,PREVIOUS_FINAL_CGU_CYCLE_V6} from './cgu-final-runtime.js';
 import {andresanLesson,isAndresanQuestionActivity} from './portugues-andresan-catalog.js';
@@ -454,7 +455,19 @@ export function checkpoints(s){let result=[],size=RULES[s.id]?.checkpoint||4,rou
 export function unitSituation(u){if(u?.deferred&&!u.theoryDone&&!u.batteryDone)return 'Deixar para depois';return u.generalDone&&u.materialReady?'Revisão geral concluída':u.theoryDone&&u.batteryDone?'Bateria concluída':u.theoryDone?'Bateria pendente':touched(u)?'Conferir avanço importado':'Estudar';}
 export function canSolid(s){let units=methodUnits(s);return units.length>0&&units.every(u=>u.theoryDone&&u.batteryDone&&u.generalDone&&u.materialReady)&&checkpoints(s).every(c=>c.status==='done');}
 export function nextAction(s){if(s.phase==='solid')return 'Continuar caderno de questões';let cp=checkpoints(s).find(c=>['due','battery','audit'].includes(c.status));if(cp)return cp.status==='due'?'Fazer checkpoint '+cp.number:cp.status==='audit'?'Conferir avanço do bloco '+cp.number:'Concluir baterias do bloco '+cp.number;let units=methodUnits(s),u=units.find(u=>!u.theoryDone||!u.batteryDone);if(u)return (u.theoryDone?'Revisar + resolver bateria: ':'Estudar: ')+u.title;return units.some(u=>!u.generalDone||!u.materialReady)?'Revisão geral e material de revisão':'Pronto para Estudo Sólido';}
-export function totals(st,date=day()){let start=weekStart(date),d=new Date(start+'T12:00:00');d.setDate(d.getDate()+7);let end=day(d),law=st.legislation?.sessions||[],studyDay=st.sessions.filter(s=>s.date===date&&s.activity!=='night').reduce((a,s)=>a+s.minutes,0),lawDay=law.filter(s=>s.date===date).reduce((a,s)=>a+s.minutes,0),studyWeek=st.sessions.filter(s=>s.date>=start&&s.date<end&&s.activity!=='night').reduce((a,s)=>a+s.minutes,0),lawWeek=law.filter(s=>s.date>=start&&s.date<end).reduce((a,s)=>a+s.minutes,0);return {day:studyDay+lawDay,night:st.sessions.filter(s=>s.date===date&&s.activity==='night').reduce((a,s)=>a+s.minutes,0),week:studyWeek+lawWeek,lawDay,lawWeek};}
+export function totals(st,date=day()){
+ let start=weekStart(date),d=new Date(start+'T12:00:00');d.setDate(d.getDate()+7);
+ let end=day(d),law=st.legislation?.sessions||[];
+ const counted=s=>s.activity!=='night';
+ const studyDay=st.sessions.filter(s=>s.date===date&&counted(s)).reduce((a,s)=>a+s.minutes,0);
+ const lawDay=law.filter(s=>s.date===date).reduce((a,s)=>a+s.minutes,0);
+ const studyWeek=st.sessions.filter(s=>s.date>=start&&s.date<end&&counted(s)).reduce((a,s)=>a+s.minutes,0);
+ const lawWeek=law.filter(s=>s.date>=start&&s.date<end).reduce((a,s)=>a+s.minutes,0);
+ // Compatibilidade: day/week = histórico geral; cycleDay/cycleWeek = só sessões de estudo.
+ // Leis extras aparecem em lawDay/lawWeek e totalDay/totalWeek, nunca na meta de ciclo.
+ return {day:studyDay+lawDay,night:st.sessions.filter(s=>s.date===date&&s.activity==='night').reduce((a,s)=>a+s.minutes,0),
+  week:studyWeek+lawWeek,cycleDay:studyDay,cycleWeek:studyWeek,totalDay:studyDay+lawDay,totalWeek:studyWeek+lawWeek,lawDay,lawWeek};
+}
 export function nightTasks(st,date=day()){return [...new Set(st.sessions.filter(s=>s.date===date&&s.activity!=='night'&&RULES[s.subjectId]).map(s=>s.subjectId))].map(id=>({id,done:st.sessions.some(s=>s.date===date&&s.subjectId===id&&s.activity==='night')}));}
 export function fingerprint(v){let t=JSON.stringify(v),h=2166136261;for(let i=0;i<t.length;i++)h=Math.imul(h^t.charCodeAt(i),16777619);return (h>>>0).toString(16)+'-'+t.length;}
 export function migrate(payload,current=emptyState()){
@@ -499,6 +512,7 @@ function requirePrevious(s,u){
 function getUnit(st,sid,id){let s=st.subjects.find(s=>s.id===sid),u=s?.units.find(u=>u.id===id);if(!u)throw Error('Aula não encontrada.');return {s,u};}
 export function session(current,input){
  let st=copy(current),s=st.subjects.find(s=>s.id===input.subjectId),minutes=Number(input.minutes),q=Number(input.questions||0),correct=Number(input.correct||0);
+ if(input.subjectId==='licita-ima'&&st.imaProfile?.status==='IMA_ACTIVE'&&!imaLicitationStatus(st).unlocked)throw Error('Licitações bloqueada até concluir a Pasta 08 de DAD, após as Pastas 02–07.');
  if(!s||!validDay(input.date)||input.date>day()||!Number.isInteger(minutes)||minutes<1||minutes>1440||!ACTIVITIES[input.activity])throw Error('Confira disciplina, data, atividade e duração.');
  if(!Number.isInteger(q)||!Number.isInteger(correct)||q<0||correct<0||correct>q)throw Error('Confira questões e acertos.');
  if(input.andresanLessonId&&(!andresanLesson(input.andresanLessonId)||s.id!=='port'||!isAndresanQuestionActivity(input.activity)))throw Error('Selecione uma aula válida do Andresan no estudo de questões de Português.');
@@ -571,6 +585,7 @@ export function session(current,input){
  st.sessions.push(entry);if(u&&(['battery','general'].includes(input.activity)||input.activity==='andresan'&&u.questionOnly)){const category=input.activity==='andresan'?'battery':input.activity;u[category].attempted+=q;u[category].correct+=correct;if(category==='battery'&&u.theoryDone&&u.battery.attempted>=(u.veonCatalog?veonQuestionTarget(u):30))u.batteryDone=true;}if(u&&input.date>=CGU_CHECK_START&&input.activity!=='night'&&(u.theoryDone||['battery','general','checkpoint'].includes(input.activity)))markCguCodes(st,u.cguCodes,'auto-study');if(s.id==='dcon')dconHistoricalProgress(st,s);return st;
 }
 export function setUnit(current,sid,id,values){let st=copy(current),{s,u}=getUnit(st,sid,id);
+ if(sid==='licita-ima'&&st.imaProfile?.status==='IMA_ACTIVE'&&!imaLicitationStatus(st).unlocked)throw Error('Licitações bloqueada: conclua as Pastas 02–08 de DAD (Thallius).');
  let theory=!!values.theoryDone,battery=!!values.batteryDone,general=!!values.generalDone,material=!!values.materialReady;
  // Modo flexível Camile: a conclusão pode ser informada fora da ordem para reconstruir histórico.
  if(theory&&(!validDay(values.theoryDate)||values.theoryDate>day()))throw Error('Informe a data real da conclusão da teoria.');

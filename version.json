@@ -1,9 +1,12 @@
 {
-  "build": "2.0.8-ima-ana-audit-20261106",
-  "family": "v2.0.8",
+  "build": "2.0.9-ima-duas-fases-rafael-20261106",
+  "family": "v2.0.9",
   "publishedAt": "2026-11-06",
   "effectiveStudyStart": "2026-11-06",
   "channel": "ima-ana-furb-2026",
   "board": "FURB",
-  "examDate": "2027-02-14"
+  "examDate": "2027-02-14",
+  "studyCycleWeeklyMinutes": 1800,
+  "extraLawWeeklyMinutes": 210,
+  "licitationGate": "DAD Thallius Pasta 08 (após Pastas 02–07)"
 }

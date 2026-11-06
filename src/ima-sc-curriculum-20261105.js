@@ -1,4 +1,4 @@
-import {refineImaCurriculum} from './ima-sc-auditoria-edital-20261106.js';
+import {refineImaCurriculum,imaLicitationStatus,imaWeeklyMinutesFor,IMA_LAW_EXTRA_WEEK_MINUTES} from './ima-sc-auditoria-edital-20261106.js';
 // IMA/SC 2026 — Analista Administrativo (ANA), Edital 001/2026, Anexo V, pp. 56-59.
 // Catálogo aditivo. Não alterar históricos de CGU/TCU; modo IMA usa trilhas distintas.
 export const IMA_EXAM_DATE='2027-02-14';
@@ -50,10 +50,14 @@ export function imaLegislationPair(date=IMA_LAW_START){
  const group=currentDay%2===0?IMA_DCON_LAWS:IMA_DAD_LAWS;
  return [group[block%group.length],IMA_ENVIRONMENTAL[block%IMA_ENVIRONMENTAL.length]];
 }
-// 26h30 de disciplinas + 3h30 de legislação seca (7 × 30 min) = 30h semanais.
+// 30h líquidas de ciclo. A legislação seca (3h30/semana) é EXTRA-CICLO.
 export const IMA_WEEKLY_MINUTES=Object.freeze({
- 'dad':240,'licita-ima':240,'afo':180,'dcon':150,'port':240,
- 'rl-ima':180,'adm-publica':120,'ti-ima':120,'leg-ambiental':120
+ 'dad':240,'licita-ima':240,'afo':240,'dcon':240,'port':240,
+ 'rl-ima':240,'adm-publica':120,'ti-ima':120,'leg-ambiental':120
+});
+export const IMA_WEEKLY_MINUTES_FOUNDATION=Object.freeze({
+ 'dad':360,'dcon':360,'afo':240,'port':240,'rl-ima':240,
+ 'adm-publica':120,'ti-ima':120,'leg-ambiental':120,'licita-ima':0
 });
 export const IMA_TECH_COURSE=Object.freeze([
  {id:'rs-info-67',source:'Rodrigo Schaeffer · Combo',topic:'Inteligência Artificial e Aprendizado de Máquina',videos:5,status:'SELETIVO'},
@@ -150,11 +154,14 @@ export function reconcileImaSubjects(current){
      if(!active){u.hiddenFromRoute=true;u.deferred=true;u.imaLegacyStatus='[EM ESPERA]';}
    }
  }
- // Licitações: exigir que as pastas iniciais 01–08 do Thallius constem como concluídas.
- const early=['02','03','04','05','06','07','08'].map(n=>'ima-tha-dad-'+n);
- const unlock=early.every(id=>dad?.units?.some(u=>u.id===id&&u.theoryDone));
+ // Liberação somente após conclusão confirmada da Pasta 08, precedida das Pastas 02–07.
+ const unlock=imaLicitationStatus(st).unlocked;
  const lic=st.subjects.find(x=>x.id==='licita-ima');
  if(lic)for(const u of lic.units||[]){u.hiddenFromRoute=!unlock;u.deferred=!unlock;u.unlockCondition='Concluir DAD Thallius 02–08 (01 é Vade Mecum)';}
-  st.imaProfile={version:'2026-11-05-v1',examDate:IMA_EXAM_DATE,weeklyMinimum:1800,environmentalHours:2,subjects:['dad','licita-ima','afo','dcon','port','rl-ima','adm-publica','ti-ima','leg-ambiental'],status:'IMA_ACTIVE',scope:'Edital 001/2026, Anexo V, ANA'};
+  st.imaProfile={...st.imaProfile,version:'2026-11-06-v3',examDate:IMA_EXAM_DATE,
+ weeklyMinimum:1800,cycleWeeklyMinutes:1800,lawExtraWeeklyMinutes:IMA_LAW_EXTRA_WEEK_MINUTES,
+ weeklyBySubject:imaWeeklyMinutesFor(st),phase:unlock?'LICITACOES_LIBERADA':'FUNDAMENTACAO_DAD_DCON',
+ licitationsUnlocked:unlock,environmentalHours:2,subjects:['dad','licita-ima','afo','dcon','port','rl-ima','adm-publica','ti-ima','leg-ambiental'],
+ status:'IMA_ACTIVE',scope:'Edital 001/2026, Anexo V, ANA'};
  return refineImaCurriculum(st);
 }

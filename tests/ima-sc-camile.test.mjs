@@ -15,9 +15,9 @@ test('rodízio diário 2 normas / 15 min, blocos de 5 dias e alternância DCON/D
  assert.equal(d1[1].group,'ambiental');assert.equal(d2[1].group,'ambiental');
  assert.notEqual(d1[1].id,d6[1].id);
 });
-test('ciclo semanal totaliza 30 horas incluindo 7 x 30 min legislação',()=>{
- assert.equal(Object.values(IMA_WEEKLY_MINUTES).reduce((n,x)=>n+x,0),1590);
- assert.equal(1590+7*30,1800);
+test('ciclo semanal totaliza 30h mais 3h30 extraciclo de legislação',()=>{
+ assert.equal(Object.values(IMA_WEEKLY_MINUTES).reduce((n,x)=>n+x,0),1800);
+ assert.equal(1800+7*30,2010);
  assert.equal(IMA_WEEKLY_MINUTES['leg-ambiental'],120);
  assert.equal(IMA_WEEKLY_MINUTES['ti-ima'],120);
 });

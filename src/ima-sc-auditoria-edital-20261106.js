@@ -88,8 +88,8 @@ export const IMA_AUDIT=Object.freeze({
  s('IMA-LIC-P03','Contratação direta e alienação','Thallius','Pasta 14, aulas 01–21','CONTEUDO_COMPARTILHADO','Confirmar aulas pertinentes em sua plataforma'),
  s('IMA-LIC-P04','Instrumentos auxiliares de contratação','Thallius','Pasta 14, aulas 01–21','CONTEUDO_COMPARTILHADO'),
  s('IMA-LIC-P05','Contratos administrativos: cláusulas, execução e extinção','Thallius','Pasta 15, aulas 01–08','CONTEUDO_COMPARTILHADO','Reaproveitar unidade ima-lic-15'),
- s('IMA-LIC-P06','Infrações, sanções, impugnação, recursos, controle','Thallius + Lei 14.133','Pastas 14–15 + lei seca','PARCIAL','Não há divisão por assunto nos títulos exibidos'),
- s('IMA-LIC-P07','PNCP e transparência das contratações','Lei 14.133','Lei seca e questões da FURB','COMPLEMENTO','Não há videoaula específica comprovada'),
+ s('IMA-LIC-P06','Infrações, sanções, impugnação, recursos, controle','Thallius + Rafael Oliveira','Thallius pastas 14–15; Rafael Curso GEN, Aula 10, seis partes (sanções e controle)','PARCIAL','Rafael aborda expressamente sanções e controle; recursos/impugnação ainda exigem conferência'),
+ s('IMA-LIC-P07','PNCP e transparência das contratações','Rafael Oliveira + Lei 14.133','Curso GEN, Aula 10: Responsabilidade Civil Contratual, Infrações, Sanções, Controle e PNCP — seis partes','DIRETO','O PDF enviado cobre arts. 174–176; complemento à didática principal do Thallius'),
  s('IMA-LIC-P08','Crimes em licitações e contratos (CP 337-E a 337-P)','Código Penal','Leitura da lei penal e questões de provas','COMPLEMENTO','Não há aula penal específica demonstrada no curso do Thallius')
  ],
  apu:[
@@ -132,7 +132,7 @@ const defaultUnit=(r,order)=>({
  sourceProof:'Anexo V IMA/SC e ementa PDF de '+r.source
 });
 export function refineImaCurriculum(current){
- const st=clone(current),subjects=st.subjects||[],idToSubject={dcon:'dcon',dad:'dad',afo:'afo',rl:'rl-ima',apu:'adm-publica',ti:'ti-ima',ambiental:'leg-ambiental',port:'port'};
+ const st=clone(current),subjects=st.subjects||[],idToSubject={dcon:'dcon',dad:'dad',afo:'afo',rl:'rl-ima',licita:'licita-ima',apu:'adm-publica',ti:'ti-ima',ambiental:'leg-ambiental',port:'port'};
  for(const [group,rows] of Object.entries(IMA_AUDIT)){
   const id=idToSubject[group];
   let subj=subjects.find(x=>x.id===id);
@@ -208,11 +208,25 @@ export function refineImaCurriculum(current){
   };
   for(const u of lic.units){const v=labels[u.id];if(v){u.title=v.title;u.studyPlan=v.note;u.source='Thallius Moraes';}}
   if(!lic.units.some(x=>x.id==='IMA-LIC-CRIMES'))lic.units.push(defaultUnit(s('IMA-LIC-CRIMES','Crimes em licitações e contratos administrativos','Código Penal / fonte complementar','Arts. 337-E a 337-P do CP; não há aula específica comprovada no curso Thallius','COMPLEMENTO'),2010));
-  if(!lic.units.some(x=>x.id==='IMA-LIC-PNCP'))lic.units.push(defaultUnit(s('IMA-LIC-PNCP','PNCP, fiscalização e controle das contratações','Lei 14.133/2021','Conferir nas pastas 14–15; complemento por leitura e questões','COMPLEMENTO'),2011));
+  if(!lic.units.some(x=>x.id==='IMA-LIC-PNCP'))lic.units.push(defaultUnit(s('IMA-LIC-PNCP','PNCP, fiscalização e controle das contratações','Rafael Oliveira + Lei 14.133/2021','Aula 10, partes 1–6, e arts. 169–176','DIRETO','Complementação após a base com Thallius'),2011));
+  // Rafael: apenas complemento especializado e registrável por parte, fora da rota teórica obrigatória.
+  // Conteúdo individual de cada parte NÃO foi discriminado no PDF; não atribuir assuntos presumidos.
+  for(let i=1;i<=6;i++){
+   const id='IMA-LIC-RAFAEL-A10-P'+i;
+   if(!lic.units.some(x=>x.id===id)){
+    const u=defaultUnit(s(id,'Aula 10 · Responsabilidade contratual, infrações, sanções, controle e PNCP — Parte '+i,
+      'Rafael Oliveira · Grupo GEN','Curso Nova Lei de Licitações, Aula 10 de 6 partes','DIRETO',
+      'Complemento selecionado após Thallius; contabilizar na carga de Licitações, sem aula duplicada'),2200+i);
+    u.raSupplement=true;u.optionalSupplement=true;u.courseId='rafael-oliveira-licitacoes-aula-10';u.sourceURL='https://www.grupogen.com.br/curso-online-nova-lei-de-licitacoes-rafael-oliveira';
+    u.hiddenFromRoute=true;u.deferred=false;lic.units.push(u);
+   }
+  }
   // Não bloquear todo o curso por causa da pasta 01 (Vade Mecum PDF).
-  const basics=['02','03','04','05','06','07','08'];
-  const ready=basics.every(n=>dad?.units.some(u=>u.id==='ima-tha-dad-'+n&&u.theoryDone));
-  for(const u of lic.units){u.hiddenFromRoute=!ready;u.deferred=!ready;u.unlockCondition='Concluir fundamentos de DAD — pastas 02–08 (a pasta 01 é somente Vade Mecum)';}
+  const ready=imaLicitationStatus(st).unlocked;
+  for(const u of lic.units){
+   if(u.raSupplement){u.hiddenFromRoute=true;u.deferred=false;u.unlockCondition='Registrar as seis partes somente depois de liberar Licitações';continue;}
+   u.hiddenFromRoute=!ready;u.deferred=!ready;u.unlockCondition='Concluir a Pasta 08 de DAD — Poderes Administrativos, depois das Pastas 02–07';
+  }
  }
  const dcon=subjects.find(x=>x.id==='dcon');
  if(dcon)for(const u of dcon.units){
@@ -229,12 +243,39 @@ export function refineImaCurriculum(current){
  return st;
 }
 
+// A legislação seca continua registrando horas, mas fica totalmente fora do ciclo.
+export const IMA_LAW_EXTRA_WEEK_MINUTES=7*30;
+export const IMA_LICITATION_GATE=Object.freeze(['02','03','04','05','06','07','08']);
+export function imaLicitationStatus(state){
+ const dad=state?.subjects?.find(s=>s.id==='dad');
+ const missing=IMA_LICITATION_GATE.filter(n=>{
+  const u=dad?.units?.find(x=>x.id==='ima-tha-dad-'+n);
+  return !(u?.theoryDone&&(!u.equivalenceReviewRequired||u.confirmedThallius));
+ });
+ return {unlocked:missing.length===0,missing,gate:'Pasta 08 — Poderes Administrativos (após as Pastas 02–07)'};
+}
+const slots=(day,items)=>Object.freeze({day,slots:Object.freeze(items.map(x=>Object.freeze(x))),lawExtra:30});
 export const IMA_WEEK_SCHEDULE=Object.freeze([
- {day:'Segunda',slots:[['dad',60],['licita-ima',60],['port',60],['rl-ima',60]],law:30},
- {day:'Terça',slots:[['afo',60],['dcon',60],['adm-publica',60],['ti-ima',60]],law:30},
- {day:'Quarta',slots:[['dad',60],['licita-ima',60],['port',60],['rl-ima',60]],law:30},
- {day:'Quinta',slots:[['afo',60],['dcon',30],['adm-publica',60],['ti-ima',60]],law:30},
- {day:'Sexta',slots:[['dad',60],['licita-ima',60],['port',60],['rl-ima',60]],law:30},
- {day:'Sábado',slots:[['dad',60],['licita-ima',60],['port',60],['afo',60],['leg-ambiental',60]],law:30},
- {day:'Domingo',slots:[['dcon',60],['leg-ambiental',60]],law:30}
+ slots('Segunda',[['dad',60],['licita-ima',60],['port',60],['rl-ima',60]]),
+ slots('Terça',[['afo',60],['dcon',60],['adm-publica',60],['ti-ima',60]]),
+ slots('Quarta',[['dad',60],['licita-ima',60],['port',60],['rl-ima',60]]),
+ slots('Quinta',[['afo',60],['dcon',60],['adm-publica',60],['ti-ima',60]]),
+ slots('Sexta',[['dad',60],['licita-ima',60],['port',60],['rl-ima',60]]),
+ slots('Sábado',[['dad',60],['licita-ima',60],['afo',60],['dcon',60],['leg-ambiental',60],['rl-ima',60]]),
+ slots('Domingo',[['afo',60],['dcon',60],['port',60],['leg-ambiental',60]])
 ]);
+export const IMA_WEEK_SCHEDULE_FOUNDATION=Object.freeze([
+ slots('Segunda',[['dad',120],['port',60],['rl-ima',60]]),
+ slots('Terça',[['afo',60],['dcon',60],['adm-publica',60],['ti-ima',60]]),
+ slots('Quarta',[['dad',120],['port',60],['rl-ima',60]]),
+ slots('Quinta',[['afo',60],['dcon',60],['adm-publica',60],['ti-ima',60]]),
+ slots('Sexta',[['dad',60],['dcon',60],['port',60],['rl-ima',60]]),
+ slots('Sábado',[['dad',60],['dcon',120],['afo',60],['leg-ambiental',60],['rl-ima',60]]),
+ slots('Domingo',[['afo',60],['dcon',60],['port',60],['leg-ambiental',60]])
+]);
+export function imaWeekScheduleFor(state){return imaLicitationStatus(state).unlocked?IMA_WEEK_SCHEDULE:IMA_WEEK_SCHEDULE_FOUNDATION;}
+export function imaWeeklyMinutesFor(state){
+ const totals={};for(const day of imaWeekScheduleFor(state))for(const [id,minutes] of day.slots)totals[id]=(totals[id]||0)+minutes;
+ return totals;
+}
+export const IMA_WELCOME='Bem-vida, Camile, Analista do IMA-SC, aprovada em 1º lugar!';
