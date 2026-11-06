@@ -1,7 +1,9 @@
 {
-  "build": "2.0.7-veon-et-roadmap-20261104",
-  "family": "v2.0.7",
-  "publishedAt": "2026-11-04",
-  "effectiveStudyStart": "2026-10-21",
-  "channel": "veon-metodo-et-checkpoints"
+  "build": "2.0.8-ima-ana-audit-20261106",
+  "family": "v2.0.8",
+  "publishedAt": "2026-11-06",
+  "effectiveStudyStart": "2026-11-06",
+  "channel": "ima-ana-furb-2026",
+  "board": "FURB",
+  "examDate": "2027-02-14"
 }
