@@ -1,3 +1,4 @@
+import {refineImaCurriculum} from './ima-sc-auditoria-edital-20261106.js';
 // IMA/SC 2026 — Analista Administrativo (ANA), Edital 001/2026, Anexo V, pp. 56-59.
 // Catálogo aditivo. Não alterar históricos de CGU/TCU; modo IMA usa trilhas distintas.
 export const IMA_EXAM_DATE='2027-02-14';
@@ -36,7 +37,7 @@ export const IMA_DAD_LAWS=Object.freeze([
  {id:'ima-dad-9790',short:'Lei 9.790',title:'Lei 9.790/1999 — OSCIPs',group:'dad'},
  {id:'ima-dad-13019',short:'Lei 13.019',title:'Lei 13.019/2014 — Parcerias com organizações da sociedade civil',group:'dad'},
  {id:'ima-afo-4320',short:'Lei 4.320',title:'Lei 4.320/1964 — Orçamento e contabilidade pública',group:'dad'},
- {id:'ima-afo-lrf',short:'LC 101 (espera)',title:'LC 101/2000 — LRF [EM ESPERA por decisão expressa]',group:'dad',wait:true},
+ {id:'ima-afo-lrf',short:'LC 101',title:'LC 101/2000 — Lei de Responsabilidade Fiscal: planejamento, renúncia, despesa, transferências, transparência e controle',group:'dad'},
  {id:'ima-dad-14133',short:'Lei 14.133',title:'Lei 14.133/2021 — Licitações e contratos',group:'dad'}
 ]);
 export const IMA_LAWS=Object.freeze([...IMA_ENVIRONMENTAL,...IMA_DCON_LAWS,...IMA_DAD_LAWS]);
@@ -46,7 +47,7 @@ export function imaLegislationPair(date=IMA_LAW_START){
  // Alternar CF+ambiental (dia 1) e DAD+ambiental (dia 2);
  // alterar os textos de DCON e DAD a cada 5 dias, independentemente da alternância.
  const currentDay=Math.max(0,ordinal(date)-ordinal(IMA_LAW_START));
- const group=currentDay%2===0?IMA_DCON_LAWS:IMA_DAD_LAWS.filter(x=>!x.wait);
+ const group=currentDay%2===0?IMA_DCON_LAWS:IMA_DAD_LAWS;
  return [group[block%group.length],IMA_ENVIRONMENTAL[block%IMA_ENVIRONMENTAL.length]];
 }
 // 26h30 de disciplinas + 3h30 de legislação seca (7 × 30 min) = 30h semanais.
@@ -94,7 +95,7 @@ export function reconcileImaSubjects(current){
  }
  // Ativar somente o conteúdo IMA; preservar conclusões e sessões dos cursos antigos.
  // Registros CGU/TCU não são apagados: apenas saem da rota ativa.
- const relevantAfo=new Set(['01','02','03','04','06','07','08','09','10','14']);
+ const relevantAfo=new Set(['01','02','03','04','05','06','07','08','09','10','11','14']);
  const oldDad=new Set(['dad-u-1','dad-u-2','dad-u-3','dad-u-4','dad-u-5','dad-u-9','dad-u-10','dad-u-11','dad-u-17','dad-u-18','dad-u-19','dad-u-20','dad-u-22']);
  const dad=st.subjects.find(x=>x.id==='dad');
  if(dad){
@@ -150,10 +151,10 @@ export function reconcileImaSubjects(current){
    }
  }
  // Licitações: exigir que as pastas iniciais 01–08 do Thallius constem como concluídas.
- const early=['01','02','03','04','05','06','07','08'].map(n=>'ima-tha-dad-'+n);
+ const early=['02','03','04','05','06','07','08'].map(n=>'ima-tha-dad-'+n);
  const unlock=early.every(id=>dad?.units?.some(u=>u.id===id&&u.theoryDone));
  const lic=st.subjects.find(x=>x.id==='licita-ima');
- if(lic)for(const u of lic.units||[]){u.hiddenFromRoute=!unlock;u.deferred=!unlock;u.unlockCondition='Concluir DAD Thallius 01–08';}
+ if(lic)for(const u of lic.units||[]){u.hiddenFromRoute=!unlock;u.deferred=!unlock;u.unlockCondition='Concluir DAD Thallius 02–08 (01 é Vade Mecum)';}
   st.imaProfile={version:'2026-11-05-v1',examDate:IMA_EXAM_DATE,weeklyMinimum:1800,environmentalHours:2,subjects:['dad','licita-ima','afo','dcon','port','rl-ima','adm-publica','ti-ima','leg-ambiental'],status:'IMA_ACTIVE',scope:'Edital 001/2026, Anexo V, ANA'};
- return st;
+ return refineImaCurriculum(st);
 }
