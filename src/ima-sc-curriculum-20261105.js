@@ -92,6 +92,68 @@ export function reconcileImaSubjects(current){
   s.course=row.course;s.slotMinutes=row.minutes;s.units=Array.isArray(s.units)?s.units:[];
   for(let i=0;i<row.topics.length;i++){const v=row.topics[i],exist=s.units.find(u=>u.id===v.id);if(!exist)s.units.push(unit({id:v.id,title:v.title||v.title,source:v.source,note:v.note},i+1));}
  }
- st.imaProfile={version:'2026-11-05-v1',examDate:IMA_EXAM_DATE,weeklyMinimum:1800,environmentalHours:2,subjects:['dad','licita-ima','afo','dcon','port','rl-ima','adm-publica','ti-ima','leg-ambiental'],status:'IMA_ACTIVE',scope:'Edital 001/2026, Anexo V, ANA'};
+ // Ativar somente o conteúdo IMA; preservar conclusões e sessões dos cursos antigos.
+ // Registros CGU/TCU não são apagados: apenas saem da rota ativa.
+ const relevantAfo=new Set(['01','02','03','04','06','07','08','09','10','14']);
+ const oldDad=new Set(['dad-u-1','dad-u-2','dad-u-3','dad-u-4','dad-u-5','dad-u-9','dad-u-10','dad-u-11','dad-u-17','dad-u-18','dad-u-19','dad-u-20','dad-u-22']);
+ const dad=st.subjects.find(x=>x.id==='dad');
+ if(dad){
+   const thallius=[
+    ['01','Vade Mecum Bizurado — apenas consulta de normas do IMA',''],
+    ['02','Noções introdutórias e conceito de Administração','dad-u-1'],
+    ['03','Organização da Administração Pública','dad-u-2'],
+    ['04','Órgãos públicos','dad-u-2'],
+    ['05','Centralização, descentralização, concentração e desconcentração','dad-u-2'],
+    ['06','Princípios administrativos','dad-u-1'],
+    ['07','Atos administrativos','dad-u-10'],
+    ['08','Poderes administrativos','dad-u-9'],
+    ['09','Agentes públicos','dad-u-17'],
+    ['11','Improbidade — Lei 8.429/1992','dad-u-20'],
+    ['12','Processo Administrativo — Lei 9.784/1999','dad-u-11'],
+    ['13','Responsabilidade Civil do Estado','dad-u-18'],
+    ['16','Controle da Administração','dad-u-19'],
+    ['17','Serviços públicos','dad-u-5'],
+    ['19','Entidades paraestatais e terceiro setor','dad-u-4'],
+    ['26','LAI — Lei 12.527/2011',''],
+    ['27','Lei Anticorrupção — Lei 12.846/2013','dad-u-22'],
+    ['28','LGPD — Lei 13.709/2018','']
+   ];
+   const basenum=800;
+   for(let i=0;i<thallius.length;i++){
+     const [number,title,legacy]=thallius[i],id='ima-tha-dad-'+number;
+     if(dad.units.some(u=>u.id===id))continue;
+     const nu=unit({id,title:'Thallius · Pasta '+number+' — '+title,source:'Thallius Moraes · DAD, pasta '+number},basenum+i);
+     const prior=legacy&&dad.units.find(u=>u.id===legacy);
+     // Transferir apenas conclusão comprovada de tópico diretamente equivalente;
+     // a sessão original continua vinculada ao seu identificador de origem.
+     if(prior?.theoryDone){nu.theoryDone=true;nu.theoryDate=prior.theoryDate||'';nu.equivalenceSource=legacy;nu.equivalenceReviewRequired=true;}
+     dad.units.push(nu);
+   }
+   for(const u of dad.units){
+     const isThallius=String(u.id).startsWith('ima-tha-dad-');
+     if(!isThallius){u.hiddenFromRoute=true;u.deferred=true;u.imaLegacyStatus=oldDad.has(u.id)?'HISTÓRICO / EQUIVALÊNCIA':'[EM ESPERA]';}
+   }
+ }
+ for(const x of st.subjects){
+   if(['cpu','auditoria','ti','info','dados-rodrigo','politicas','diversidade','cgu7'].includes(x.id))
+     for(const u of x.units||[]){u.hiddenFromRoute=true;u.deferred=true;u.imaLegacyStatus='[EM ESPERA]';}
+   if(x.id==='port')for(const u of x.units||[])if(u.courseId?.includes('andresan')||String(u.id).startsWith('ANDRESAN-')){u.hiddenFromRoute=true;u.deferred=true;u.imaLegacyStatus='[EM ESPERA]';}
+   if(x.id==='dcon')for(const u of x.units||[])if(String(u.id).includes('-AV-')){u.hiddenFromRoute=true;u.deferred=true;u.imaLegacyStatus='[EM ESPERA]';}
+   if(x.id==='afo')for(const u of x.units||[]){
+     const m=String(u.id).match(/^afo-cgu-(\\d{2})$/);
+     const active=m&&relevantAfo.has(m[1]);
+     if(!active){u.hiddenFromRoute=true;u.deferred=true;u.imaLegacyStatus='[EM ESPERA]';}
+   }
+   if(x.id==='adm-publica')for(const u of x.units||[]){
+     const active=u.id==='MARC_ADM-ADM-AP-05';
+     if(!active){u.hiddenFromRoute=true;u.deferred=true;u.imaLegacyStatus='[EM ESPERA]';}
+   }
+ }
+ // Licitações: exigir que as pastas iniciais 01–08 do Thallius constem como concluídas.
+ const early=['01','02','03','04','05','06','07','08'].map(n=>'ima-tha-dad-'+n);
+ const unlock=early.every(id=>dad?.units?.some(u=>u.id===id&&u.theoryDone));
+ const lic=st.subjects.find(x=>x.id==='licita-ima');
+ if(lic)for(const u of lic.units||[]){u.hiddenFromRoute=!unlock;u.deferred=!unlock;u.unlockCondition='Concluir DAD Thallius 01–08';}
+  st.imaProfile={version:'2026-11-05-v1',examDate:IMA_EXAM_DATE,weeklyMinimum:1800,environmentalHours:2,subjects:['dad','licita-ima','afo','dcon','port','rl-ima','adm-publica','ti-ima','leg-ambiental'],status:'IMA_ACTIVE',scope:'Edital 001/2026, Anexo V, ANA'};
  return st;
 }
