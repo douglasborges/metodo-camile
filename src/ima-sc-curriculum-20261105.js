@@ -32,6 +32,11 @@ export const IMA_DAD_LAWS=Object.freeze([
  {id:'ima-dad-anticor',short:'Lei 12.846',title:'Lei 12.846/2013 — Anticorrupção',group:'dad'},
  {id:'ima-dad-lindb',short:'LINDB',title:'Decreto-Lei 4.657/1942 — LINDB',group:'dad'},
  {id:'ima-dad-lc741',short:'SC LC 741',title:'SC LC 741/2019 — Organização administrativa estadual',group:'dad'},
+ {id:'ima-dad-9637',short:'Lei 9.637',title:'Lei 9.637/1998 — Organizações Sociais',group:'dad'},
+ {id:'ima-dad-9790',short:'Lei 9.790',title:'Lei 9.790/1999 — OSCIPs',group:'dad'},
+ {id:'ima-dad-13019',short:'Lei 13.019',title:'Lei 13.019/2014 — Parcerias com organizações da sociedade civil',group:'dad'},
+ {id:'ima-afo-4320',short:'Lei 4.320',title:'Lei 4.320/1964 — Orçamento e contabilidade pública',group:'dad'},
+ {id:'ima-afo-lrf',short:'LC 101 (espera)',title:'LC 101/2000 — LRF [EM ESPERA por decisão expressa]',group:'dad',wait:true},
  {id:'ima-dad-14133',short:'Lei 14.133',title:'Lei 14.133/2021 — Licitações e contratos',group:'dad'}
 ]);
 export const IMA_LAWS=Object.freeze([...IMA_ENVIRONMENTAL,...IMA_DCON_LAWS,...IMA_DAD_LAWS]);
@@ -41,7 +46,7 @@ export function imaLegislationPair(date=IMA_LAW_START){
  // Alternar CF+ambiental (dia 1) e DAD+ambiental (dia 2);
  // alterar os textos de DCON e DAD a cada 5 dias, independentemente da alternância.
  const currentDay=Math.max(0,ordinal(date)-ordinal(IMA_LAW_START));
- const group=currentDay%2===0?IMA_DCON_LAWS:IMA_DAD_LAWS;
+ const group=currentDay%2===0?IMA_DCON_LAWS:IMA_DAD_LAWS.filter(x=>!x.wait);
  return [group[block%group.length],IMA_ENVIRONMENTAL[block%IMA_ENVIRONMENTAL.length]];
 }
 // 26h30 de disciplinas + 3h30 de legislação seca (7 × 30 min) = 30h semanais.
