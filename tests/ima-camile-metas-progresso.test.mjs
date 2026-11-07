@@ -44,7 +44,12 @@ test('importação preserva aulas reais, credita acentuação forte e não inven
  assert.equal(a.subjects.find(x=>x.id==='afo').units.filter(x=>!x.hiddenFromRoute).length>0,true);
 });
 test('despesa de estudo parcial não dá conclusão automática em outra fonte de AFO',()=>{
- const s=seed();u(s,'afo','PAC_AFO-AFO-VG').theoryDone=true;
+ const s=seed();
+ const afo=s.subjects.find(x=>x.id==='afo');
+ for(const id of ['PAC_AFO-AFO-VG','PAC_AFO-AFO-PRI'])afo.units.push({id,title:id,order:900,theoryDone:false,
+   theoryDate:'',batteryDone:false,generalDone:false,materialReady:false,battery:{attempted:0,correct:0},
+   general:{attempted:0,correct:0},legacy:[],marks:[]});
+ u(s,'afo','PAC_AFO-AFO-VG').theoryDone=true;
  add(s,'afo','PAC_AFO-AFO-PRI','2026-10-22','theory',96);
  add(s,'afo','PAC_AFO-AFO-PRI','2026-10-27','theory',120);
  const a=reconcileCamileImaProgress(s);
