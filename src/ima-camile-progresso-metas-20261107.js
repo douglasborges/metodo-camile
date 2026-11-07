@@ -286,7 +286,8 @@ export function mergeCamileBackupSafely(current,incoming){
      'totalBlocks','blockTitles','parts','historicalNote','imaPriorLearning','studyPlan']){
     if(cur[k]===undefined&&prior[k]!==undefined)cur[k]=copy(prior[k]);
    }
-   if(!cur.theoryDate&&prior.theoryDate)cur.theoryDate=prior.theoryDate;
+   const protectedOldDate=remote.id==='dcon'&&['NELMA-DCON-03','dcon-u-4'].includes(prior.id)&&st.imaUserVerified?.version===IMA_VERIFIED_STUDY_VERSION;
+   if(!protectedOldDate&&!cur.theoryDate&&prior.theoryDate)cur.theoryDate=prior.theoryDate;
    for(const flag of ['battery','general']){
      const p=prior[flag]||{},c=cur[flag]||{};
      if(Number(p.attempted||0)>Number(c.attempted||0))cur[flag]={attempted:p.attempted,correct:p.correct};
