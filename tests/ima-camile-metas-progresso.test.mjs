@@ -2,10 +2,11 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {reconcileImaSubjects} from '../src/ima-sc-curriculum-20261105.js';
+import {reconcileDconProgram} from '../src/dcon-programacao-20261103.js';
 import {reconcileCamileImaProgress,mergeCamileBackupSafely,imaGoalWeek,imaCurrentGoalIndex,imaMetaSnapshot,IMA_META_WEEKS} from '../src/ima-camile-progresso-metas-20261107.js';
 import {validate} from '../src/core.js';
 const copy=v=>JSON.parse(JSON.stringify(v));
-const seed=()=>reconcileImaSubjects(copy(JSON.parse(fs.readFileSync(new URL('../data/initial-state.json',import.meta.url),'utf8'))));
+const seed=()=>reconcileImaSubjects(reconcileDconProgram(copy(JSON.parse(fs.readFileSync(new URL('../data/initial-state.json',import.meta.url),'utf8')))));
 const u=(s,sid,id)=>s.subjects.find(x=>x.id===sid).units.find(x=>x.id===id);
 const add=(s,sid,id,date,activity,minutes,questions=0,correct=0)=>{s.sessions.push({id:'test'+s.sessions.length,subjectId:sid,unitId:id,date,activity,minutes,questions,correct,title:'Teste'});};
 test('backup com 240min em disciplinas IMA é compatível com validação legada',()=>{
@@ -59,7 +60,7 @@ test('despesa de estudo parcial não dá conclusão automática em outra fonte d
 });
 test('mesclar backup não substitui sessões recentes nem duplica IDs',()=>{
  const local=seed();add(local,'port','port-u-2','2026-11-07','theory',60);
- const old=copy(local);old.sessions=[];add(old,'port','port-u-1','2026-10-02','theory',90);
+ const old=copy(local);old.sessions=[];add(old,'port','port-u-1','2026-10-02','theory',90);old.sessions[0].id='from-old-backup';
  const a=mergeCamileBackupSafely(local,old),b=mergeCamileBackupSafely(a,old);
  assert.equal(a.sessions.length,2);assert.equal(b.sessions.length,2);
  assert.ok(a.sessions.some(x=>x.unitId==='port-u-2'));
