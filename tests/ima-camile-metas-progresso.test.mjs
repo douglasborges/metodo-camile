@@ -33,9 +33,9 @@ test('importação preserva aulas reais, credita acentuação forte e não inven
  assert.equal(u(a,'port','port-u-1').theoryDone,true);
  assert.equal(u(a,'port','port-u-1').batteryDone,true);
  assert.equal(u(a,'port','port-u-1').imaPriorLearning.questions,162);
- assert.equal(u(a,'port','port-u-3').theoryDone,false);
+ assert.equal(u(a,'port','port-u-3').theoryDone,true);
  assert.equal(u(a,'port','port-u-3').imaPriorLearning.theoryMinutes,267);
- assert.equal(u(a,'port','port-u-5').theoryDone,false);
+ assert.equal(u(a,'port','port-u-5').theoryDone,true);
  assert.equal(u(a,'adm-publica','MARC_ADM-ADM-AP-05').theoryDone,false);
  assert.equal(u(a,'dcon','NELMA-DCON-01').theoryDone,true);
  assert.equal(u(a,'dad','ima-tha-dad-08').theoryDone,false);
@@ -84,4 +84,51 @@ test('Metas IMA: 14 semanas sábado a sexta e 30h ciclo com lei extraciclo',()=>
  assert.equal(m.rows.find(x=>x.id==='dad').target,240);
  assert.equal(m.rows.find(x=>x.id==='dcon').target,240);
  assert.equal(m.rows.find(x=>x.id==='licita-ima').target,240);
+});
+
+test('confirmação pessoal corrige Português 1–8 e Estratégia A04/VA25; deixa A05 como próxima',()=>{
+ const s=seed();
+ const art4=u(s,'dcon','dcon-u-2');art4.blocksCompleted=6;
+ const a03=u(s,'dcon','NELMA-DCON-03');a03.theoryDone=true;a03.theoryDate='2026-10-12';
+ u(s,'dcon','dcon-u-4').theoryDone=true;
+ add(s,'dcon','dcon-u-2','2026-10-28','theory',200);
+ const a=reconcileCamileImaProgress(s);
+ assert.equal(a.imaUserVerified.portCompletedThrough,8);
+ assert.equal(a.imaUserVerified.estrategiaA04CompletedVideos,25);
+ for(let n=1;n<=8;n++){
+   assert.equal(u(a,'port','port-u-'+n).theoryDone,true,'Aula '+n+' deve estar concluída');
+   assert.equal(u(a,'port','port-u-'+n).imaCompletionSource,'CONFIRMACAO_USUARIO_2026_11_07');
+ }
+ assert.equal(u(a,'port','port-u-9').theoryDone,false);
+ for(let n=2;n<=8;n++)assert.equal(u(a,'port','port-u-'+n).batteryDone,false,'Não inventar questões Tec');
+ assert.equal(art4.blocksCompleted,6,'A entrada original não pode ser alterada');
+ const art4mig=u(a,'dcon','dcon-u-2');
+ assert.equal(art4mig.blocksCompleted,24);
+ assert.equal(art4mig.exerciseVideoDone,true);
+ assert.equal(art4mig.theoryDone,true);
+ assert.equal(art4mig.batteryDone,false,'VA25 não comprova bateria TEC');
+ assert.equal(art4mig.imaHistoricalProgressSnapshot.blocksCompleted,6);
+ assert.equal(u(a,'dcon','ESTRATEGIA-DCON-05').theoryDone,false);
+ assert.equal(u(a,'dcon','ESTRATEGIA-DCON-05').blocksCompleted,0);
+ assert.equal(u(a,'dcon','NELMA-DCON-03').theoryDone,false);
+ assert.equal(u(a,'dcon','dcon-u-4').theoryDone,false);
+ assert.equal(u(a,'dcon','NELMA-DCON-03').imaHistoricalFlagBeforeCorrection.theoryDone,true);
+ assert.equal(u(a,'dcon','NELMA-DCON-01').theoryDone,true);
+ const next=imaMetaSnapshot(a,0);
+ assert.equal(next.rows.find(x=>x.id==='port').lessons[0].id,'port-u-9');
+ assert.equal(next.rows.find(x=>x.id==='dcon').lessons[0].id,'ESTRATEGIA-DCON-05');
+ assert.match(next.notes[0],/A01–A08 CONCLUÍDAS/);
+ assert.match(next.notes[1],/BLOCO 01\/08/);
+ assert.equal(a.sessions.length,1,'Não fabricar sessões para vídeos confirmados');
+ assert.equal(JSON.stringify(reconcileCamileImaProgress(a)),JSON.stringify(a),'Migração idempotente');
+});
+test('backup antigo não restaura indevidamente a conclusão de Cebraspe A03',()=>{
+ const original=seed(),out=reconcileCamileImaProgress(original);
+ const prior=seed();
+ u(prior,'dcon','NELMA-DCON-03').theoryDone=true;
+ const merged=mergeCamileBackupSafely(out,prior);
+ assert.equal(u(merged,'dcon','NELMA-DCON-03').theoryDone,false);
+ assert.equal(u(merged,'dcon','dcon-u-4').theoryDone,false);
+ assert.equal(u(merged,'dcon','dcon-u-2').theoryDone,true);
+ assert.equal(u(merged,'port','port-u-8').theoryDone,true);
 });
