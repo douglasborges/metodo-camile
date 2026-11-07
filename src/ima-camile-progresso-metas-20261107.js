@@ -49,6 +49,21 @@ export function reconcileCamileImaProgress(current){
    theoryDone:false,theoryDate:'',batteryDone:false,generalDone:false,materialReady:false,battery:{attempted:0,correct:0},
    general:{attempted:0,correct:0},legacy:[],marks:[],hiddenFromRoute:false,deferred:false});
  }
+ // Instalações da versão inicial não possuíam unidade independente para A05 do Estratégia.
+ // Criá-la antes da aplicação da confirmação sem recriar aulas já existentes.
+ const dcon=subject(st,'dcon');
+ if(dcon&&!dcon.units.some(u=>u.id==='ESTRATEGIA-DCON-05')){
+  dcon.units.push({id:'ESTRATEGIA-DCON-05',order:3,
+   title:'05 · Estratégia · Nelma Fontana — Remédios Constitucionais (8 videoaulas)',
+   courseId:'nelma-dcon-estrategia',courseLabel:'Nelma Fontana · Estratégia · Aula 05 (remédios)',
+   source:'Nelma Fontana',sourceURL:'https://concursos.estrategia.com/curso/curso-regular-nelma-fontana/',
+   programPhase:'estrategia',totalBlocks:8,blocksCompleted:0,completedBlocks:[],
+   theoryDone:false,theoryDate:'',batteryDone:false,generalDone:false,materialReady:false,
+   battery:{attempted:0,correct:0},general:{attempted:0,correct:0},
+   legacy:[],marks:[],catalog:true,hiddenFromRoute:false,deferred:false,
+   parts:Array.from({length:8},(_,i)=>({id:'ESTRATEGIA-DCON-05-bloco-'+(i+1),
+     number:i+1,title:'Bloco '+(i+1)+' de 8',done:false}))});
+ }
  const afoSubject=subject(st,'afo');
  if(afoSubject){
   afoSubject.imaActiveCourse='Leandro Ravyelle · BizurAFO (M01 a M11 + M14; recortes do edital IMA)';
