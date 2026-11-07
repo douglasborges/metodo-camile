@@ -35,7 +35,7 @@ jobs:
         with:
           enablement: true
 
-      - name: Validar Método Camile · v2.1.0 · IMA ANA FURB
+      - name: Validar Método Camile · v2.1.1 · IMA ANA FURB
         run: |
           cp src/app.js /tmp/app.mjs
           cp src/core.js /tmp/core.mjs
@@ -71,8 +71,8 @@ jobs:
           node --check drive-sync.js
           node --check drive-sync-ui.js
 
-          grep -q "2.1.0-ima-camile-historico-metas-20261107" index.html
-          grep -Fq "APP_VERSION_LABEL='v2.1.0 · IMA ANA'" src/app.js
+          grep -q "2.1.1-ima-retificacao-port-dcon-metas-20261107" index.html
+          grep -Fq "APP_VERSION_LABEL='v2.1.1 · IMA ANA'" src/app.js
           grep -q "function prioritiesPage()" src/app.js
           grep -q "IMA-SC · Plano ativo" index.html
           grep -q "Edital × Aulas (FURB)" index.html
