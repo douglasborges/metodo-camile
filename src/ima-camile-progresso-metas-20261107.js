@@ -5,6 +5,7 @@
  */
 import {imaLicitationStatus,imaWeeklyMinutesFor} from './ima-sc-auditoria-edital-20261106.js';
 export const IMA_PROGRESS_VERSION='camile-ima-backup-audit-20261107-v1';
+export const IMA_VERIFIED_STUDY_VERSION='camile-confirmacao-historica-port8-dcon-a4-20261107-v2';
 export const IMA_GOALS_VERSION='camile-ima-weekly-goals-20261107-v1';
 export const IMA_META_START='2026-11-07';
 export const IMA_META_WEEKS=14;
@@ -47,6 +48,21 @@ export function reconcileCamileImaProgress(current){
    order:805,courseId:'marcelo-faixa-preta-administracao-publica',source:'Marcelo Soares · Faixa Preta Administração Pública',
    theoryDone:false,theoryDate:'',batteryDone:false,generalDone:false,materialReady:false,battery:{attempted:0,correct:0},
    general:{attempted:0,correct:0},legacy:[],marks:[],hiddenFromRoute:false,deferred:false});
+ }
+ // Instalações da versão inicial não possuíam unidade independente para A05 do Estratégia.
+ // Criá-la antes da aplicação da confirmação sem recriar aulas já existentes.
+ const dcon=subject(st,'dcon');
+ if(dcon&&!dcon.units.some(u=>u.id==='ESTRATEGIA-DCON-05')){
+  dcon.units.push({id:'ESTRATEGIA-DCON-05',order:3,
+   title:'05 · Estratégia · Nelma Fontana — Remédios Constitucionais (8 videoaulas)',
+   courseId:'nelma-dcon-estrategia',courseLabel:'Nelma Fontana · Estratégia · Aula 05 (remédios)',
+   source:'Nelma Fontana',sourceURL:'https://concursos.estrategia.com/curso/curso-regular-nelma-fontana/',
+   programPhase:'estrategia',totalBlocks:8,blocksCompleted:0,completedBlocks:[],
+   theoryDone:false,theoryDate:'',batteryDone:false,generalDone:false,materialReady:false,
+   battery:{attempted:0,correct:0},general:{attempted:0,correct:0},
+   legacy:[],marks:[],catalog:true,hiddenFromRoute:false,deferred:false,
+   parts:Array.from({length:8},(_,i)=>({id:'ESTRATEGIA-DCON-05-bloco-'+(i+1),
+     number:i+1,title:'Bloco '+(i+1)+' de 8',done:false}))});
  }
  const afoSubject=subject(st,'afo');
  if(afoSubject){
@@ -105,6 +121,105 @@ export function reconcileCamileImaProgress(current){
     sessionsAtMigration:(st.sessions||[]).length
   };
  }
+
+ // Segunda reconciliação: confirmação direta do progresso real após auditoria
+ // de backups de 05/10, 20/10, 06/11 e branches históricas do GitHub.
+ // Esses backups iniciais contêm 0 sessões e NÃO refutam a confirmação atual.
+ const verified=st.imaUserVerified||{};
+ if(verified.version!==IMA_VERIFIED_STUDY_VERSION){
+   const confirmedDate='2026-11-07';
+   const narrative='Confirmação explícita recebida em 07/11/2026; data exata de cada conclusão não fornecida. Não gerar sessão, hora ou questão.';
+   for(let k=1;k<=8;k++){
+     const u=unit(st,'port','port-u-'+k);
+     if(!u)continue;
+     const original={theoryDone:!!u.theoryDone,theoryDate:u.theoryDate||'',batteryDone:!!u.batteryDone};
+     u.theoryDone=true;
+     // A informação "até a aula 8" refere-se à teoria. Não marcar questões Tec sem registro.
+     u.imaPriorLearning={...(u.imaPriorLearning||{}),status:'TEORIA_CONCLUIDA_POR_CONFIRMACAO',
+       source:'Confirmação direta da Camile comunicada pelo usuário',
+       confirmedOn:confirmedDate,original,note:narrative,
+       instruction:'Não repetir a teoria desta aula. Fazer questões da FURB/TEC e revisões; manter dados históricos.'};
+     u.imaCompletionSource='CONFIRMACAO_USUARIO_2026_11_07';
+     u.imaCompletionVerifiedAt=confirmedDate;
+   }
+   const dcon1=unit(st,'dcon','NELMA-DCON-01');
+   const legacy1=unit(st,'dcon','dcon-u-1');
+   for(const u of [dcon1,legacy1].filter(Boolean)){
+     u.theoryDone=true;
+     u.imaCompletionSource=u.imaCompletionSource||'BACKUP_2026_11_06_E_USUARIO';
+     u.imaCompletionVerifiedAt=confirmedDate;
+   }
+   const a4=unit(st,'dcon','dcon-u-2')||unit(st,'dcon','ESTRATEGIA-DCON-04');
+   if(a4){
+     a4.imaHistoricalProgressSnapshot={blocksCompleted:a4.blocksCompleted||0,
+       theoryDone:!!a4.theoryDone,exerciseVideoDone:!!a4.exerciseVideoDone};
+     // Aula 04 do Estratégia: 24 vídeos de teoria + VA25 de exercícios.
+     a4.totalBlocks=24;
+     a4.blocksCompleted=24;
+     a4.exerciseVideoRequired=true;
+     a4.exerciseVideoDone=true;
+     a4.theoryDone=true;
+     a4.imaCompletionSource='CONFIRMACAO_USUARIO_2026_11_07';
+     a4.imaCompletionVerifiedAt=confirmedDate;
+     a4.imaPriorLearning={status:'TEORIA_24_VIDEOS_E_EXERCICIOS_VA25_CONCLUIDOS',
+       source:'Confirmação direta, corroborada pela progressão de sessões até 28/10',
+       confirmedOn:confirmedDate,notes:'25 videoaulas concluídas (24 teóricas e VA25 exercícios); bateria TEC separada não comprovada',
+       instruction:'NÃO estudar A04 novamente. Começar imediatamente Estratégia A05, bloco 1 de 8.'};
+   }
+   const a5=unit(st,'dcon','ESTRATEGIA-DCON-05');
+   if(a5){
+     const hadSessions=sessions(st,'dcon','ESTRATEGIA-DCON-05').length;
+     if(!hadSessions){
+       a5.theoryDone=false;
+       a5.blocksCompleted=0;
+       a5.completedBlocks=[];
+       a5.imaPriorLearning={status:'NAO_INICIADA',source:'Confirmação direta',
+         instruction:'Primeira aula a iniciar: Estratégia A05 Remédios Constitucionais, BLOCO 01 de 08.'};
+     }
+   }
+   // O backup de 06/11 marca Cebraspe A03 indevidamente como concluída;
+   // manter o fato da marcação original em trilha de auditoria e corrigir o estado ATUAL.
+   for(const id of ['NELMA-DCON-03','dcon-u-4']){
+     const u=unit(st,'dcon',id);
+     if(!u)continue;
+     const newer=sessions(st,'dcon',id).some(x=>x.date>confirmedDate);
+     if(!newer){
+       u.imaHistoricalFlagBeforeCorrection={theoryDone:!!u.theoryDone,
+         batteryDone:!!u.batteryDone,theoryDate:u.theoryDate||'',source:'backup 06/11, sem sessão de Cebraspe A03'};
+       u.theoryDone=false;
+       u.batteryDone=false;
+       u.theoryDate='';
+       u.imaPriorLearning={status:'PENDENTE_CONFIRMACAO_ATUAL',source:'Confirmação direta do usuário, 07/11/2026',
+         instruction:'Apenas A01 do curso Cebraspe confirmada. A03 deve ficar na rota após A05 e A02; marcação anterior conservada como evidência, sem dispensar teoria.'};
+     }
+   }
+   const apu1=unit(st,'adm-publica','MARC_ADM-ADM-AP-01');
+   if(apu1){
+     const rows=sessions(st,'adm-publica','MARC_ADM-ADM-AP-01');
+     apu1.imaPriorLearning={status:'EM_ANDAMENTO_PONTO_NAO_CONFIRMADO',source:'Backup 06/11',
+       theoryMinutes:mins(rows.filter(x=>x.activity==='theory')),
+       recordedFirstBlock:'Conclui o bloco 1/3 (nota de 22/10)',
+       instruction:'Já estudou Administração Pública na CGU, mas não há evidência de conclusão do curso inteiro. Não recomeçar AP-01; confirmar blocos 2/3 e 3/3 caso precise retornar a ela. APU do IMA: AP-05 ainda pendente.'};
+   }
+   // Não deixar o relatório v1 exibir diagnósticos já retificados como se fossem atuais.
+   const priorAudit=st.imaProgressAudit||{};
+   st.imaProgressAudit={...priorAudit,
+     initialAuditNotes:priorAudit.initialAuditNotes||priorAudit.notes||[],
+     correctedBy:IMA_VERIFIED_STUDY_VERSION,
+     notes:[
+       'Português Giulian A01–A08: teoria concluída por confirmação direta; A09 é próxima.',
+       'DCON Estratégia A04: 24 vídeos teóricos e VA25 exercícios concluídos; iniciar A05 bloco 01/08.',
+       'DCON Cebraspe: apenas A01 confirmada; A03 antiga foi retificada com histórico preservado.',
+       'APU Marcelo AP-01: 140 min e anotação bloco 1/3, sem prova dos blocos 2 e 3; AP-05 pendente.',
+       'BizurAFO não é automaticamente concluído por estudos anteriores com Pacelli.'
+     ]};
+   st.imaUserVerified={version:IMA_VERIFIED_STUDY_VERSION,confirmedOn:confirmedDate,
+     source:'Relato direto do progresso atualizado, confrontado com backups do Drive 05/10 e 20/10, backup JSON 06/11 e versões históricas do GitHub',
+     rules:'Aulas confirmadas recebem teoriaDone, sem horas artificiais. Baterias Tec não se presumem. Retificações históricas ficam rastreáveis.',
+     portCompletedThrough:8,dconCebraspeCompleted:['NELMA-DCON-01'],
+     estrategiaA04CompletedVideos:25,estrategiaA05NextBlock:1,
+     apuLastConfirmed:'AP-01: 140 minutos; bloco 1/3 registrado; demais blocos sem comprovação'};
+ }
  if(!st.imaGoals||st.imaGoals.version!==IMA_GOALS_VERSION){
    st.imaGoals={...(st.imaGoals||{}),version:IMA_GOALS_VERSION,start:IMA_META_START,weeklyCycleMinutes:1800,lawExtraMinutes:210,
     rule:'Metas independentes da CGU; período sábado–sexta; progresso por sessões reais das nove disciplinas IMA; não contar lei seca no ciclo'};
@@ -141,10 +256,10 @@ export function imaMetaSnapshot(st,index=imaCurrentGoalIndex(new Date().toISOStr
  const rows=ids.map(sid=>({id:sid,target:targets[sid]||0,actual:actual[sid]||0,lessons:imaNextLessons(st,sid),locked:sid==='licita-ima'&&!gate.unlocked}));
  const ready=cycleMinutes>=1800&&rows.every(x=>x.locked||x.actual>=x.target);
  const notes=index===0?[
-  'PORT: Aula 01 (acentuação) aproveitada; Aula 02 (ortografia) ainda sem registro; A03 e A05 estudadas parcialmente, retomar trechos pendentes e fazer questões TEC.',
-  'DCON: Nelma Cebraspe A01 concluída; A03 teoria concluída e bateria pendente. Continuar Estratégia A04 art. 5º sem reiniciar; conferir divergência 6 blocos versus registros de blocos 17/18.',
+  'PORT: Marcello Giulian A01–A08 CONCLUÍDAS por confirmação direta. Iniciar A09 (Colocação Pronominal); questões da FURB no TEC e revisão dos erros, sem repetir teoria anterior.',
+  'DCON: Nelma Cebraspe A01 concluída. Estratégia A04 art. 5º COMPLETA (24 aulas teóricas e VA25 de exercícios). Começar A05 Remédios Constitucionais BLOCO 01/08. Depois retomar Cebraspe A02 (questões/consolidação) e A03, não presumir A03 concluída.',
   'DAD: Thallius Pasta 02 em diante; caminho 02–08; Licitações permanece bloqueada até fechar a 08.',
-  'APU: Marcelo AP-01 possui 140min de teoria anterior, mas AP-05 Transparência e Accountability ainda não foi estudada.',
+  'APU: Marcelo AP-01 possui 140min de estudo e anotação de conclusão somente do bloco 1/3. AP-05 Transparência e Accountability (conteúdo do IMA) ainda precisa ser estudada; não duplicar os temas fora do edital.',
   'AFO: Pacelli VG concluída; princípios iniciados. No BizurAFO, priorizar recortes não vistos e questões; nenhum módulo completo foi presumido.',
   'RL, TI e Ambiental: iniciar aulas específicas do IMA; estudo antigo de Hardware e Software não substitui TI/IA.'
  ]:[
@@ -173,13 +288,18 @@ export function mergeCamileBackupSafely(current,incoming){
   for(const prior of remote.units||[]){
    const cur=units.get(prior.id);
    if(!cur){local.units.push(copy(prior));units.set(prior.id,local.units.at(-1));continue;}
-   for(const flag of ['theoryDone','batteryDone','generalDone','materialReady'])if(prior[flag])cur[flag]=true;
+   for(const flag of ['theoryDone','batteryDone','generalDone','materialReady']){
+     const isDconA03=remote.id==='dcon'&&['NELMA-DCON-03','dcon-u-4'].includes(prior.id);
+     const protectedA03=isDconA03&&st.imaUserVerified?.version===IMA_VERIFIED_STUDY_VERSION;
+     if(prior[flag]&&!(protectedA03&&['theoryDone','batteryDone'].includes(flag)))cur[flag]=true;
+   }
    // Conservar metadados de vídeo e curso quando o catálogo local ainda não os possui.
    for(const k of ['source','course','courseLabel','lessonNumber','sourceURL','completedBlocks',
      'totalBlocks','blockTitles','parts','historicalNote','imaPriorLearning','studyPlan']){
     if(cur[k]===undefined&&prior[k]!==undefined)cur[k]=copy(prior[k]);
    }
-   if(!cur.theoryDate&&prior.theoryDate)cur.theoryDate=prior.theoryDate;
+   const protectedOldDate=remote.id==='dcon'&&['NELMA-DCON-03','dcon-u-4'].includes(prior.id)&&st.imaUserVerified?.version===IMA_VERIFIED_STUDY_VERSION;
+   if(!protectedOldDate&&!cur.theoryDate&&prior.theoryDate)cur.theoryDate=prior.theoryDate;
    for(const flag of ['battery','general']){
      const p=prior[flag]||{},c=cur[flag]||{};
      if(Number(p.attempted||0)>Number(c.attempted||0))cur[flag]={attempted:p.attempted,correct:p.correct};
@@ -199,6 +319,7 @@ export function mergeCamileBackupSafely(current,incoming){
  }
  if(!st.goals&&src.goals)st.goals=copy(src.goals);
  if(!st.imaProfile&&src.imaProfile)st.imaProfile=copy(src.imaProfile);
+ if(!st.imaUserVerified&&src.imaUserVerified)st.imaUserVerified=copy(src.imaUserVerified);
  if(!st.cguCheck&&src.cguCheck)st.cguCheck=copy(src.cguCheck);
  if(!st.bizurafo&&src.bizurafo)st.bizurafo=copy(src.bizurafo);
  st.achievementsSeen=[...new Set([...(st.achievementsSeen||[]),...(src.achievementsSeen||[])])];

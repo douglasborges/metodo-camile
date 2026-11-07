@@ -15,8 +15,8 @@ import {analyticsSnapshot} from './analytics.js?v=2.0.7-veon-et-roadmap-20261104
 import {FINAL_CGU_PLAN,FINAL_CGU_LESSONS} from './dcon-ordered-curriculum.js?v=2.0.7-veon-et-roadmap-20261104';
 import {RENNO_COURSE,RENNO_TEACHER,RENNO_STEPS,RENNO_UNIT_IDS,RENNO_PACKAGE_URL,RENNO_7F_FIRST_ID} from './pp-renno.js?v=2.0.7-veon-et-roadmap-20261104';
 import {finalCguLessonProgress,finalCguSlot,finalCguPhaseForDate,finalCguIsSunday,finalCguSlotLessons,finalCguLessonWindow,finalCguOperationalDate} from './cgu-final-runtime.js?v=2.0.7-veon-et-roadmap-20261104';
-const APP_VERSION='2.1.0-ima-camile-historico-metas-20261107';
-const APP_VERSION_LABEL='v2.1.0 · IMA ANA';
+const APP_VERSION='2.1.1-ima-retificacao-port-dcon-metas-20261107';
+const APP_VERSION_LABEL='v2.1.1 · IMA ANA';
 const $=q=>document.querySelector(q), esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])), label=id=>M.RULES[id]?.label||id.replace('legacy:',''), option=(v,t,selected)=>`<option value="${esc(v)}" ${v===selected?'selected':''}>${esc(t)}</option>`, checks=v=>v?'checked':'', cpLabel={done:'Concluído',due:'Checkpoint pendente',battery:'Baterias pendentes',audit:'Conferir histórico',planned:'Planejado'}, phaseLabel={new:'Estudo Novo',solid:'Estudo Sólido'};
 let state,page='ima',selected='dad',pendingImport=null,timer=null,lawTimer=null,storedRaw=null,noticeTimeout,achievementCategoryFilter='all',achievementStatusFilter='all',progressView='overview',progressPeriod='all',progressSubject='all',goalView=null,imaGoalView=null,cguPriorityFilter='P3',cguKindFilter='',cguStatusFilter='';
 const ACTIVE_SUBJECTS=['dcon','dad','licita-ima','afo','port','rl-ima','adm-publica','ti-ima','leg-ambiental'];
@@ -559,10 +559,10 @@ function imaGoalsPage(){
  const warnings=meta.notes.map(n=>'<li>'+esc(n)+'</li>').join('');
  const h=state.imaProgressAudit||{};
  const audit=[];
- for(const [sid,uid,course] of [['port','port-u-1','Português · A01 Acentuação'],['port','port-u-3','Português · A03 Classes'],['port','port-u-5','Português · A05 Funções'],['dcon','NELMA-DCON-01','DCON · Nelma Cebraspe A01'],['dcon','NELMA-DCON-03','DCON · Nelma Cebraspe A03'],['dcon','dcon-u-2','DCON · Estratégia A04 art. 5º'],['adm-publica','MARC_ADM-ADM-AP-01','APU · Marcelo AP-01'],['afo','PAC_AFO-AFO-VG','AFO · Pacelli visão geral'],['afo','PAC_AFO-AFO-PRI','AFO · Pacelli princípios']]){
+ for(const [sid,uid,course] of [[...Array(8)].map((_,i)=>['port','port-u-'+(i+1),'Português · Marcello Giulian A'+String(i+1).padStart(2,'0')]),[['dcon','NELMA-DCON-01','DCON · Nelma Cebraspe A01'],['dcon','dcon-u-2','DCON · Estratégia A04 (25 VAs)'],['dcon','ESTRATEGIA-DCON-05','DCON · Estratégia A05 (8 VAs)'],['dcon','NELMA-DCON-03','DCON · Nelma Cebraspe A03'],['adm-publica','MARC_ADM-ADM-AP-01','APU · Marcelo AP-01'],['adm-publica','MARC_ADM-ADM-AP-05','APU · Marcelo AP-05'],['afo','PAC_AFO-AFO-VG','AFO · Pacelli visão geral'],['afo','PAC_AFO-AFO-PRI','AFO · Pacelli princípios']]].flat()){
   const u=state.subjects.find(x=>x.id===sid)?.units.find(x=>x.id===uid);if(!u)continue;
   const st=u.theoryDone?'Teoria concluída':u.imaPriorLearning?.status||'Sem conclusão registrada';
-  const description=u.imaPriorLearning?.instruction||((u.theoryDone&&!u.batteryDone)?'Revisão/questões pendentes':'Registro preservado, sem comprovação de conclusão');
+  const description=u.imaPriorLearning?.instruction||((u.theoryDone&&!u.batteryDone)?'Teoria concluída; revisão/questões no TEC pendentes':'Registro preservado, sem comprovação de conclusão');
   audit.push('<tr><td>'+esc(course)+'</td><td>'+esc(st)+'</td><td>'+esc(description)+'</td></tr>');
  }
  return heading('META SEMANAL · IMA-SC · CAMILE','Metas IMA','Planejamento de sábado a sexta, 30h de ciclo + legislação seca extraciclo. Meta 1 inicia em 07/11/2026.')+
@@ -572,8 +572,8 @@ function imaGoalsPage(){
  '<p class="muted">O progresso é calculado a partir dos registros reais nesta janela de sete dias. As próximas metas se adaptam automaticamente às aulas concluídas e à liberação de Licitações. A meta de 30h NÃO inclui a legislação seca.</p></section>'+
  '<section class="card"><h2>Distribuição por disciplina e próxima aula</h2><div class="table-wrap"><table><thead><tr><th>DISCIPLINA</th><th>META</th><th>FEITO</th><th>%</th><th>CONTINUIDADE</th><th>AÇÃO</th></tr></thead><tbody>'+rows+'</tbody></table></div></section>'+
  '<section class="card"><h2>Orientações específicas desta semana</h2><ul>'+warnings+'</ul><p class="muted"><b>Questões:</b> usar TEC Concursos e priorizar FURB. Curso de questões Cebraspe do Andresan permanece [EM ESPERA].</p></section>'+
- '<section class="card"><h2>Auditoria do conhecimento anterior</h2><p>'+esc(h.sessionsAtMigration||state.sessions.length)+' sessões estavam no histórico no momento da conciliação. O crédito de aula é dado somente com evidência, preservando as sessões originais.</p>'+
- '<div class="table-wrap"><table><thead><tr><th>AULA</th><th>STATUS</th><th>ORIENTAÇÃO</th></tr></thead><tbody>'+audit.join('')+'</tbody></table></div><p class="muted">Aula parcial NÃO significa curso concluído. O histórico anterior de APU AP-01 não marca AP-05. O estudo de Pacelli não conclui módulos de BizurAFO.</p></section>'+
+ '<section class="card"><h2>Auditoria do conhecimento anterior</h2><p>'+esc(h.sessionsAtMigration||state.sessions.length)+' sessões estavam no histórico no momento da conciliação. Também foram aplicadas as confirmações de conclusão de 07/11; essas confirmações não criam sessões, horas ou questões.</p>'+
+ '<div class="table-wrap"><table><thead><tr><th>AULA</th><th>STATUS</th><th>ORIENTAÇÃO</th></tr></thead><tbody>'+audit.join('')+'</tbody></table></div><p class="muted">Camile confirmou Português A01–A08 e Estratégia A04 (25 VAs) concluídas. A05 Remédios é a PRÓXIMA aula. Os 140 minutos de AP-01 não encerram AP-05; Pacelli não conclui automaticamente BizurAFO. Marcas antigas contraditórias de Cebraspe A03 ficam registradas no histórico, mas a teoria permanece pendente.</p></section>'+
  '<section class="card"><h2>Backup de 06/11</h2><p>Se o histórico ainda não estiver neste navegador, abra Dados → Importar backup e selecione o JSON de 06/11 ou sua versão conciliada. A importação agora mescla dados, preserva sessões novas e reaplica este roteiro sem apagar CGU.</p><div class="actions"><button data-action="import" class="secondary">Mesclar backup da Camile</button><a href="#data">Ver segurança e dados</a></div></section>';
 }
 function planningPage(){
