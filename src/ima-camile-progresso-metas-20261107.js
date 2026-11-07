@@ -38,6 +38,17 @@ export function reconcileCamileImaProgress(current){
  st.imaProfile.weeklyMinimum=1800;st.imaProfile.cycleWeeklyMinutes=1800;
  st.imaProfile.lawExtraWeeklyMinutes=210;
  st.imaProfile.weeklyBySubject=imaWeeklyMinutesFor(st);
+ // AFO: o backup CGU guarda BizurAFO/Pacelli em histórico, mas o IMA usa a matriz de módulos M01–M14.
+ // Exibir apenas a trilha auditada, sem perder o estudo do Pacelli já registrado.
+ const afoSubject=subject(st,'afo');
+ if(afoSubject){
+  afoSubject.imaActiveCourse='Leandro Ravyelle · BizurAFO (M01 a M11 + M14; recortes do edital IMA)';
+  for(const u of afoSubject.units||[]){
+   if(/^IMA-AFO-M(0[1-9]|10|11|14)$/.test(u.id)){u.hiddenFromRoute=false;u.deferred=false;u.imaActive=true;}
+   else if(/^afo-cgu-/.test(u.id)){u.hiddenFromRoute=true;u.deferred=true;u.imaLegacyStatus='Catálogo CGU anterior; utilizar matriz IMA sem duplicar';}
+  }
+ }
+
  const previous=st.imaProgressAudit||{};
  if(previous.version!==IMA_PROGRESS_VERSION){
   const port1=unit(st,'port','port-u-1'),p1=sessions(st,'port','port-u-1');
