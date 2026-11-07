@@ -1,12 +1,15 @@
 {
-  "build": "2.0.9-ima-duas-fases-rafael-20261106",
-  "family": "v2.0.9",
-  "publishedAt": "2026-11-06",
+  "build": "2.1.0-ima-camile-historico-metas-20261107",
+  "family": "v2.1.0",
+  "publishedAt": "2026-11-07",
   "effectiveStudyStart": "2026-11-06",
   "channel": "ima-ana-furb-2026",
   "board": "FURB",
   "examDate": "2027-02-14",
   "studyCycleWeeklyMinutes": 1800,
   "extraLawWeeklyMinutes": 210,
-  "licitationGate": "DAD Thallius Pasta 08 (após Pastas 02–07)"
+  "licitationGate": "DAD Thallius Pasta 08 (após Pastas 02–07)",
+  "progressMigration": "camile-ima-backup-audit-20261107-v1",
+  "weeklyGoals": "camile-ima-weekly-goals-20261107-v1",
+  "weeklyGoalsStart": "2026-11-07"
 }
