@@ -40,6 +40,14 @@ export function reconcileCamileImaProgress(current){
  st.imaProfile.weeklyBySubject=imaWeeklyMinutesFor(st);
  // AFO: o backup CGU guarda BizurAFO/Pacelli em histórico, mas o IMA usa a matriz de módulos M01–M14.
  // Exibir apenas a trilha auditada, sem perder o estudo do Pacelli já registrado.
+ // Garantir a fonte única de APU até em instalações antigas sem a disciplina no backup.
+ const apuSubject=subject(st,'adm-publica');
+ if(apuSubject&&!apuSubject.units.some(u=>u.id==='MARC_ADM-ADM-AP-05')){
+  apuSubject.units.push({id:'MARC_ADM-ADM-AP-05',title:'AP-05 · Transparência e Accountability — T01 Transparência + T01 Accountability',
+   order:805,courseId:'marcelo-faixa-preta-administracao-publica',source:'Marcelo Soares · Faixa Preta Administração Pública',
+   theoryDone:false,theoryDate:'',batteryDone:false,generalDone:false,materialReady:false,battery:{attempted:0,correct:0},
+   general:{attempted:0,correct:0},legacy:[],marks:[],hiddenFromRoute:false,deferred:false});
+ }
  const afoSubject=subject(st,'afo');
  if(afoSubject){
   afoSubject.imaActiveCourse='Leandro Ravyelle · BizurAFO (M01 a M11 + M14; recortes do edital IMA)';
