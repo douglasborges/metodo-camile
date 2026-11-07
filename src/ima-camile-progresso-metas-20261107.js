@@ -201,6 +201,18 @@ export function reconcileCamileImaProgress(current){
        recordedFirstBlock:'Conclui o bloco 1/3 (nota de 22/10)',
        instruction:'Já estudou Administração Pública na CGU, mas não há evidência de conclusão do curso inteiro. Não recomeçar AP-01; confirmar blocos 2/3 e 3/3 caso precise retornar a ela. APU do IMA: AP-05 ainda pendente.'};
    }
+   // Não deixar o relatório v1 exibir diagnósticos já retificados como se fossem atuais.
+   const priorAudit=st.imaProgressAudit||{};
+   st.imaProgressAudit={...priorAudit,
+     initialAuditNotes:priorAudit.initialAuditNotes||priorAudit.notes||[],
+     correctedBy:IMA_VERIFIED_STUDY_VERSION,
+     notes:[
+       'Português Giulian A01–A08: teoria concluída por confirmação direta; A09 é próxima.',
+       'DCON Estratégia A04: 24 vídeos teóricos e VA25 exercícios concluídos; iniciar A05 bloco 01/08.',
+       'DCON Cebraspe: apenas A01 confirmada; A03 antiga foi retificada com histórico preservado.',
+       'APU Marcelo AP-01: 140 min e anotação bloco 1/3, sem prova dos blocos 2 e 3; AP-05 pendente.',
+       'BizurAFO não é automaticamente concluído por estudos anteriores com Pacelli.'
+     ]};
    st.imaUserVerified={version:IMA_VERIFIED_STUDY_VERSION,confirmedOn:confirmedDate,
      source:'Relato direto do progresso atualizado, confrontado com backups do Drive 05/10 e 20/10, backup JSON 06/11 e versões históricas do GitHub',
      rules:'Aulas confirmadas recebem teoriaDone, sem horas artificiais. Baterias Tec não se presumem. Retificações históricas ficam rastreáveis.',
