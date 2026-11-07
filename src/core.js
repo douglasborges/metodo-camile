@@ -636,7 +636,7 @@ export function validate(st){
  if(new Set(ids).size!==ids.length||!required.every(id=>ids.includes(id)))throw Error('O backup da Camile deve preservar as disciplinas-base do Método ET.');
  if(!Number.isInteger(st.cycle.index)||st.cycle.index<0||st.cycle.index>=CYCLE.length||!Number.isFinite(st.cycle.minutes)||st.cycle.minutes<0)throw Error('Ciclo inválido.');
  for(let s of st.subjects){
-  if(!RULES[s.id]||!['new','solid'].includes(s.phase)||!Array.isArray(s.units)||!s.checkpoints||!Array.isArray(s.notebooks)||!Number.isInteger(s.slotMinutes)||s.slotMinutes<30||s.slotMinutes>120)throw Error('Disciplina inválida.');
+  if(!RULES[s.id]||!['new','solid'].includes(s.phase)||!Array.isArray(s.units)||!s.checkpoints||!Array.isArray(s.notebooks)||!Number.isInteger(s.slotMinutes)||s.slotMinutes<30||s.slotMinutes>(['rl-ima','licita-ima'].includes(s.id)?240:120))throw Error('Disciplina inválida.');
   for(let u of s.units)if(typeof u.id!=='string'||typeof u.title!=='string'||!Array.isArray(u.legacy)||!Array.isArray(u.marks)||!u.battery||!u.general)throw Error('Aula inválida.');
  }
  return st;
