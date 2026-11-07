@@ -163,11 +163,22 @@ export function mergeCamileBackupSafely(current,incoming){
  for(const remote of src.subjects){
   const local=subjIds.get(remote.id);
   if(!local){st.subjects.push(copy(remote));subjIds.set(remote.id,st.subjects.at(-1));continue;}
+  local.checkpoints=local.checkpoints||{};
+  for(const [k,v] of Object.entries(remote.checkpoints||{}))if(!(k in local.checkpoints))local.checkpoints[k]=copy(v);
+  local.notebooks=Array.isArray(local.notebooks)?local.notebooks:[];
+  const notebookIds=new Set(local.notebooks.map(x=>x.id));
+  for(const n of remote.notebooks||[])if(!notebookIds.has(n.id)){local.notebooks.push(copy(n));notebookIds.add(n.id);}
+  if(remote.andresanComplete)local.andresanComplete=true;
   const units=new Map((local.units||[]).map(x=>[x.id,x]));
   for(const prior of remote.units||[]){
    const cur=units.get(prior.id);
    if(!cur){local.units.push(copy(prior));units.set(prior.id,local.units.at(-1));continue;}
    for(const flag of ['theoryDone','batteryDone','generalDone','materialReady'])if(prior[flag])cur[flag]=true;
+   // Conservar metadados de vídeo e curso quando o catálogo local ainda não os possui.
+   for(const k of ['source','course','courseLabel','lessonNumber','sourceURL','completedBlocks',
+     'totalBlocks','blockTitles','parts','historicalNote','imaPriorLearning','studyPlan']){
+    if(cur[k]===undefined&&prior[k]!==undefined)cur[k]=copy(prior[k]);
+   }
    if(!cur.theoryDate&&prior.theoryDate)cur.theoryDate=prior.theoryDate;
    for(const flag of ['battery','general']){
      const p=prior[flag]||{},c=cur[flag]||{};
@@ -188,6 +199,19 @@ export function mergeCamileBackupSafely(current,incoming){
  }
  if(!st.goals&&src.goals)st.goals=copy(src.goals);
  if(!st.imaProfile&&src.imaProfile)st.imaProfile=copy(src.imaProfile);
+ if(!st.cguCheck&&src.cguCheck)st.cguCheck=copy(src.cguCheck);
+ if(!st.bizurafo&&src.bizurafo)st.bizurafo=copy(src.bizurafo);
+ st.achievementsSeen=[...new Set([...(st.achievementsSeen||[]),...(src.achievementsSeen||[])])];
+ st.reminders=Array.isArray(st.reminders)?st.reminders:[];
+ const reminderIds=new Set(st.reminders.map(x=>x.id));
+ for(const r of src.reminders||[])if(!reminderIds.has(r.id)){st.reminders.push(copy(r));reminderIds.add(r.id);}
+ st.goalArchive=Array.isArray(st.goalArchive)?st.goalArchive:[];
+ const archiveKeys=new Set(st.goalArchive.map(x=>JSON.stringify([x.version,x.savedAt])));
+ for(const a of src.goalArchive||[]){
+   const key=JSON.stringify([a.version,a.savedAt]);
+   if(!archiveKeys.has(key)){st.goalArchive.push(copy(a));archiveKeys.add(key);}
+ }
+
  st.camileMergeAudit={source:'Backup importado manualmente',sessionsAdded:st.sessions.length-(current.sessions||[]).length,mode:'MERGE_ONLY',notes:'Sessões e histórico local preservados; nenhuma sessão substituída'};
  return st;
 }
