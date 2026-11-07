@@ -1,6 +1,6 @@
 {
-  "build": "2.1.0-ima-camile-historico-metas-20261107",
-  "family": "v2.1.0",
+  "build": "2.1.1-ima-retificacao-port-dcon-metas-20261107",
+  "family": "v2.1.1",
   "publishedAt": "2026-11-07",
   "effectiveStudyStart": "2026-11-06",
   "channel": "ima-ana-furb-2026",
@@ -11,5 +11,6 @@
   "licitationGate": "DAD Thallius Pasta 08 (após Pastas 02–07)",
   "progressMigration": "camile-ima-backup-audit-20261107-v1",
   "weeklyGoals": "camile-ima-weekly-goals-20261107-v1",
-  "weeklyGoalsStart": "2026-11-07"
+  "weeklyGoalsStart": "2026-11-07",
+  "confirmationVersion": "camile-confirmacao-historica-port8-dcon-a4-20261107-v2"
 }
