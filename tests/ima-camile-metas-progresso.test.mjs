@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import {reconcileImaSubjects} from '../src/ima-sc-curriculum-20261105.js';
 import {reconcileDconProgram} from '../src/dcon-programacao-20261103.js';
 import {reconcileCamileImaProgress,mergeCamileBackupSafely,imaGoalWeek,imaCurrentGoalIndex,imaMetaSnapshot,IMA_META_WEEKS} from '../src/ima-camile-progresso-metas-20261107.js';
-import {validate} from '../src/core.js';
+import {validate,setUnit} from '../src/core.js';
 const copy=v=>JSON.parse(JSON.stringify(v));
 const seed=()=>reconcileImaSubjects(reconcileDconProgram(copy(JSON.parse(fs.readFileSync(new URL('../data/initial-state.json',import.meta.url),'utf8')))));
 const u=(s,sid,id)=>s.subjects.find(x=>x.id===sid).units.find(x=>x.id===id);
@@ -131,4 +131,16 @@ test('backup antigo não restaura indevidamente a conclusão de Cebraspe A03',()
  assert.equal(u(merged,'dcon','dcon-u-4').theoryDone,false);
  assert.equal(u(merged,'dcon','dcon-u-2').theoryDone,true);
  assert.equal(u(merged,'port','port-u-8').theoryDone,true);
+});
+
+test('dados históricos confirmados sem data exata podem ser revisados sem inventar dia',()=>{
+ const st=reconcileCamileImaProgress(seed());
+ const old=u(st,'port','port-u-8');assert.equal(old.theoryDone,true);
+ assert.equal(old.theoryDate,'');
+ const checked=setUnit(st,'port','port-u-8',{
+   theoryDone:true,theoryDate:'',batteryDone:false,generalDone:false,materialReady:false
+ });
+ assert.equal(u(checked,'port','port-u-8').theoryDone,true);
+ assert.equal(u(checked,'port','port-u-8').theoryDate,'');
+ assert.equal(st.sessions.length,0);
 });
