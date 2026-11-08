@@ -7,7 +7,10 @@ test('dashboard e catálogo exibem ciclo e exceção art. 5º com os dados inici
  await import('../src/app.js');await new Promise(r=>setImmediate(r));
  assert.doesNotMatch(get('#main').innerHTML,/Não foi possível abrir/);
  assert.match(get('#main').innerHTML,/Plano IMA-SC/);location.hash='#today';listeners.hashchange();
- assert.match(get('#main').innerHTML,/13 posições/);assert.match(get('#main').innerHTML,/Curso:<\/b>/);
+ assert.match(get('#main').innerHTML,/13 posições/);
+ // Domingo a tela Hoje apresenta revisão e não o cartão de curso; teste não depende do dia de execução UTC.
+ if(get('#main').innerHTML.includes('DOMINGO · REVISÃO'))assert.match(get('#main').innerHTML,/3 horas líquidas/);
+ else assert.match(get('#main').innerHTML,/Curso:<\/b>/);
  for(const route of ['priorities','subjects','today','data']){
   location.hash='#'+route;listeners.hashchange();assert.doesNotMatch(get('#main').innerHTML,/undefined|NaN/);
   if(route==='priorities'){

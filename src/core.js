@@ -588,7 +588,10 @@ export function setUnit(current,sid,id,values){let st=copy(current),{s,u}=getUni
  if(sid==='licita-ima'&&st.imaProfile?.status==='IMA_ACTIVE'&&!imaLicitationStatus(st).unlocked)throw Error('Licitações bloqueada: conclua as Pastas 02–08 de DAD (Thallius).');
  let theory=!!values.theoryDone,battery=!!values.batteryDone,general=!!values.generalDone,material=!!values.materialReady;
  // Modo flexível Camile: a conclusão pode ser informada fora da ordem para reconstruir histórico.
- if(theory&&(!validDay(values.theoryDate)||values.theoryDate>day()))throw Error('Informe a data real da conclusão da teoria.');
+ // Histórico confirmado sem dia exato: permitir manter a data em branco (sem inventar dia).
+ const confirmedWithoutExactDate=theory&&u.theoryDone&&!u.theoryDate&&!values.theoryDate&&
+  ['CONFIRMACAO_USUARIO_2026_11_07','BACKUP_2026_11_06_E_USUARIO'].includes(u.imaCompletionSource);
+ if(theory&&!confirmedWithoutExactDate&&(!validDay(values.theoryDate)||values.theoryDate>day()))throw Error('Informe a data real da conclusão da teoria.');
  if(u.veonCatalog&&theory&&u.parts?.some(p=>!p.done))throw Error('Conclua cada videoaula real do módulo VEON antes de marcar a teoria completa.');
  if(battery&&(!theory||u.battery.attempted<(u.veonCatalog?veonQuestionTarget(u):30)))throw Error('A primeira bateria exige teoria concluída e o mínimo de questões do módulo (10, 20 ou 30 conforme extensão).');
  if(general&&(!methodUnits(s).every(v=>v.id===u.id?theory&&battery:v.theoryDone&&v.batteryDone)||!checkpoints(s).every(c=>c.status==='done')))throw Error('Conclua teoria, baterias e checkpoints antes da revisão geral.');
