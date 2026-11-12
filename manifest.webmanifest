@@ -29,18 +29,18 @@
   ],
   "shortcuts": [
     {
-      "name": "Hoje",
-      "short_name": "Hoje",
-      "url": "./#today"
+      "name": "Painel IMA",
+      "short_name": "IMA",
+      "url": "./#ima"
     },
     {
-      "name": "Progresso",
-      "short_name": "Progresso",
-      "url": "./#progress"
+      "name": "Metas IMA",
+      "short_name": "Metas",
+      "url": "./#planning"
     },
     {
-      "name": "Dados",
-      "short_name": "Dados",
+      "name": "Dados e backup",
+      "short_name": "Backup",
       "url": "./#data"
     }
   ]
