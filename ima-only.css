@@ -22,3 +22,12 @@ progress{accent-color:var(--lime);max-width:100%}
 .card .actions{flex-wrap:wrap}
 @media(max-width:900px){.lesson-head{flex-direction:column;gap:8px}.ima-part{flex-wrap:wrap}.ima-part button{min-width:0}.ima-parts{grid-template-columns:1fr}}
 @media(max-width:720px){.sidebar nav{justify-content:flex-start;overflow-x:auto}.sidebar nav a{min-width:95px;white-space:nowrap}.sidebar nav a span{font-size:10px}.ima-lesson{padding:12px}.ima-part{padding:10px}}
+
+/* Português — Marcello Giulian: campo de tópico independente do nome fixo Aula N */
+.port-topic-form{display:grid;gap:9px;margin-top:14px;padding:14px;border:1px solid var(--line);border-radius:10px;background:#141b12}
+.port-topic-form label{font-size:13px;color:var(--text);font-weight:600}
+.port-topic-row{display:flex;gap:10px;align-items:center}
+.port-topic-row input{min-width:0;flex:1;max-width:none}
+.port-topic-row button{flex-shrink:0}
+.port-topic-form small{line-height:1.55}
+@media(max-width:720px){.port-topic-row{flex-direction:column;align-items:stretch}.port-topic-row button{width:100%}}
