@@ -8,7 +8,7 @@ import {reconcileImaSubjects,imaLegislationPair,IMA_LAWS} from './ima-sc-curricu
 import {reconcileCamileImaProgress} from './ima-camile-progresso-metas-20261107.js';
 import {IMA_AUDIT,imaLicitationStatus,imaWeekScheduleFor,imaWeeklyMinutesFor,IMA_WELCOME} from './ima-sc-auditoria-edital-20261106.js';
 
-export const VERSION='3.0.0-ima-only-20261112';
+export const VERSION='3.0.1-ima-port-topicos-livres-20261112';
 export const OLD_STORAGE_KEY='metodo-et:camile:v1';
 export const ARCHIVE_KEY='metodo-et:camile:archive-before-ima-v3';
 export const SUBJECTS=Object.freeze([
@@ -58,22 +58,13 @@ const IDs={dad:DAD_IDS,dcon:DCON_IDS,port:PORT_IDS,afo:AFO_IDS,'rl-ima':RL_IDS,
 const LEGACY_KEPT={dcon:new Set(['dcon-u-1','dcon-u-4']),port:new Set(), 'adm-publica':new Set(['MARC_ADM-ADM-AP-01'])};
 const escP=(n)=>String(n).padStart(2,'0');
 export const WEEKDAY=['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
-const LEGACY_PORT_TITLES=[
- 'Aula 1 | Acentuação Gráfica','Aula 2 | Ortografia','Aula 3 | Classes de Palavras',
- 'Aula 4 | Classes de Palavras; Funções Sintáticas','Aula 5 | Funções Sintáticas',
- 'Aula 6 | Concordância Verbal; Concordância Nominal',
- 'Aula 7 | Concordância Nominal; Regência Verbal',
- 'Aula 8 | Regência Verbal; Crase; Colocação Pronominal',
- 'Aula 9 | Colocação Pronominal','Aula 10 | Colocação Pronominal; Verbos',
- 'Aula 11 | Orações','Aula 12 | Orações; Pontuação','Aula 13 | Pontuação; Questões'
-];
 export function initialIMAState(){
  const seed=(id,course,units=[])=>({id,course,phase:'new',slotMinutes:60,units,checkpoints:{},notebooks:[],andresanComplete:false});
  const make=(id,title,order)=>({id,title,order,theoryDone:false,theoryDate:'',
   batteryDone:false,generalDone:false,materialReady:false,
   battery:{attempted:0,correct:0},general:{attempted:0,correct:0},legacy:[],marks:[]});
  const port=seed('port','Marcello Giulian · Extensivo',
-  LEGACY_PORT_TITLES.map((t,i)=>make('port-u-'+(i+1),t,i+1)));
+  Array.from({length:40},(_,i)=>make('port-u-'+(i+1),'Aula '+(i+1),i+1)));
  const dcon=seed('dcon','Nelma Fontana · Cebraspe e Estratégia',
   [make('dcon-u-2','Estratégia A04 — art. 5º (24 VAs + VA25)',2)]);
  const subjects=[port,dcon,...SUBJECTS.filter(([id])=>!['port','dcon'].includes(id)).map(([id,,course])=>seed(id,course))];
@@ -124,11 +115,25 @@ function buildData(st){
  }
  const port=byId.get('port');
  for(let n=1;n<=40;n++){
-  const u=ensureUnit(port,'port-u-'+n,
-   n<=13?(lookup(port,'port-u-'+n)?.title||'Aula '+n):'Aula '+escP(n)+' — título individual não identificado na fonte',n,
-   'Marcello Giulian · Extensivo');
-  // Não preencher títulos 14–40 por suposição. Permitir que Camile acrescente o título exato.
-  if(n>13&&!u.title.startsWith('Aula '+escP(n)))u.title='Aula '+escP(n)+' — '+u.title.replace(/^Aula\s+\d+\s*[–-]\s*/,'');
+  const id='port-u-'+n;
+  const previous=lookup(port,id);
+  const u=ensureUnit(port,id,'Aula '+n,n,'Marcello Giulian · Extensivo');
+  // Os títulos antigos 1–13 eram estimativas e NÃO são convertidos em tópicos.
+  // Nas aulas 14–40 a versão 3.0 permitia editar o título; preservar uma eventual
+  // edição manual como tópico separado, sem transformá-la no título da aula.
+  if(typeof u.studiedTopic!=='string'){
+   let manual='';
+   if(n>=14&&previous){
+    const prev=String(previous.title||'').trim();
+    const placeholder=/^Aula\s*\d+\s*[—–-]\s*título individual não identificado na fonte$/i;
+    const bare=/^Aula\s*\d+$/i;
+    if(prev&&!placeholder.test(prev)&&!bare.test(prev)){
+     manual=prev.replace(new RegExp('^Aula\\s*'+n+'\\s*[|—–-]\\s*','i'),'').trim();
+    }
+   }
+   u.studiedTopic=manual;
+  }
+  u.title='Aula '+n;
   u.teacher='Marcello Giulian';u.courseLabel='Português — Extensivo (40 aulas)';u.courseStage='PORT';
  }
  const dcon=byId.get('dcon');
@@ -187,7 +192,7 @@ function buildData(st){
     'imaTopic','editalTopic','theoryDone','theoryDate','batteryDone','generalDone',
     'materialReady','battery','general','blocksCompleted','exerciseVideoDone',
     'completedBlocks','equivalenceSource','equivalenceReviewRequired','confirmedThallius',
-    'optionalSupplement','imaCompletionSource','imaCompletionVerifiedAt'];
+    'optionalSupplement','imaCompletionSource','imaCompletionVerifiedAt','studiedTopic'];
    const out={};for(const k of keys)if(u[k]!==undefined)out[k]=clone(u[k]);
    out.legacy=[];out.marks=[];
    out.parts=(u.parts||[]).map(p=>({id:p.id,title:p.title,number:p.number,done:!!p.done}));
@@ -263,6 +268,16 @@ export function prepareIMA(raw){
 }
 export function activeUnits(st,sid){const s=st.subjects.find(x=>x.id===sid);return (s?.units||[]).filter(u=>IDs[sid]?.includes(u.id));}
 export function getUnit(st,sid,uid){return activeUnits(st,sid).find(x=>x.id===uid);}
+export function setPortugueseTopic(st,uid,topic){
+ const out=clone(st);
+ if(!/^port-u-(?:[1-9]|[1-3][0-9]|40)$/.test(uid))throw Error('Aula de Português inválida.');
+ if(typeof topic!=='string'||topic.length>500)throw Error('O tópico deve ter no máximo 500 caracteres.');
+ const u=getUnit(out,'port',uid);
+ if(!u||u.teacher!=='Marcello Giulian')throw Error('Aula de Português não encontrada.');
+ // Título e professor são fixos; campo livre exclusivamente para tópico estudado.
+ u.studiedTopic=topic.trim();
+ return out;
+}
 export function isLicUnlocked(st){return imaLicitationStatus(st).unlocked;}
 export function nextLessons(st,sid,count=2){
  if(sid==='licita-ima'&&!isLicUnlocked(st))return [];
