@@ -58,6 +58,30 @@ const IDs={dad:DAD_IDS,dcon:DCON_IDS,port:PORT_IDS,afo:AFO_IDS,'rl-ima':RL_IDS,
 const LEGACY_KEPT={dcon:new Set(['dcon-u-1','dcon-u-4']),port:new Set(), 'adm-publica':new Set(['MARC_ADM-ADM-AP-01'])};
 const escP=(n)=>String(n).padStart(2,'0');
 export const WEEKDAY=['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
+const LEGACY_PORT_TITLES=[
+ 'Aula 1 | Acentuação Gráfica','Aula 2 | Ortografia','Aula 3 | Classes de Palavras',
+ 'Aula 4 | Classes de Palavras; Funções Sintáticas','Aula 5 | Funções Sintáticas',
+ 'Aula 6 | Concordância Verbal; Concordância Nominal',
+ 'Aula 7 | Concordância Nominal; Regência Verbal',
+ 'Aula 8 | Regência Verbal; Crase; Colocação Pronominal',
+ 'Aula 9 | Colocação Pronominal','Aula 10 | Colocação Pronominal; Verbos',
+ 'Aula 11 | Orações','Aula 12 | Orações; Pontuação','Aula 13 | Pontuação; Questões'
+];
+export function initialIMAState(){
+ const seed=(id,course,units=[])=>({id,course,phase:'new',slotMinutes:60,units,checkpoints:{},notebooks:[],andresanComplete:false});
+ const make=(id,title,order)=>({id,title,order,theoryDone:false,theoryDate:'',
+  batteryDone:false,generalDone:false,materialReady:false,
+  battery:{attempted:0,correct:0},general:{attempted:0,correct:0},legacy:[],marks:[]});
+ const port=seed('port','Marcello Giulian · Extensivo',
+  LEGACY_PORT_TITLES.map((t,i)=>make('port-u-'+(i+1),t,i+1)));
+ const dcon=seed('dcon','Nelma Fontana · Cebraspe e Estratégia',
+  [make('dcon-u-2','Estratégia A04 — art. 5º (24 VAs + VA25)',2)]);
+ const subjects=[port,dcon,...SUBJECTS.filter(([id])=>!['port','dcon'].includes(id)).map(([id,,course])=>seed(id,course))];
+ return {version:1,settings:{focus:'IMA',secondary:'IMA',weeklyMinimum:1800,
+   weeklyTarget:1800,dailyMinimum:240,dailyTarget:240},subjects,
+  sessions:[],imports:[],archive:[],cycle:{index:0,minutes:0},
+  legislation:{sessions:[]}};
+}
 const defaultUnit=(id,title,order,source)=>({id,title,order,source,phase:'new',theoryDone:false,theoryDate:'',
  batteryDone:false,generalDone:false,materialReady:false,battery:{attempted:0,correct:0},
  general:{attempted:0,correct:0},legacy:[],marks:[],parts:[]});
