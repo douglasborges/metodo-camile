@@ -116,7 +116,7 @@ export const IMA_AUDIT=Object.freeze({
  port:[
  s('IMA-PORT-BASE','Gramática: morfologia, sintaxe, pontuação, concordância, regência','Marcello Giulian','Extensivo já em andamento — preservar 40 aulas e progresso','DIRETO','Edital FURB, questões múltipla escolha; não reiniciar'),
  s('IMA-PORT-SEM','Semântica, figuras, funções da linguagem, variação linguística','Marcello Giulian + material complementar','Validar títulos de aulas faltantes do Extensivo antes de atribuir números','COMPLEMENTO','Gran indica cobertura desse grupo, mas não é fonte de estudo'),
- s('IMA-PORT-TEXT','Interpretação, coesão, coerência, gêneros e reescrita','TEC + Marcello Giulian','Baterias FURB de interpretação e reescrita','COMPLEMENTO','Andresan questões Cebraspe em espera; formato FURB prevalece')
+ s('IMA-PORT-TEXT','Interpretação, coesão, coerência, gêneros e reescrita','TEC + Marcello Giulian','Baterias FURB de interpretação e reescrita','COMPLEMENTO','Questões FURB pelo TEC; material de outros cursos não integra a preparação IMA')
  ]
 });
 export const IMA_TOPIC_TOTAL=Object.values(IMA_AUDIT).reduce((n,x)=>n+x.length,0);
