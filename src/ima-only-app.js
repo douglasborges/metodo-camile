@@ -89,7 +89,7 @@ function dashboard(){
  const daily=weekSchedule(state).map(day=>'<article class="card schedule-row"><b>'+esc(day.day)+'</b><p>'+
  day.slots.map(([id,m])=>esc(subjName(id))+' '+m+'min').join(' · ')+'</p></article>').join('');
  return headline('IMA-SC · FURB · Analista Administrativo',IMA_WELCOME,
- 'Aplicação exclusiva do IMA. Nenhum curso da CGU integra o planejamento ativo.')+
+ 'Aplicação exclusiva para o IMA-SC, com cursos e metas selecionados para o edital.')+
  '<div class="grid metrics four">'+stat('Ciclo da semana',formatMinutes(w.cycle),'Meta 30h, sem legislação seca')+
  stat('Leis extraciclo',formatMinutes(w.law),'2 leituras de 15 minutos por dia')+
  stat('Fase',gate?'2 · Licitações liberadas':'1 · Fundamentos',gate?'DAD, DCON e Licitações 4h/sem.':'DAD e DCON 6h/sem.')+
