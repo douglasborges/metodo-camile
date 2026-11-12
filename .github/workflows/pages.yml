@@ -1,4 +1,4 @@
-name: Publicar Método Camile
+name: Publicar Método Camile · Somente IMA
 
 on:
   push:
@@ -23,95 +23,38 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - run: npm test
-      - run: npm run build
-
-      - name: Configurar GitHub Pages
-        uses: actions/configure-pages@v5
-        with:
-          enablement: true
-
-      - name: Validar Método Camile · v2.1.2 · IMA ANA FURB
+      - name: Testes unitários e regressão
+        run: npm test
+      - name: Build somente IMA
+        run: npm run build
+      - name: Validar publicação sem CGU e fornecedores excluídos
         run: |
-          cp src/app.js /tmp/app.mjs
-          cp src/core.js /tmp/core.mjs
-          cp src/personal.js /tmp/personal.mjs
-          cp src/progress.js /tmp/progress.mjs
-          cp src/analytics.js /tmp/analytics.mjs
-          cp src/achievements.js /tmp/achievements.mjs
-          cp src/cgu-syllabus.js /tmp/cgu-syllabus.mjs
-          cp src/cgu-materials.js /tmp/cgu-materials.mjs
-          cp src/cgu-final-plan.js /tmp/cgu-final-plan.mjs
-          cp src/cgu-final-runtime.js /tmp/cgu-final-runtime.mjs
-          cp src/pp-renno.js /tmp/pp-renno.mjs
-          cp src/dcon-programacao-20261103.js /tmp/dcon-programacao-20261103.mjs
-          node --check /tmp/app.mjs
-          node --check /tmp/core.mjs
-          node --check /tmp/personal.mjs
-          node --check /tmp/progress.mjs
-          node --check /tmp/analytics.mjs
-          node --check /tmp/achievements.mjs
-          node --check /tmp/cgu-syllabus.mjs
-          node --check /tmp/cgu-materials.mjs
-          node --check /tmp/cgu-final-plan.mjs
-          node --check /tmp/cgu-final-runtime.mjs
-          node --check /tmp/pp-renno.mjs
-          node --check /tmp/dcon-programacao-20261103.mjs
-          node --check src/veon-combo-catalog.js
-          node --check src/veon-rfb-catalog.js
-          node --check src/veon-info-dados-20261104.js
-          node --check src/veon-ui.js
-          node --check src/ima-sc-curriculum-20261105.js
-          node --check src/ima-sc-auditoria-edital-20261106.js
-          node --check src/ima-camile-progresso-metas-20261107.js
-          node --check drive-sync.js
-          node --check drive-sync-ui.js
-
-          grep -q "2.1.2-ima-historico-confirmado-sem-data-exata-20261107" index.html
-          grep -Fq "APP_VERSION_LABEL='v2.1.2 · IMA ANA'" src/app.js
-          grep -q "function prioritiesPage()" src/app.js
-          grep -q "IMA-SC · Plano ativo" index.html
-          grep -q "Edital × Aulas (FURB)" index.html
-          grep -q "ima-ana-furb-2026" version.json
-          grep -q "function imaCoveragePage()" src/app.js
-          grep -q "function imaGoalsPage()" src/app.js
-          grep -q "Metas IMA" index.html
-          grep -q "refineImaCurriculum" src/ima-sc-curriculum-20261105.js
-          grep -q "CYCLE_PLAN_VERSION=8" src/core.js
-          grep -q "weeklyMinimum=1980" src/core.js
-          grep -q "weeklyTarget=2340" src/core.js
-          grep -q "dailyMinimum=300" src/core.js
-          grep -q "dailyTarget=360" src/core.js
-          grep -q "sundayReviewMinutes=180" src/core.js
-          grep -q "FINAL_CGU_CYCLE_SUBJECTS" src/core.js
-          grep -q "Domingo é reservado à revisão e não avança o ciclo" src/core.js
-          grep -q "CGU_AUD_2026_10_20_FINAL_PROPOSTA_v1" src/cgu-final-plan.js
-          grep -q "NAO_ESTUDAR_DUPLICADO" src/cgu-final-plan.js
-          grep -q "EM_PREPARACAO_NO_PRINT" src/cgu-final-plan.js
-          grep -q "PAC_AFO" src/cgu-final-runtime.js
-          grep -q "PAC_CPU" src/cgu-final-runtime.js
-          grep -q "MARC_AUD" src/cgu-final-runtime.js
-          grep -q "MARC_ADM" src/cgu-final-runtime.js
-          grep -q "RAFA_DAD" src/cgu-final-runtime.js
-          grep -q "NELMA" src/cgu-final-runtime.js
-
-          # OAuth/Drive precisa permanecer no mesmo mecanismo e identidade.
-          grep -q "metodo-et:camile:v1" drive-sync.js
-          grep -q "Metodo ET - Camile - Dados.json" drive-sync.js
-          grep -q "camile-cloud-v1" drive-sync.js
-          grep -q "242070309786-1rn9vsc4fo0coaq3e3mptrlf1m9f0kt3.apps.googleusercontent.com" drive-sync.js
-          grep -q "https://douglasborges.github.io" drive-sync.js
-
+          set -e
+          grep -q "3.0.0-ima-only-20261112" dist/index.html
+          grep -q "ima-only-app.js" dist/index.html
+          grep -q "Metas IMA" dist/index.html
+          grep -q "Thallius" dist/src/ima-only-state.js
+          grep -q "Marcello Giulian" dist/src/ima-only-state.js
+          grep -q "Bem-vida, Camile" dist/index.html
+          grep -q "metodo-et:camile:v1" dist/drive-sync.js
+          grep -q "Metodo ET - Camile - Dados.json" dist/drive-sync.js
+          grep -q "camile-cloud-v1" dist/drive-sync.js
+          grep -q "242070309786-1rn9vsc4fo0coaq3e3mptrlf1m9f0kt3.apps.googleusercontent.com" dist/drive-sync.js
+          test ! -f dist/src/app.js
+          test ! -f dist/src/cgu-final-runtime.js
+          test ! -f dist/src/portugues-andresan-catalog.js
+          test ! -f dist/data/initial-state.json
+          if grep -Eiq 'CGU|7 Fontes|Andresan' dist/index.html dist/manifest.webmanifest; then
+            echo "Referência ao concurso antigo no shell publicado."
+            exit 1
+          fi
       - name: Empacotar site
         uses: actions/upload-pages-artifact@v3
         with:
           path: dist
-
       - name: Publicar
         id: deployment
         uses: actions/deploy-pages@v4
-
