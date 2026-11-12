@@ -1,6 +1,6 @@
 {
-  "build": "3.0.0-ima-only-20261112",
-  "family": "v3.0.0",
+  "build": "3.0.1-ima-port-topicos-livres-20261112",
+  "family": "v3.0.1",
   "publishedAt": "2026-11-12",
   "effectiveStudyStart": "2026-11-06",
   "channel": "ima-only",
@@ -12,5 +12,7 @@
   "weeklyGoals": "camile-ima-weekly-goals-20261107-v1",
   "weeklyGoalsStart": "2026-11-07",
   "activeCompetition": "IMA-SC 2026 ANA",
-  "activeSubjects": 9
+  "activeSubjects": 9,
+  "portugueseCourse": "Marcello Giulian — Extensivo, aulas 1–40",
+  "portugueseTopicMode": "Livre, editável e separado do título"
 }
