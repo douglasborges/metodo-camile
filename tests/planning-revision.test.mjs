@@ -118,8 +118,8 @@ test('estados já intercalados mantêm as 13 posições e os minutos após corre
 test('manifest mantém início e atalhos sem build e sem campo id',()=>{
  const manifest=JSON.parse(fs.readFileSync(new URL('../manifest.webmanifest',import.meta.url)));
  assert.equal(manifest.start_url,'./');assert.equal(Object.hasOwn(manifest,'id'),false);
- assert.deepEqual(manifest.shortcuts.map(x=>x.url),['today','progress','data'].map(x=>(camile?'./#':'./index.html#')+x));
- const html=fs.readFileSync(new URL('../index.html',import.meta.url),'utf8');assert.match(html,/src\/app\.js\?v=/);
+ assert.deepEqual(manifest.shortcuts.map(x=>x.url),['ima','planning','data'].map(x=>(camile?'./#':'./index.html#')+x));
+ const html=fs.readFileSync(new URL('../index.html',import.meta.url),'utf8');assert.match(html,/src\/ima-only-app\.js\?v=/);
 });
 
 test('materiais 7 Fontes do chat Análise do curso CGU ficam vinculados às posições corretas',()=>{
