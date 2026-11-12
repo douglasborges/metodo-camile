@@ -1,6 +1,6 @@
 import {
  VERSION,OLD_STORAGE_KEY,ARCHIVE_KEY,SUBJECTS,IMA_WELCOME,IMA_AUDIT,
- initialIMAState,prepareIMA,activeUnits,getUnit,isLicUnlocked,nextLessons,setPart,setTheory,
+ initialIMAState,prepareIMA,activeUnits,getUnit,isLicUnlocked,nextLessons,setPart,setTheory,setPortugueseTopic,
  weekSummary,weekSchedule,weekBounds,isoToday,formatMinutes,lawPair,appendSession,appendLaw,allSourceRecords
 } from './ima-only-state.js';
 
@@ -71,8 +71,16 @@ function lessonCard(sid,u){
    {subject:sid,unit:u.id,done:done?'0':'1'})+'</div>';
  }
  if(u.id==='dcon-u-2'&&done)content='<p class="muted">24 videoaulas teóricas e VA25 de exercícios já concluídas. Não repetir.</p>'+content;
- if(u.id.startsWith('port-u-')&&Number(u.id.split('-').at(-1))>=14)
-  content+=actionButton('rename','Informar título exato da aula',{subject:sid,unit:u.id});
+ if(sid==='port'){
+  content+= '<form class="port-topic-form" data-port-topic="'+esc(u.id)+'">'+
+   '<label for="topic-'+esc(u.id)+'">Tópico estudado nesta aula (preenchimento livre)</label>'+
+   '<div class="port-topic-row"><input type="text" id="topic-'+esc(u.id)+'" name="studiedTopic" '+
+   'value="'+esc(u.studiedTopic||'')+'" maxlength="500" '+
+   'placeholder="Escreva aqui o tópico estudado" autocomplete="off">'+
+   '<button class="secondary small" type="submit">Salvar tópico</button></div>'+
+   '<small class="muted">O título da aula permanece '+esc(u.title)+
+   '. Você pode preencher, corrigir ou apagar o tópico sem alterar a conclusão.</small></form>';
+ }
  if(u.optionalSupplement)content='<p class="muted">Complemento específico — não substitui as aulas do Thallius.</p>'+content;
  return '<div class="ima-lesson '+(done?'ima-done':'')+'"><div>'+head+'</div>'+
  (locked?'<p class="warning">Bloqueada até concluir DAD, pastas 02–08.</p>':content)+'</div>';
@@ -95,7 +103,7 @@ function dashboard(){
  stat('Fase',gate?'2 · Licitações liberadas':'1 · Fundamentos',gate?'DAD, DCON e Licitações 4h/sem.':'DAD e DCON 6h/sem.')+
  stat('Data da prova','14/02/2027','IMA-SC · FURB')+'</div>'+
  '<section class="card"><h2>Prioridades imediatas</h2>'+
- '<p><b>Português:</b> Marcello Giulian, Extensivo, Aula 09 — Colocação Pronominal (A01–A08 estudadas).</p>'+
+ '<p><b>Português:</b> Marcello Giulian, Extensivo, Aula 9 (Aulas 1–8 concluídas). A Camile informa livremente o tópico de cada aula.</p>'+
  '<p><b>DCON:</b> Nelma Fontana, Estratégia A05, Bloco 01/08 — Remédios Constitucionais (A04/VA25 concluídas).</p>'+
  '<p><b>DAD:</b> Thallius Moraes, Pasta 02. Licitações só é liberada após concluir as pastas 02–08.</p>'+
  '<p><b>APU:</b> Marcelo Soares, AP-05 — Transparência e Accountability. AP-01 tem 140 minutos de estudo anterior aproveitados.</p>'+
@@ -114,7 +122,7 @@ function subjectsPage(){
 function subjectPage(id){
  const s=SUBJECTS.find(x=>x[0]===id);if(!s)return dashboard();
  const units=activeUnits(state,id),done=units.filter(x=>x.theoryDone).length,gate=isLicUnlocked(state);
- const info=id==='port'?'Somente Marcello Giulian. As aulas 14–40 estão numeradas, mas seus títulos literais não foram fornecidos. Nenhum curso de questões de outro professor integra esta disciplina.':
+ const info=id==='port'?'Somente Marcello Giulian — Extensivo. Aulas 1 a 40, sem conteúdo presumido. A Camile preenche o tópico estudado livremente, inclusive nas aulas 1 a 8 já concluídas. Questões no TEC/FURB.':
   id==='dad'?'Exclusivamente Thallius Moraes. Pasta 01 é Vade Mecum de consulta; o curso ativo começa na Pasta 02. Concluir as pastas 02–08 libera Licitações.':
   id==='adm-publica'?'Marcelo Soares: somente AP-05 (T01 Transparência e T01 Accountability). AP-01 foi estudada parcialmente no histórico e não precisa ser reiniciada.':
   id==='licita-ima'?'Thallius Moraes é o professor principal. Pasta 14 (21 VAs), Pasta 15 (8 VAs) e Rafael Oliveira Aula 10 (seis partes) como complemento.':
@@ -146,7 +154,7 @@ function goals(){
  (isPast?'<p class="muted">Semana encerrada; a meta histórica continua consultável.</p>':'')+'</section>'+
  '<section class="card"><div class="table-wrap"><table><thead><tr><th>Disciplina</th><th>Meta</th><th>Realizado</th><th>Progresso</th><th>Próximo</th></tr></thead>'+
  '<tbody>'+rows+'</tbody></table></div></section><section class="card">'+
- '<h2>Meta 1 — continuidade</h2><p>Português: A09. DCON: Estratégia A05 bloco 01/08. DAD: Thallius Pasta 02.'+
+ '<h2>Meta 1 — continuidade</h2><p>Português: Aula 9 do Extensivo de Marcello Giulian (tópico preenchido pela Camile). DCON: Estratégia A05 bloco 01/08. DAD: Thallius Pasta 02.'+
  ' APU: Marcelo AP-05. AFO: BizurAFO. RL: Guilherme Neves. TI: Rodrigo. Ambiental: Anexo V.</p></section>';
 }
 function coverage(){
@@ -175,7 +183,7 @@ function diary(){
  '<div class="grid metrics four">'+stat('Sessões IMA',rows.length)+stat('Tempo IMA',formatMinutes(counts.minutes))+
  stat('Questões',counts.questions)+stat('Acertos',counts.correct)+'</div>'+
  '<section class="card"><div class="table-wrap"><table><thead><tr><th>Data</th><th>Matéria</th><th>Aula</th><th>Atividade</th><th>Tempo</th><th>Questões</th></tr></thead><tbody>'+
- rows.map(r=>'<tr><td>'+fmtDate(r.date)+'</td><td>'+esc(subjName(r.subjectId))+'</td><td>'+esc(r.title||getUnit(state,r.subjectId,r.unitId)?.title||r.unitId)+'</td>'+
+ rows.map(r=>'<tr><td>'+fmtDate(r.date)+'</td><td>'+esc(subjName(r.subjectId))+'</td><td>'+esc(r.subjectId==='port'?(getUnit(state,'port',r.unitId)?.title||r.unitId):(r.title||getUnit(state,r.subjectId,r.unitId)?.title||r.unitId))+'</td>'+
  '<td>'+esc(r.activity)+'</td><td>'+formatMinutes(Number(r.minutes)||0)+'</td><td>'+
  (Number(r.questions)||0)+' / '+(Number(r.correct)||0)+'</td></tr>').join('')+
  '</tbody></table></div></section>';
@@ -245,6 +253,7 @@ function doImport(){
      const prior=from?.units.find(v=>v.id===u.id);if(!prior)continue;
      if(prior.theoryDone&&!u.theoryDone){u.theoryDone=true;u.theoryDate=u.theoryDate||prior.theoryDate||'';}
      if(prior.batteryDone)u.batteryDone=true;
+     if(u.id.startsWith('port-u-')&&!String(u.studiedTopic||'').trim()&&String(prior.studiedTopic||'').trim())u.studiedTopic=prior.studiedTopic;
      if(Array.isArray(u.parts)&&Array.isArray(prior.parts))for(const p of u.parts)if(prior.parts.some(q=>q.id===p.id&&q.done))p.done=true;
     }
    }
@@ -268,6 +277,15 @@ function render(){
 }
 function events(){
  window.addEventListener('hashchange',render);
+ // Salvar tópico por aula sem trocar o nome do curso ou status de conclusão.
+ document.addEventListener('submit',e=>{
+  const form=e.target?.closest?.('form[data-port-topic]');
+  if(!form)return;
+  e.preventDefault();
+  const uid=form.getAttribute('data-port-topic');
+  const topic=form.elements.studiedTopic.value;
+  update(st=>setPortugueseTopic(st,uid,topic),'Tópico da aula salvo.');
+ });
  const closer=$('#close-modal');if(closer)closer.addEventListener('click',closeModal);
  document.addEventListener('click',e=>{
   const button=e.target.closest('[data-action]');if(!button)return;
@@ -276,12 +294,6 @@ function events(){
   if(action==='part'){update(st=>setPart(st,subject,unit,part,done==='1',isoToday()),'Progresso da videoaula atualizado.');return;}
   if(action==='theory'){update(st=>setTheory(st,subject,unit,done==='1',isoToday()),'Status da teoria atualizado.');return;}
   if(action==='law'){update(st=>appendLaw(st,norm,isoToday(),15),'Leitura extraciclo registrada (+15 min).');return;}
-  if(action==='rename'){
-   const old=getUnit(state,subject,unit),title=prompt('Título literal da aula na plataforma do Marcello:',old?.title||'');
-   if(title!==null&&title.trim()){
-    update(st=>{const u=getUnit(st,subject,unit);u.title=title.trim();return structuredClone(st);},'Título atualizado.');
-   }return;
-  }
   if(action==='export'){downloadJSON(JSON.stringify(state,null,2),'Camile-IMA-Backup-'+isoToday()+'.json');return;}
   if(action==='export-old'){const raw=localStorage.getItem(ARCHIVE_KEY);
    if(!raw){notice('Não há cópia anterior gravada neste navegador.',true);return;}
