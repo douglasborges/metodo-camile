@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {
  VERSION,SUBJECTS,initialIMAState,prepareIMA,activeUnits,getUnit,
- isLicUnlocked,nextLessons,setPart,setTheory,weekSummary,weekSchedule,lawPair,appendLaw,appendSession
+ isLicUnlocked,nextLessons,setPart,setTheory,setPortugueseTopic,weekSummary,weekSchedule,lawPair,appendLaw,appendSession
 } from '../src/ima-only-state.js';
 const seed=()=>prepareIMA(initialIMAState());
 const sum=arr=>arr.reduce((a,b)=>a+b,0);
@@ -23,10 +23,44 @@ test('Português é exatamente o Extensivo Marcello com 40 aulas sem Andresan',(
  assert.deepEqual(u.map(x=>x.id),Array.from({length:40},(_,i)=>'port-u-'+(i+1)));
  assert.equal(u.filter(x=>x.theoryDone).length,8);
  assert.equal(nextLessons(st,'port')[0].id,'port-u-9');
- assert.match(u[0].title,/Acentuação Gráfica/);
- assert.match(u[13].title,/título individual não identificado/);
+ assert.deepEqual(u.map(x=>x.title),Array.from({length:40},(_,i)=>'Aula '+(i+1)));
+ assert.ok(u.every(x=>x.studiedTopic===''));
  assert.ok(u.every(x=>x.teacher==='Marcello Giulian'));
  assert.ok(!st.subjects.find(x=>x.id==='port').units.some(x=>/Andresan/i.test(x.title)));
+});
+
+test('tópico livre de Português é independente do título, curso e conclusão',()=>{
+ const original=seed(),b=setPortugueseTopic(original,'port-u-1','Acentuação, revisão pessoal');
+ assert.equal(getUnit(b,'port','port-u-1').title,'Aula 1');
+ assert.equal(getUnit(b,'port','port-u-1').studiedTopic,'Acentuação, revisão pessoal');
+ assert.equal(getUnit(b,'port','port-u-1').theoryDone,true);
+ assert.equal(getUnit(original,'port','port-u-1').studiedTopic,'');
+ assert.equal(getUnit(b,'port','port-u-2').studiedTopic,'');
+ assert.equal(getUnit(b,'port','port-u-1').teacher,'Marcello Giulian');
+ const edited=setPortugueseTopic(b,'port-u-1','Revisão e exercícios');
+ assert.equal(getUnit(edited,'port','port-u-1').studiedTopic,'Revisão e exercícios');
+ const cleared=setPortugueseTopic(edited,'port-u-1','');
+ assert.equal(getUnit(cleared,'port','port-u-1').studiedTopic,'');
+ assert.throws(()=>setPortugueseTopic(b,'dad-u-1','Teste'),/inválida/);
+ assert.throws(()=>setPortugueseTopic(b,'port-u-41','Teste'),/inválida/);
+ assert.equal(JSON.stringify(prepareIMA(b)),JSON.stringify(b),'salvo permanece após recarregar');
+});
+test('migração v3.0 conserva correções manuais anteriores sem converter tópicos estimados',()=>{
+ const old=seed();old.imaOnly.version='3.0.0-ima-only-20261112';
+ const a1=getUnit(old,'port','port-u-1'),a14=getUnit(old,'port','port-u-14');
+ a1.title='Aula 1 | Acentuação Gráfica';delete a1.studiedTopic;
+ a14.title='Aula 14 — tema informado pela Camile';delete a14.studiedTopic;
+ const a15=getUnit(old,'port','port-u-15');
+ a15.title='Aula 15 — título individual não identificado na fonte';delete a15.studiedTopic;
+ const result=prepareIMA(old);
+ assert.equal(getUnit(result,'port','port-u-1').title,'Aula 1');
+ assert.equal(getUnit(result,'port','port-u-1').studiedTopic,'');
+ assert.equal(getUnit(result,'port','port-u-14').title,'Aula 14');
+ assert.equal(getUnit(result,'port','port-u-14').studiedTopic,'tema informado pela Camile');
+ assert.equal(getUnit(result,'port','port-u-15').studiedTopic,'');
+ assert.equal(getUnit(result,'port','port-u-8').theoryDone,true);
+ assert.equal(getUnit(result,'port','port-u-9').theoryDone,false);
+ assert.equal(prepareIMA(result).subjects.find(s=>s.id==='port').units.length,40);
 });
 test('DCON conserva A01, A04/VA25 e inicia A05 bloco 01/08',()=>{
  const st=seed(),a4=getUnit(st,'dcon','dcon-u-2'),
