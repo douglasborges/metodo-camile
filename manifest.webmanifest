@@ -2,7 +2,7 @@
   "name": "Método ET · Camile · IMA-SC",
   "short_name": "Camile · IMA",
   "description": "Preparação IMA-SC Analista Administrativo — curso principal Thallius, Português Marcello, metas 30h, legislação extraciclo.",
-  "start_url": "./#ima",
+  "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "display_override": [
