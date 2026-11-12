@@ -33,7 +33,7 @@ jobs:
       - name: Validar publicação sem CGU e fornecedores excluídos
         run: |
           set -e
-          grep -q "3.0.0-ima-only-20261112" dist/index.html
+          grep -q "3.0.1-ima-port-topicos-livres-20261112" dist/index.html
           grep -q "ima-only-app.js" dist/index.html
           grep -q "Metas IMA" dist/index.html
           grep -q "Thallius" dist/src/ima-only-state.js
