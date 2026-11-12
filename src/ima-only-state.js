@@ -179,9 +179,23 @@ function buildData(st){
  // Apenas nove disciplinas da prova ativa. Restos de CGU e Andresan não chegam à app.
  st.subjects=SUBJECTS.map(([id])=>{
   const s=byId.get(id),allowed=keySet([...(IDs[id]||[]),...(LEGACY_KEPT[id]||[])]);
-  s.units=s.units.filter(u=>allowed.has(u.id)).sort((a,b)=>IDs[id].indexOf(a.id)-IDs[id].indexOf(b.id));
-  for(const u of s.units){u.hiddenFromRoute=!IDs[id].includes(u.id);u.deferred=u.hiddenFromRoute;}
-  return s;
+  const units=s.units.filter(u=>allowed.has(u.id)).sort((a,b)=>IDs[id].indexOf(a.id)-IDs[id].indexOf(b.id));
+  // Não transportar catálogos e metadados legados junto com a nova app.
+  // O backup local pré-migração continua guardando esses dados integralmente.
+  const cleanUnits=units.map(u=>{
+   const keys=['id','title','order','source','sourceURL','courseId','courseLabel','teacher',
+    'imaTopic','editalTopic','theoryDone','theoryDate','batteryDone','generalDone',
+    'materialReady','battery','general','blocksCompleted','exerciseVideoDone',
+    'completedBlocks','equivalenceSource','equivalenceReviewRequired','confirmedThallius',
+    'optionalSupplement','imaCompletionSource','imaCompletionVerifiedAt'];
+   const out={};for(const k of keys)if(u[k]!==undefined)out[k]=clone(u[k]);
+   out.legacy=[];out.marks=[];
+   out.parts=(u.parts||[]).map(p=>({id:p.id,title:p.title,number:p.number,done:!!p.done}));
+   out.hiddenFromRoute=!IDs[id].includes(u.id);out.deferred=out.hiddenFromRoute;
+   return out;
+  });
+  return {id,course:s.course,phase:'new',slotMinutes:60,units:cleanUnits,
+   checkpoints:{},notebooks:[]};
  });
  return st;
 }
@@ -201,16 +215,51 @@ export function prepareIMA(raw){
  st=reconcileCamileImaProgress(st);
  st=buildData(st);
  const active=new Set(SUBJECTS.map(([id])=>id));
- const priorLen=st.sessions.length;
- st.sessions=st.sessions.filter(r=>active.has(r.subjectId)&&
-  (['port','dcon','adm-publica'].includes(r.subjectId)||/^2026-11-/.test(r.date||'')||r.ima===true));
- st.settings.focus='IMA';st.settings.secondary='IMA';
- st.settings.weeklyMinimum=1800;st.settings.weeklyTarget=1800;
- st.settings.dailyMinimum=240;st.settings.dailyTarget=240;
- st.imaOnly={version:VERSION,focus:'IMA-SC',activeIds:[...active],archivedOldSessions:priorLen-st.sessions.length,
-  updatedOn:'2026-11-12',exam:'2027-02-14',dailyLawsExtra:30,
-  notes:'Estado ativo reconstruído; histórico prévio integral somente no backup privado anterior à migração.'};
- return st;
+ const initialSessionCount=st.sessions.length;
+ const subjectById=new Map(st.subjects.map(s=>[s.id,s]));
+ const sessions=st.sessions.filter(r=>active.has(r.subjectId)&&
+  (['port','dcon','adm-publica'].includes(r.subjectId)||/^2026-11-/.test(r.date||'')||r.ima===true))
+  .map(r=>{
+    const recordedUnit=subjectById.get(r.subjectId)?.units.find(u=>u.id===r.unitId);
+    const validForIMA=!!(recordedUnit&&!recordedUnit.hiddenFromRoute&&
+       r.date>='2026-11-06');
+    const clean={id:r.id,date:r.date,subjectId:r.subjectId,unitId:r.unitId,
+     activity:r.activity||'theory',minutes:Number(r.minutes)||0,
+     questions:Number(r.questions)||0,correct:Number(r.correct)||0,
+     title:recordedUnit?.title||'Sessão anterior de disciplina aproveitada'};
+    if(r.ima===true||validForIMA)clean.ima=true;
+    return clean;
+  });
+ const lawSessions=(st.legislation?.sessions||[]).filter(r=>IMA_LAWS.some(x=>x.id===r.normId)&&
+  (r.date||'')>='2026-11-06').map(r=>({
+    id:r.id,normId:r.normId,date:r.date,minutes:Number(r.minutes)||0,source:'IMA-EXTRACICLO'
+  }));
+ const verified=st.imaUserVerified?{
+   version:st.imaUserVerified.version,
+   confirmedOn:st.imaUserVerified.confirmedOn,
+   portCompletedThrough:st.imaUserVerified.portCompletedThrough,
+   dconCebraspeCompleted:st.imaUserVerified.dconCebraspeCompleted,
+   estrategiaA04CompletedVideos:st.imaUserVerified.estrategiaA04CompletedVideos,
+   estrategiaA05NextBlock:st.imaUserVerified.estrategiaA05NextBlock,
+   apuLastConfirmed:st.imaUserVerified.apuLastConfirmed
+ }:null;
+ return {
+  version:1,
+  settings:{focus:'IMA',secondary:'IMA',weeklyMinimum:1800,weeklyTarget:1800,
+   dailyMinimum:240,dailyTarget:240},
+  subjects:st.subjects,
+  sessions,
+  imports:[],archive:[],cycle:{index:0,minutes:0},
+  legislation:{sessions:lawSessions},
+  imaProfile:{status:'IMA_ACTIVE',examDate:'2027-02-14',
+   cycleWeeklyMinutes:1800,lawExtraWeeklyMinutes:210},
+  ...(verified?{imaUserVerified:verified}:{}),
+  imaOnly:{version:VERSION,focus:'IMA-SC',activeIds:[...active],
+   archivedOldSessions:initialSessionCount-sessions.length,
+   updatedOn:'2026-11-12',exam:'2027-02-14',dailyLawsExtra:30,
+   notes:'Planejamento exclusivo IMA; backup integral anterior guardado separadamente no dispositivo.'}
+ };
+
 }
 export function activeUnits(st,sid){const s=st.subjects.find(x=>x.id===sid);return (s?.units||[]).filter(u=>IDs[sid]?.includes(u.id));}
 export function getUnit(st,sid,uid){return activeUnits(st,sid).find(x=>x.id===uid);}
