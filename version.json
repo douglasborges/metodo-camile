@@ -1,16 +1,16 @@
 {
-  "build": "2.1.2-ima-historico-confirmado-sem-data-exata-20261107",
-  "family": "v2.1.2",
-  "publishedAt": "2026-11-07",
+  "build": "3.0.0-ima-only-20261112",
+  "family": "v3.0.0",
+  "publishedAt": "2026-11-12",
   "effectiveStudyStart": "2026-11-06",
-  "channel": "ima-ana-furb-2026",
+  "channel": "ima-only",
   "board": "FURB",
   "examDate": "2027-02-14",
   "studyCycleWeeklyMinutes": 1800,
   "extraLawWeeklyMinutes": 210,
   "licitationGate": "DAD Thallius Pasta 08 (após Pastas 02–07)",
-  "progressMigration": "camile-ima-backup-audit-20261107-v1",
   "weeklyGoals": "camile-ima-weekly-goals-20261107-v1",
   "weeklyGoalsStart": "2026-11-07",
-  "confirmationVersion": "camile-confirmacao-historica-port8-dcon-a4-20261107-v2"
+  "activeCompetition": "IMA-SC 2026 ANA",
+  "activeSubjects": 9
 }
