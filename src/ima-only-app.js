@@ -1,6 +1,6 @@
 import {
  VERSION,OLD_STORAGE_KEY,ARCHIVE_KEY,SUBJECTS,IMA_WELCOME,IMA_AUDIT,
- prepareIMA,activeUnits,getUnit,isLicUnlocked,nextLessons,setPart,setTheory,
+ initialIMAState,prepareIMA,activeUnits,getUnit,isLicUnlocked,nextLessons,setPart,setTheory,
  weekSummary,weekSchedule,weekBounds,isoToday,formatMinutes,lawPair,appendSession,appendLaw,allSourceRecords
 } from './ima-only-state.js';
 
@@ -202,7 +202,7 @@ function selectOptions(sid,chosen=''){
  return active.map(u=>'<option value="'+esc(u.id)+'" '+(u.id===chosen?'selected':'')+'>'+esc(u.title)+'</option>').join('');
 }
 function registerModal(){
- const sid=selectedSubject;const opts=SUBJECTS.filter(([id])=>id!=='licita-ima'||isLicUnlocked(state))
+ const sid=selectedSubject==='licita-ima'&&!isLicUnlocked(state)?'dad':selectedSubject;const opts=SUBJECTS.filter(([id])=>id!=='licita-ima'||isLicUnlocked(state))
  .map(([id,name])=>'<option value="'+esc(id)+'" '+(id===sid?'selected':'')+'>'+esc(name)+'</option>').join('');
  showModal('<h2>Registrar estudo do IMA</h2><form id="session-form" class="form-grid">'+
  '<label>Disciplina<select name="subjectId" id="reg-subject">'+opts+'</select></label>'+
@@ -294,7 +294,7 @@ async function init(){
  try{
   let raw=localStorage.getItem(OLD_STORAGE_KEY),data;
   if(raw){data=JSON.parse(raw);}
-  else{const r=await fetch('./data/initial-state.json',{cache:'no-store'});if(!r.ok)throw Error('Não foi possível carregar dados iniciais.');data=await r.json();}
+  else{data=initialIMAState();}
   if(data.imaOnly?.version!==VERSION&&!localStorage.getItem(ARCHIVE_KEY)){
    localStorage.setItem(ARCHIVE_KEY,raw||JSON.stringify(data));
   }
