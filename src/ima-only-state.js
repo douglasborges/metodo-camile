@@ -278,6 +278,7 @@ export function setPart(st,sid,uid,pid,done,date){
  const all=u.parts.every(p=>p.done);
  u.theoryDone=all;
  if(all)u.theoryDate=u.theoryDate||date||'';else u.theoryDate='';
+ if(sid==='dad'&&all){u.confirmedThallius=true;u.equivalenceReviewRequired=false;}
  if(uid==='dcon-u-2'){u.blocksCompleted=u.parts.filter(p=>p.done&&p.number<=24).length;u.exerciseVideoDone=!!u.parts.find(p=>p.number===25)?.done;}
  if(uid==='ESTRATEGIA-DCON-05'){u.blocksCompleted=u.parts.filter(p=>p.done).length;u.completedBlocks=u.parts.filter(p=>p.done).map(p=>p.number);}
  return out;
