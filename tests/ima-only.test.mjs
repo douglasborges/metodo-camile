@@ -96,6 +96,7 @@ test('backup legado é preservado na origem e dados ativos excluem outras seleç
  assert.equal(out.sessions[0].subjectId,'port');
  assert.equal(out.subjects.some(s=>s.id==='cgu7'),false);
  assert.equal(activeUnits(out,'port').length,40);
+ assert.doesNotMatch(JSON.stringify(out),/CGU|7 Fontes|Andresan/i,'Estado IMA limpo não carrega catálogos nem metadados antigos');
 });
 test('site ativo não carrega roteiros nem catálogos da CGU',()=>{
  const html=fs.readFileSync(new URL('../index.html',import.meta.url),'utf8');
@@ -103,4 +104,19 @@ test('site ativo não carrega roteiros nem catálogos da CGU',()=>{
  assert.doesNotMatch(html,/<a[^>]+href="#(?:today|priorities|cgu-check|cgu-planning)"/);
  assert.doesNotMatch(html,/<script[^>]+src="\.\/src\/app\.js/);
  assert.doesNotMatch(html,/CGU|7 Fontes|Andresan/);
+});
+
+test('videoaulas Thallius concluídas prevalecem sobre equivalências herdadas',()=>{
+ let st=seed();const dad=st.subjects.find(s=>s.id==='dad');
+ for(const n of ['02','03','04','05','06','07','08']){
+  const u=dad.units.find(u=>u.id==='ima-tha-dad-'+n);
+  u.equivalenceReviewRequired=true;u.confirmedThallius=false;
+ }
+ for(const n of ['02','03','04','05','06','07','08']){
+  const id='ima-tha-dad-'+n;
+  for(const p of getUnit(st,'dad',id).parts)st=setPart(st,'dad',id,p.id,true,'2026-11-12');
+  assert.equal(getUnit(st,'dad',id).confirmedThallius,true);
+ }
+ assert.equal(isLicUnlocked(st),true);
+ assert.equal(weekSummary(st).targets['licita-ima'],240);
 });
