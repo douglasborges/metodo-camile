@@ -1,7 +1,7 @@
 import {cp,mkdir,rm} from 'node:fs/promises';
 import {execFileSync} from 'node:child_process';
 const runtime=[
- 'ima-only-app.js','ima-only-state.js','ima-continuous-cycle.js','ima-sc-curriculum-20261105.js',
+ 'ima-only-app.js','ima-only-state.js','ima-continuous-cycle.js','ima-progress-validated-20261115.js','ima-sc-curriculum-20261105.js',
  'ima-sc-auditoria-edital-20261106.js','ima-camile-progresso-metas-20261107.js',
  'dcon-programacao-20261103.js'
 ];
