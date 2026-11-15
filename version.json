@@ -1,6 +1,6 @@
 {
-  "build": "3.2.0-ima-ciclo-continuo-pos-edital-20261115",
-  "family": "v3.2.0",
+  "build": "3.2.1-ima-progresso-historico-validado-20261115",
+  "family": "v3.2.1",
   "publishedAt": "2026-11-15",
   "effectiveStudyStart": "2026-11-06",
   "channel": "ima-only",
@@ -18,5 +18,7 @@
   "cycleMode": "sequencial persistente — 15 passagens de 2h",
   "mobileAndDesktop": "iPhone registro; Mac ?mode=read",
   "environmentalCourses": "Guilherme Tomasoni + André Rocha",
-  "thirdITLesson": "Diego Carvalho IA no setor público"
+  "thirdITLesson": "Diego Carvalho IA no setor público",
+  "progressAudit": "Português A01–A08, DCON A01 e Estratégia A04 25 vídeos, APU AP01 parcial 140min bloco 1/3",
+  "cloudUpdateStrategy": "migração não destrutiva ao abrir no iPhone; nenhum upload forçado externo"
 }
