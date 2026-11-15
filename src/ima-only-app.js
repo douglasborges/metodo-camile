@@ -3,6 +3,7 @@ import {
  initialIMAState,prepareIMA,activeUnits,getUnit,isLicUnlocked,nextLessons,setPart,setTheory,setPortugueseTopic,
  weekSummary,weekSchedule,weekBounds,isoToday,formatMinutes,lawPair,appendSession,appendLaw,allSourceRecords
 } from './ima-only-state.js';
+import {cycleSnapshot,advanceCycle} from './ima-continuous-cycle.js';
 
 const $=s=>document.querySelector(s),esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const subjName=id=>SUBJECTS.find(s=>s[0]===id)?.[1]||id;
@@ -11,6 +12,8 @@ const uName=u=>u?.title||'Sem aula identificada';
 const safeID=x=>String(x||'').replace(/[^a-z0-9-]/gi,'');
 const CURRENT_WEEK_START='2026-11-07';
 const NUM_GOALS=14;
+const READ_ONLY=new URLSearchParams(location.search||'').get('mode')==='read';
+window.__METODO_CAMILE_READ_ONLY__=READ_ONLY;
 let state,storedRaw='',selectedWeek=0,selectedSubject='dad',hasNotice=false;
 function notice(msg,error=false){
  const el=$('#notice');if(!el)return;el.textContent=msg;el.classList.toggle('error',error);
@@ -18,6 +21,7 @@ function notice(msg,error=false){
 }
 function fail(e){notice(e?.message||String(e),true);}
 function store(next){
+ if(READ_ONLY)throw Error('Modo consulta: utilize o iPhone para registrar os estudos.');
  const latest=localStorage.getItem(OLD_STORAGE_KEY)||'';
  if(latest!==storedRaw)throw Error('O Drive ou outra aba alterou os dados. Recarregue a página antes de salvar.');
  next.updatedAt=new Date().toISOString();
@@ -49,7 +53,7 @@ function countCycle(w){
 }
 function headline(kicker,title,desc=''){
  return '<div class="page-head"><div><span class="eyebrow">'+esc(kicker)+'</span><h1>'+esc(title)+'</h1>'+
- (desc?'<p>'+esc(desc)+'</p>':'')+'</div><button class="secondary" data-action="register">+ Registrar estudo</button></div>';
+ (desc?'<p>'+esc(desc)+'</p>':'')+'</div>'+(READ_ONLY?'':'<button class="secondary" data-action="register">+ Registrar estudo</button>')+'</div>';
 }
 function stat(label,value,detail=''){return '<article class="card metric"><small>'+esc(label)+'</small><strong>'+esc(value)+'</strong><span class="sub">'+esc(detail)+'</span></article>';}
 function actionButton(act,label,data={},variant='secondary'){
@@ -60,18 +64,21 @@ function lessonCard(sid,u){
  const done=u.theoryDone,locked=sid==='licita-ima'&&!isLicUnlocked(state);
  const head='<div class="lesson-head"><div><b>'+esc(u.title)+'</b><small>'+esc(u.courseLabel||u.source||'')+'</small>'+
  (u.imaTopic?'<small>Tópico: '+esc(u.imaTopic)+'</small>':'')+
+ (u.sourceURL?'<small><a href="'+esc(u.sourceURL)+'" target="_blank" rel="noopener noreferrer">Consultar curso/fonte</a></small>':'')+
  '</div><span class="badge '+(done?'status-done':'status-pending')+'">'+esc(statusText(u))+'</span></div>';
  let content='';
  if(u.parts?.length){
   content='<div class="ima-parts">'+u.parts.map(p=>'<div class="ima-part"><span>'+
-   esc(p.title)+'</span>'+actionButton('part',p.done?'✓ Concluída':'Marcar concluída',
-   {subject:sid,unit:u.id,part:p.id,done:p.done?'0':'1'})+'</div>').join('')+'</div>';
+   esc(p.title)+'</span>'+(READ_ONLY?'<span class="badge">'+(p.done?'✓ Concluída':'Pendente')+'</span>':actionButton('part',p.done?'✓ Concluída':'Marcar concluída',
+   {subject:sid,unit:u.id,part:p.id,done:p.done?'0':'1'}))+'</div>').join('')+'</div>';
  }else{
-  content='<div class="actions">'+actionButton('theory',done?'✓ Teoria concluída':'Marcar teoria concluída',
+  content=READ_ONLY?'<p class="muted">'+esc(statusText(u))+'</p>':
+   '<div class="actions">'+actionButton('theory',done?'✓ Teoria concluída':'Marcar teoria concluída',
    {subject:sid,unit:u.id,done:done?'0':'1'})+'</div>';
  }
  if(u.id==='dcon-u-2'&&done)content='<p class="muted">24 videoaulas teóricas e VA25 de exercícios já concluídas. Não repetir.</p>'+content;
- if(sid==='port'){
+ if(sid==='port'&&READ_ONLY)content+='<p class="muted">Tópico registrado: '+esc(u.studiedTopic||'Ainda não informado')+'</p>';
+ if(sid==='port'&&!READ_ONLY){
   content+= '<form class="port-topic-form" data-port-topic="'+esc(u.id)+'">'+
    '<label for="topic-'+esc(u.id)+'">Tópico estudado nesta aula (preenchimento livre)</label>'+
    '<div class="port-topic-row"><input type="text" id="topic-'+esc(u.id)+'" name="studiedTopic" '+
@@ -86,30 +93,45 @@ function lessonCard(sid,u){
  (locked?'<p class="warning">Bloqueada até concluir DAD, pastas 02–08.</p>':content)+'</div>';
 }
 function dashboard(){
- const w=weekSummary(state),gate=isLicUnlocked(state);
- const n=SUBJECTS.map(([id,name])=>{
+ const w=weekSummary(state),gate=isLicUnlocked(state),cycle=cycleSnapshot(state);
+ const subject=SUBJECTS.find(x=>x[0]===cycle.subjectId);
+ const lesson=nextLessons(state,cycle.subjectId,1)[0];
+ const subjectLabel=subject?.[1]||cycle.subjectId;
+ const course=subject?.[2]||'Material selecionado do edital';
+ const nextLabel=lesson?.title||'Questões do TEC, revisão e consolidação do conteúdo';
+ const grid=cycle.plan.map((sid,i)=>'<div class="cycle-position '+(i===cycle.index?'cycle-current':'')+'">'+
+ '<b>'+(i+1)+'</b><span>'+esc(subjName(sid))+'</span></div>').join('');
+ const items=SUBJECTS.map(([id,name])=>{
   const units=activeUnits(state,id),completed=units.filter(x=>x.theoryDone).length;
   const next=nextLessons(state,id,1)[0];
   return '<article class="card"><h3>'+esc(name)+'</h3><p class="muted">'+completed+'/'+units.length+
-   ' aulas/unidades concluídas</p><p>'+(id==='licita-ima'&&!gate?'Aguardando DAD Pasta 08':(next?'Próxima: '+esc(next.title):'Revisões e questões FURB'))+
+   ' aulas/unidades concluídas</p><p>'+(id==='licita-ima'&&!gate?'Aguardando DAD Pasta 08':
+   (next?'Próxima: '+esc(next.title):'Revisões e questões FURB'))+
    '</p><a href="#disc-'+esc(id)+'">Abrir roteiro</a></article>';
  }).join('');
- const daily=weekSchedule(state).map(day=>'<article class="card schedule-row"><b>'+esc(day.day)+'</b><p>'+
- day.slots.map(([id,m])=>esc(subjName(id))+' '+m+'min').join(' · ')+'</p></article>').join('');
  return headline('IMA-SC · FURB · Analista Administrativo',IMA_WELCOME,
- 'Aplicação exclusiva para o IMA-SC, com cursos e metas selecionados para o edital.')+
+ 'Um ciclo contínuo: parou em uma posição, retoma exatamente nela, sem calendário fixo.')+
+ (READ_ONLY?'<section class="card warning"><b>Modo consulta — Mac</b><p>Abra o iPhone para registrar estudos e avance o ciclo apenas nele.</p></section>':'')+
+ '<section class="card study-now" id="study-now"><span class="eyebrow">O QUE ESTUDAR AGORA</span>'+
+ '<div class="page-head"><div><h2>'+esc(subjectLabel)+'</h2><p>'+esc(course)+'</p></div>'+
+ '<strong>Posição '+cycle.number+' de '+cycle.totalPositions+'</strong></div>'+
+ '<h3>'+esc(nextLabel)+'</h3>'+
+ '<p class="muted">Meta desta passagem: 2h · Estudado nesta passagem: '+formatMinutes(cycle.minutesInPosition)+
+ ' · Restam '+formatMinutes(cycle.remaining)+'.</p>'+
+ '<p>Próxima disciplina após esta passagem: <b>'+esc(subjName(cycle.nextSubjectId))+'</b>.</p>'+
+ (READ_ONLY?'':('<div class="actions">'+
+ actionButton('register-cycle','Registrar estudo nesta passagem',{},'primary')+
+ actionButton('advance-cycle','Concluir passagem e ir à próxima')+'</div>'))+
+ '</section>'+
  '<div class="grid metrics four">'+stat('Ciclo da semana',formatMinutes(w.cycle),'Meta 30h, sem legislação seca')+
  stat('Leis extraciclo',formatMinutes(w.law),'2 leituras de 15 minutos por dia')+
  stat('Fase',gate?'2 · Licitações liberadas':'1 · Fundamentos',gate?'DAD, DCON e Licitações 4h/sem.':'DAD e DCON 6h/sem.')+
- stat('Data da prova','14/02/2027','IMA-SC · FURB')+'</div>'+
- '<section class="card"><h2>Prioridades imediatas</h2>'+
- '<p><b>Português:</b> Marcello Giulian, Extensivo, Aula 9 (Aulas 1–8 concluídas). A Camile informa livremente o tópico de cada aula.</p>'+
- '<p><b>DCON:</b> Nelma Fontana, Estratégia A05, Bloco 01/08 — Remédios Constitucionais (A04/VA25 concluídas).</p>'+
- '<p><b>DAD:</b> Thallius Moraes, Pasta 02. Licitações só é liberada após concluir as pastas 02–08.</p>'+
- '<p><b>APU:</b> Marcelo Soares, AP-05 — Transparência e Accountability. AP-01 tem 140 minutos de estudo anterior aproveitados.</p>'+
- '</section><section class="section-title"><h2>Disciplinas e continuidade</h2><div class="grid two">'+n+'</div></section>'+
- '<section class="section-title"><h2>Grade semanal atual — 30h</h2><div class="grid two">'+daily+'</div>'+
- '<p>Legislação seca: 30 minutos diários <b>fora</b> das 30h de ciclo.</p></section>';
+ stat('Prova IMA-SC','14/02/2027','FURB · Analista Administrativo')+'</div>'+
+ '<section class="card"><h2>Ciclo sequencial — '+cycle.totalPositions+' posições de 2 horas</h2>'+
+ '<p>A ordem é contínua e independe do dia da semana. Cada passagem corresponde a até duas horas. O ciclo completo soma 30 horas; depois da última posição, volta à primeira.</p>'+
+ '<div class="continuous-cycle">'+grid+'</div>'+
+ '<p>Legislação seca: 30 minutos diários <b>fora</b> do ciclo. Ao concluir DAD pastas 02–08, Licitações entra e as cargas são redistribuídas automaticamente.</p>'+
+ '</section><section class="section-title"><h2>Disciplinas e aulas restantes</h2><div class="grid two">'+items+'</div></section>';
 }
 function subjectsPage(){
  return headline('ROTEIRO DE ESTUDOS','Disciplinas do IMA','Nove disciplinas, cada uma com professor e curso definidos.')+
@@ -135,6 +157,7 @@ function subjectPage(id){
  units.map(u=>lessonCard(id,u)).join('')+'</div></section>';
 }
 function goals(){
+ const c=cycleSnapshot(state);
  const current=selectedWeek,dates=dateWeek(current),g=countCycle(dates),target=weekSummary(state).targets,
   isPast=dates.end<isoToday();
  const rows=SUBJECTS.map(([id,name])=>{
@@ -147,6 +170,7 @@ function goals(){
  const opts=Array.from({length:NUM_GOALS},(_,i)=>{const d=dateWeek(i);return '<option value="'+i+'" '+(i===current?'selected':'')+
  '>Meta '+(i+1)+' · '+fmtDate(d.start)+' a '+fmtDate(d.end)+'</option>';}).join('');
  return headline('PLANEJAMENTO SEMANAL','Metas IMA','Somente a preparação para o IMA. Metas de 30h, legislação seca extraciclo.')+
+ '<section class="card"><h2>O que estudar agora</h2><p>Posição '+c.number+' de '+c.totalPositions+': <b>'+esc(subjName(c.subjectId))+'</b> · Próxima: '+esc(nextLessons(state,c.subjectId,1)[0]?.title||'Revisão e questões')+'</p><a href="#ima">Voltar ao ciclo contínuo</a></section>'+ 
  '<section class="card"><label>Semana de referência<select id="week-select">'+opts+'</select></label>'+
  '<h2>Meta '+(current+1)+' — '+fmtDate(dates.start)+' a '+fmtDate(dates.end)+'</h2>'+
  '<p>'+formatMinutes(g.cycle)+' de 30h no ciclo · '+formatMinutes(g.laws)+' de legislação extraciclo</p>'+
@@ -171,7 +195,7 @@ function lawPage(){
  const pair=lawPair(isoToday()),today=isoToday();
  return headline('LEITURA EXTRA-CICLO','Legislação seca','Duas leituras diárias, 15 minutos cada; não descontar das 30 horas do ciclo.')+
  '<section class="grid two">'+pair.map(row=>'<article class="card"><h2>'+esc(row.short)+'</h2><p>'+esc(row.title)+'</p>'+
- actionButton('law','Registrar 15 minutos',{norm:row.id})+'</article>').join('')+'</section>'+
+ (READ_ONLY?'':actionButton('law','Registrar 15 minutos',{norm:row.id}))+'</article>').join('')+'</section>'+
  '<section class="card"><h2>Leituras de hoje</h2><p>'+
  (state.legislation?.sessions||[]).filter(x=>x.date===today).reduce((s,x)=>s+Number(x.minutes||0),0)+
  ' minutos já registrados. Para concluir as duas leituras, são 30 minutos.</p></section>';
@@ -200,8 +224,8 @@ function dataPage(){
  '<p>Antes de migrar, a aplicação guarda uma cópia do estado anterior neste navegador. O novo plano mantém somente as nove disciplinas IMA e o histórico relevante.</p>'+
  '<div class="actions">'+actionButton('export','Exportar backup IMA')+
  actionButton('export-old','Exportar backup anterior')+
- actionButton('import','Mesclar outro backup')+'</div>'+
- '<p class="muted">Use um backup salvo antes de trocar de dispositivo. A sincronização Google Drive mantém seu mecanismo anterior.</p></section>';
+ (READ_ONLY?'':actionButton('import','Mesclar outro backup'))+'</div>'+
+ '<p class="muted">O iPhone e o Mac possuem bases locais diferentes; em conflitos, a sincronização atual não mescla automaticamente. Para consultar no Mac sem riscos, utilize o endereço com ?mode=read e conecte-o ao mesmo Drive.</p></section>';
 }
 function showModal(html){const d=$('#modal');$('#modal-body').innerHTML=html;if(d?.showModal)d.showModal();else d.open=true;}
 function closeModal(){const d=$('#modal');if(d?.close)d.close();else d.open=false;}
@@ -209,10 +233,11 @@ function selectOptions(sid,chosen=''){
  const active=activeUnits(state,sid);
  return active.map(u=>'<option value="'+esc(u.id)+'" '+(u.id===chosen?'selected':'')+'>'+esc(u.title)+'</option>').join('');
 }
-function registerModal(){
- const sid=selectedSubject==='licita-ima'&&!isLicUnlocked(state)?'dad':selectedSubject;const opts=SUBJECTS.filter(([id])=>id!=='licita-ima'||isLicUnlocked(state))
+function registerModal(fromCycle=false){
+ if(READ_ONLY){notice('Modo consulta: use o iPhone para registrar estudos.',true);return;}
+ const sid=fromCycle?cycleSnapshot(state).subjectId:selectedSubject==='licita-ima'&&!isLicUnlocked(state)?'dad':selectedSubject;const opts=SUBJECTS.filter(([id])=>(!fromCycle||id===sid)&&(id!=='licita-ima'||isLicUnlocked(state)))
  .map(([id,name])=>'<option value="'+esc(id)+'" '+(id===sid?'selected':'')+'>'+esc(name)+'</option>').join('');
- showModal('<h2>Registrar estudo do IMA</h2><form id="session-form" class="form-grid">'+
+ showModal('<h2>'+(fromCycle?'Registrar passagem do ciclo':'Registrar estudo do IMA')+'</h2><form id="session-form" class="form-grid">'+
  '<label>Disciplina<select name="subjectId" id="reg-subject">'+opts+'</select></label>'+
  '<label>Aula<select name="unitId" id="reg-unit">'+selectOptions(sid)+'</select></label>'+
  '<label>Data<input type="date" name="date" value="'+isoToday()+'" max="'+isoToday()+'" required></label>'+
@@ -227,7 +252,8 @@ function registerModal(){
   e.preventDefault();const f=e.target;
   update(st=>appendSession(st,{subjectId:f.elements.subjectId.value,unitId:f.elements.unitId.value,
    date:f.elements.date.value,activity:f.elements.activity.value,hours:f.elements.hours.value,
-   minutes:f.elements.minutes.value,questions:f.elements.questions.value,correct:f.elements.correct.value}), 'Sessão IMA registrada.');
+   minutes:f.elements.minutes.value,questions:f.elements.questions.value,correct:f.elements.correct.value,
+   inCycle:fromCycle}), 'Sessão IMA registrada.'+(fromCycle?' A posição será mantida ou avançará conforme o tempo acumulado.':''));
   closeModal();
  };
 }
@@ -236,6 +262,7 @@ function downloadJSON(raw,name){
  a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1200);
 }
 function doImport(){
+ if(READ_ONLY){notice('Modo consulta: a importação é permitida apenas no iPhone.',true);return;}
  showModal('<h2>Mesclar backup com segurança</h2><p>Os registros atuais prevalecem; progresso do backup acrescenta apenas sessões ou aulas não existentes.</p>'+
  '<input type="file" id="backup-file" accept=".json,application/json"><div id="backup-preview"></div>');
  $('#backup-file').onchange=async e=>{
@@ -291,6 +318,11 @@ function events(){
   const button=e.target.closest('[data-action]');if(!button)return;
   e.preventDefault();const {action,subject,unit,part,done,norm}=button.dataset;
   if(action==='register'){registerModal();return;}
+  if(action==='register-cycle'){registerModal(true);return;}
+  if(action==='advance-cycle'){
+   if(!window.confirm('Concluir esta passagem e avançar para a próxima disciplina? Isso não cria horas de estudo.'))return;
+   update(advanceCycle,'Próxima posição do ciclo pronta.');return;
+  }
   if(action==='part'){update(st=>setPart(st,subject,unit,part,done==='1',isoToday()),'Progresso da videoaula atualizado.');return;}
   if(action==='theory'){update(st=>setTheory(st,subject,unit,done==='1',isoToday()),'Status da teoria atualizado.');return;}
   if(action==='law'){update(st=>appendLaw(st,norm,isoToday(),15),'Leitura extraciclo registrada (+15 min).');return;}
