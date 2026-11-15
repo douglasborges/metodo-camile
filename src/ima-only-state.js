@@ -309,6 +309,7 @@ export function prepareIMA(raw){
   subjects:st.subjects,
   sessions,
   imports:[],archive:[],cycle:{index:0,minutes:0},
+  ...(st.imaCycle?{imaCycle:st.imaCycle}:{}),
   legislation:{sessions:lawSessions},
   imaProfile:{status:'IMA_ACTIVE',examDate:'2027-02-14',
    cycleWeeklyMinutes:1800,lawExtraWeeklyMinutes:210},
@@ -367,7 +368,7 @@ export function weekBounds(today=isoToday()){
  const start=d.toISOString().slice(0,10);d.setUTCDate(d.getUTCDate()+6);return {start,end:d.toISOString().slice(0,10)};
 }
 export function weekSummary(st,today=isoToday()){
- const bounds=weekBounds(today),totals=imaWeeklyMinutesFor(st),actual=Object.fromEntries(SUBJECTS.map(([id])=>[id,0]));
+ const bounds=weekBounds(today),totals=cycleTargets(st),actual=Object.fromEntries(SUBJECTS.map(([id])=>[id,0]));
  let law=0;
  for(const r of st.sessions||[]){
   if(r.date<bounds.start||r.date>bounds.end||!actual.hasOwnProperty(r.subjectId))continue;
