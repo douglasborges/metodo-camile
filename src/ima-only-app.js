@@ -12,6 +12,7 @@ const uName=u=>u?.title||'Sem aula identificada';
 const safeID=x=>String(x||'').replace(/[^a-z0-9-]/gi,'');
 const CURRENT_WEEK_START='2026-11-07';
 const NUM_GOALS=14;
+const PRE_REPAIR_BACKUP_KEY='metodo-et:camile:backup-before-progress-repair-20261115';
 const READ_ONLY=new URLSearchParams(location.search||'').get('mode')==='read';
 window.__METODO_CAMILE_READ_ONLY__=READ_ONLY;
 let state,storedRaw='',selectedWeek=0,selectedSubject='dad',hasNotice=false;
@@ -92,6 +93,23 @@ function lessonCard(sid,u){
  return '<div class="ima-lesson '+(done?'ima-done':'')+'"><div>'+head+'</div>'+
  (locked?'<p class="warning">Bloqueada até concluir DAD, pastas 02–08.</p>':content)+'</div>';
 }
+function confirmedProgressPanel(){
+ const port=Array.from({length:8},(_,i)=>getUnit(state,'port','port-u-'+(i+1))).filter(u=>u?.theoryDone).length;
+ const nelma=getUnit(state,'dcon','NELMA-DCON-01'),a04=getUnit(state,'dcon','dcon-u-2'),a05=getUnit(state,'dcon','ESTRATEGIA-DCON-05');
+ const ap01=state.subjects.find(s=>s.id==='adm-publica')?.units.find(u=>u.id==='MARC_ADM-ADM-AP-01');
+ const previous=ap01?.historicalStudy;
+ return '<section class="card" id="historical-progress"><h2>Progresso já aproveitado — não reestudar</h2>'+
+ '<div class="grid two"><div><b>Português · Marcello Giulian</b><p>'+port+'/8 aulas anteriores concluídas. Próxima: '+
+ esc(nextLessons(state,'port',1)[0]?.title||'Revisões e questões')+'.</p></div>'+
+ '<div><b>DCON · Nelma</b><p>Cebraspe A01: '+(nelma?.theoryDone?'concluída':'pendente')+
+ '; Estratégia A04: '+(a04?.parts?.filter(p=>p.done).length||0)+'/25 vídeos. A05: '+
+ (a05?.theoryDone?'concluída':a05?.parts?.some(p=>p.done)?'em andamento':'pendente')+'.</p></div>'+
+ '<div><b>Administração Pública · Marcelo Soares</b><p>AP-01: '+
+ (previous?previous.durationMinutes+' minutos anteriores, bloco '+previous.completedBlocks+'/'+previous.totalBlocks+' (parcial)':'sem comprovação de conclusão integral')+
+ '. AP-05 permanece na sequência do IMA.</p></div>'+
+ '<div><b>Outros materiais</b><p>Concluir apenas as aulas efetivamente estudadas; não há crédito automático por cursos distintos.</p></div></div>'+
+ '<small class="muted">Fontes: auditoria do Drive e confirmação posterior. Não foram geradas horas fictícias nem datas individuais de conclusão.</small></section>';
+}
 function dashboard(){
  const w=weekSummary(state),gate=isLicUnlocked(state),cycle=cycleSnapshot(state);
  const subject=SUBJECTS.find(x=>x[0]===cycle.subjectId);
@@ -126,7 +144,7 @@ function dashboard(){
  '<div class="grid metrics four">'+stat('Ciclo da semana',formatMinutes(w.cycle),'Meta 30h, sem legislação seca')+
  stat('Leis extraciclo',formatMinutes(w.law),'2 leituras de 15 minutos por dia')+
  stat('Fase',gate?'2 · Licitações liberadas':'1 · Fundamentos',gate?'DAD, DCON e Licitações 4h/sem.':'DAD e DCON 6h/sem.')+
- stat('Prova IMA-SC','14/02/2027','FURB · Analista Administrativo')+'</div>'+
+ stat('Prova IMA-SC','14/02/2027','FURB · Analista Administrativo')+'</div>'+confirmedProgressPanel()+
  '<section class="card"><h2>Ciclo sequencial — '+cycle.totalPositions+' posições de 2 horas</h2>'+
  '<p>A ordem é contínua e independe do dia da semana. Cada passagem corresponde a até duas horas. O ciclo completo soma 30 horas; depois da última posição, volta à primeira.</p>'+
  '<div class="continuous-cycle">'+grid+'</div>'+
@@ -146,7 +164,7 @@ function subjectPage(id){
  const units=activeUnits(state,id),done=units.filter(x=>x.theoryDone).length,gate=isLicUnlocked(state);
  const info=id==='port'?'Somente Marcello Giulian — Extensivo. Aulas 1 a 40, sem conteúdo presumido. A Camile preenche o tópico estudado livremente, inclusive nas aulas 1 a 8 já concluídas. Questões no TEC/FURB.':
   id==='dad'?'Exclusivamente Thallius Moraes. Pasta 01 é Vade Mecum de consulta; o curso ativo começa na Pasta 02. Concluir as pastas 02–08 libera Licitações.':
-  id==='adm-publica'?'Marcelo Soares: somente AP-05 (T01 Transparência e T01 Accountability). AP-01 foi estudada parcialmente no histórico e não precisa ser reiniciada.':
+  id==='adm-publica'?'Marcelo Soares: AP-05 (T01 Transparência e T01 Accountability) e os complementos pós-edital de ética. A AP-01 tem 140 minutos registrados e bloco 1/3 confirmado, mas não foi integralmente concluída. Não recomeçar o trecho já estudado.':
   id==='licita-ima'?'Thallius Moraes é o professor principal. Pasta 14 (21 VAs), Pasta 15 (8 VAs) e Rafael Oliveira Aula 10 (seis partes) como complemento.':
   id==='dcon'?'Nelma Fontana Cebraspe A01 concluída; Estratégia A04 (24 VAs + VA25) concluída; próxima é Estratégia A05 bloco 01/08.':'Somente conteúdos selecionados do edital IMA/SC.';
  return headline('DISCIPLINA · IMA-SC',s[1],s[2])+
@@ -213,19 +231,16 @@ function diary(){
  '</tbody></table></div></section>';
 }
 function dataPage(){
- const u=state.imaUserVerified||{};
- const lines=['Português A01–A08 · teoria concluída','DCON Cebraspe A01 · concluída',
- 'DCON Estratégia A04 · 24 vídeos + VA25 concluídos','DCON Estratégia A05 · ainda não iniciada',
- 'Administração Pública AP-01 · 140 min comprovados; AP-05 pendente'];
- return headline('DADOS E SEGURANÇA','Backup e importação','Nenhum conteúdo antigo de outras seleções aparece no plano ativo.')+
- '<section class="card"><h2>Progresso aproveitado</h2><ul>'+lines.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul>'+
- '<p>Fonte de confirmação: '+esc(u.source||'histórico comunicado e backup antigo')+'.</p></section>'+
+ return headline('DADOS E SEGURANÇA','Backup e importação','Progresso real anterior, preservado sem misturar concursos.')+
+ confirmedProgressPanel()+
  '<section class="card"><h2>Proteção do histórico</h2>'+
- '<p>Antes de migrar, a aplicação guarda uma cópia do estado anterior neste navegador. O novo plano mantém somente as nove disciplinas IMA e o histórico relevante.</p>'+
+ '<p>Os documentos do Drive de 05/10 e 20/10 guardam a base inicial zerada, não os estudos posteriores. As conclusões confirmadas de Português/DCON e o estudo parcial de AP-01 foram reconhecidos na migração. Não foram inventadas sessões, questões ou datas.</p>'+
+ '<p>O arquivo vivo de sincronização do iPhone não ficou acessível pela conexão do Drive usada nesta auditoria. A app preserva sessões existentes e migra o progresso confirmado quando abrir.</p>'+
  '<div class="actions">'+actionButton('export','Exportar backup IMA')+
  actionButton('export-old','Exportar backup anterior')+
- (READ_ONLY?'':actionButton('import','Mesclar outro backup'))+'</div>'+
- '<p class="muted">O iPhone e o Mac possuem bases locais diferentes; em conflitos, a sincronização atual não mescla automaticamente. Para consultar no Mac sem riscos, utilize o endereço com ?mode=read e conecte-o ao mesmo Drive.</p></section>';
+ actionButton('export-pre-repair','Exportar cópia antes desta correção')+
+ (READ_ONLY?'':actionButton('import','Mesclar outro backup')+actionButton('sync-progress','Sincronizar progresso com Drive'))+'</div>'+
+ '<p class="muted">Use o iPhone para registrar; no Mac utilize ?mode=read conectado ao mesmo Drive. Não descarte um backup mais recente.</p></section>';
 }
 function showModal(html){const d=$('#modal');$('#modal-body').innerHTML=html;if(d?.showModal)d.showModal();else d.open=true;}
 function closeModal(){const d=$('#modal');if(d?.close)d.close();else d.open=false;}
@@ -331,6 +346,16 @@ function events(){
    if(!raw){notice('Não há cópia anterior gravada neste navegador.',true);return;}
    downloadJSON(raw,'Camile-Backup-Antes-IMA-'+isoToday()+'.json');return;
   }
+  if(action==='export-pre-repair'){
+   const prior=localStorage.getItem(PRE_REPAIR_BACKUP_KEY);
+   if(!prior){notice('Este navegador não possui cópia de antes da retificação.',true);return;}
+   downloadJSON(prior,'Camile-Backup-Pre-Retificacao-'+isoToday()+'.json');return;
+  }
+  if(action==='sync-progress'){
+   if(READ_ONLY){notice('Modo consulta: conecte o Drive apenas para visualizar.',true);return;}
+   window.dispatchEvent(new Event('metodo-et-drive-sync-now'));
+   notice('Solicitada sincronização com o Drive. Confira o resultado no botão de nuvem.');return;
+  }
   if(action==='import'){doImport();return;}
  });
 }
@@ -339,6 +364,10 @@ async function init(){
   let raw=localStorage.getItem(OLD_STORAGE_KEY),data;
   if(raw){data=JSON.parse(raw);}
   else{data=initialIMAState();}
+  // Guardar snapshot imediato pré-retificação, além do backup original.
+  if(raw&&data.imaOnly?.version!==VERSION&&!READ_ONLY&&!localStorage.getItem(PRE_REPAIR_BACKUP_KEY)){
+   localStorage.setItem(PRE_REPAIR_BACKUP_KEY,raw);
+  }
   if(data.imaOnly?.version!==VERSION&&!localStorage.getItem(ARCHIVE_KEY)){
    localStorage.setItem(ARCHIVE_KEY,raw||JSON.stringify(data));
   }
