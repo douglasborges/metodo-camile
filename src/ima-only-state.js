@@ -172,6 +172,12 @@ function buildData(st){
   u.teacher='Guilherme Neves';u.courseLabel='Escola de Exatas — Enxutos e complementos';u.imaTopic=r.topic;
  });
  const apu=byId.get('adm-publica');
+ // Unidade histórica preservada apenas para comprovar o estudo PARCIAL da Camile.
+ // Não integra a carga ativa nem será sugerida como aula inteira concluída.
+ const ap01=ensureUnit(apu,'MARC_ADM-ADM-AP-01',
+  'AP-01 · Evolução da Administração Pública — histórico parcial (1/3)',0,
+  'Marcelo Soares · Faixa Preta Administração Pública');
+ ap01.teacher='Marcelo Soares';ap01.courseLabel='Histórico de estudo anterior ao IMA';
  const ap=ensureUnit(apu,'MARC_ADM-ADM-AP-05','AP-05 · Transparência e Accountability (2 VAs)',1,'Marcelo Soares · Faixa Preta Administração Pública');
  ap.teacher='Marcelo Soares';ap.courseLabel='Faixa Preta — Administração Pública';ap.imaTopic='Transparência, accountability';
  if(!ap.parts?.length)ap.parts=[{id:'AP-05-TRANSP',number:1,title:'T01 — Transparência na Administração Pública',done:!!ap.theoryDone},{id:'AP-05-ACCOUNT',number:2,title:'T01 — Accountability',done:!!ap.theoryDone}];
@@ -287,7 +293,8 @@ export function prepareIMA(raw){
     const clean={id:r.id,date:r.date,subjectId:r.subjectId,unitId:r.unitId,
      activity:r.activity||'theory',minutes:Number(r.minutes)||0,
      questions:Number(r.questions)||0,correct:Number(r.correct)||0,
-     title:recordedUnit?.title||'Sessão anterior de disciplina aproveitada'};
+     title:recordedUnit?.title||'Sessão anterior de disciplina aproveitada',
+     ...(r.inCycle?{inCycle:true,cyclePhase:r.cyclePhase,cyclePosition:r.cyclePosition}:{} )};
     if(r.ima===true||validForIMA)clean.ima=true;
     return clean;
   });
