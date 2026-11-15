@@ -425,9 +425,15 @@
         const remote = await downloadRemoteFile(file);
         if (!isMetodoETState(remote.state)) throw new Error('Backup remoto do IMA inválido.');
         const local = parseState();
-        if(JSON.stringify(local)!==JSON.stringify(remote.state))applyRemoteState(remote);
+        const freshRemote = validDateMs(remote.updatedAt || file.modifiedTime) > validDateMs(meta.lastRemoteUpdatedAt) + 500;
+        // Evitar loop de reload quando o iPhone ainda tem schema antigo: após a
+        // primeira leitura, o Mac migra o JSON apenas para visualização local.
+        const hasLocalRemoteCheckpoint = Boolean(meta.everSynced && meta.lastRemoteUpdatedAt);
+        const needsDownload = !isMetodoETState(local) || (freshRemote && JSON.stringify(local)!==JSON.stringify(remote.state)) ||
+          (!hasLocalRemoteCheckpoint && JSON.stringify(local)!==JSON.stringify(remote.state));
+        if(needsDownload)applyRemoteState(remote);
         else saveMeta({remoteFileId:file.id,everSynced:true,dirty:false,lastSyncAt:nowISO(),
-          localUpdatedAt:remote.updatedAt||nowISO(),lastRemoteUpdatedAt:remote.updatedAt||nowISO()});
+          localUpdatedAt:local?.updatedAt||nowISO(),lastRemoteUpdatedAt:remote.updatedAt||file.modifiedTime||nowISO()});
       } else if(!file)await createRemoteFile();
       else await reconcile(file, { initial });
       setUI('synced', `Última sincronização: ${new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}.`);
