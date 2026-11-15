@@ -12,6 +12,7 @@ const uName=u=>u?.title||'Sem aula identificada';
 const safeID=x=>String(x||'').replace(/[^a-z0-9-]/gi,'');
 const CURRENT_WEEK_START='2026-11-07';
 const NUM_GOALS=14;
+const PRE_REPAIR_BACKUP_KEY='metodo-et:camile:backup-before-progress-repair-20261115';
 const READ_ONLY=new URLSearchParams(location.search||'').get('mode')==='read';
 window.__METODO_CAMILE_READ_ONLY__=READ_ONLY;
 let state,storedRaw='',selectedWeek=0,selectedSubject='dad',hasNotice=false;
@@ -237,7 +238,8 @@ function dataPage(){
  '<p>O arquivo vivo de sincronização do iPhone não ficou acessível pela conexão do Drive usada nesta auditoria. A app preserva sessões existentes e migra o progresso confirmado quando abrir.</p>'+
  '<div class="actions">'+actionButton('export','Exportar backup IMA')+
  actionButton('export-old','Exportar backup anterior')+
- (READ_ONLY?'':actionButton('import','Mesclar outro backup'))+'</div>'+
+ actionButton('export-pre-repair','Exportar cópia antes desta correção')+
+ (READ_ONLY?'':actionButton('import','Mesclar outro backup')+actionButton('sync-progress','Sincronizar progresso com Drive'))+'</div>'+
  '<p class="muted">Use o iPhone para registrar; no Mac utilize ?mode=read conectado ao mesmo Drive. Não descarte um backup mais recente.</p></section>';
 }
 function showModal(html){const d=$('#modal');$('#modal-body').innerHTML=html;if(d?.showModal)d.showModal();else d.open=true;}
@@ -344,6 +346,16 @@ function events(){
    if(!raw){notice('Não há cópia anterior gravada neste navegador.',true);return;}
    downloadJSON(raw,'Camile-Backup-Antes-IMA-'+isoToday()+'.json');return;
   }
+  if(action==='export-pre-repair'){
+   const prior=localStorage.getItem(PRE_REPAIR_BACKUP_KEY);
+   if(!prior){notice('Este navegador não possui cópia de antes da retificação.',true);return;}
+   downloadJSON(prior,'Camile-Backup-Pre-Retificacao-'+isoToday()+'.json');return;
+  }
+  if(action==='sync-progress'){
+   if(READ_ONLY){notice('Modo consulta: conecte o Drive apenas para visualizar.',true);return;}
+   window.dispatchEvent(new Event('metodo-et-drive-sync-now'));
+   notice('Solicitada sincronização com o Drive. Confira o resultado no botão de nuvem.');return;
+  }
   if(action==='import'){doImport();return;}
  });
 }
@@ -352,6 +364,10 @@ async function init(){
   let raw=localStorage.getItem(OLD_STORAGE_KEY),data;
   if(raw){data=JSON.parse(raw);}
   else{data=initialIMAState();}
+  // Guardar snapshot imediato pré-retificação, além do backup original.
+  if(raw&&data.imaOnly?.version!==VERSION&&!READ_ONLY&&!localStorage.getItem(PRE_REPAIR_BACKUP_KEY)){
+   localStorage.setItem(PRE_REPAIR_BACKUP_KEY,raw);
+  }
   if(data.imaOnly?.version!==VERSION&&!localStorage.getItem(ARCHIVE_KEY)){
    localStorage.setItem(ARCHIVE_KEY,raw||JSON.stringify(data));
   }
