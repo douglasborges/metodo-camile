@@ -39,6 +39,7 @@
   const REMOTE_FILE_NAME = 'Metodo ET - Camile - Dados.json';
   const REMOTE_FORMAT = 'metodo-et-camile-cloud-v1';
   const REMOTE_APP_PROPERTY = 'camile-cloud-v1';
+  const READ_ONLY = new URLSearchParams(location.search || '').get('mode') === 'read';
   const SAVE_DEBOUNCE_MS = 1800;
   const REMOTE_CHECK_MS = 5 * 60 * 1000;
 
@@ -419,7 +420,21 @@
       const account = await refreshAccountInfo();
       if (previousEmail && account?.emailAddress && account.emailAddress !== previousEmail) saveMeta({ remoteFileId: null, everSynced: false, lastRemoteUpdatedAt: null, lastSyncAt: null });
       const file = await findRemoteFile();
-      if (!file) await createRemoteFile();
+      if (READ_ONLY) {
+        if (!file) throw new Error('Nenhum backup do iPhone foi encontrado neste Drive. Sincronize primeiro pelo iPhone.');
+        const remote = await downloadRemoteFile(file);
+        if (!isMetodoETState(remote.state)) throw new Error('Backup remoto do IMA inválido.');
+        const local = parseState();
+        const freshRemote = validDateMs(remote.updatedAt || file.modifiedTime) > validDateMs(meta.lastRemoteUpdatedAt) + 500;
+        // Evitar loop de reload quando o iPhone ainda tem schema antigo: após a
+        // primeira leitura, o Mac migra o JSON apenas para visualização local.
+        const hasLocalRemoteCheckpoint = Boolean(meta.everSynced && meta.lastRemoteUpdatedAt);
+        const needsDownload = !isMetodoETState(local) || (freshRemote && JSON.stringify(local)!==JSON.stringify(remote.state)) ||
+          (!hasLocalRemoteCheckpoint && JSON.stringify(local)!==JSON.stringify(remote.state));
+        if(needsDownload)applyRemoteState(remote);
+        else saveMeta({remoteFileId:file.id,everSynced:true,dirty:false,lastSyncAt:nowISO(),
+          localUpdatedAt:local?.updatedAt||nowISO(),lastRemoteUpdatedAt:remote.updatedAt||file.modifiedTime||nowISO()});
+      } else if(!file)await createRemoteFile();
       else await reconcile(file, { initial });
       setUI('synced', `Última sincronização: ${new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}.`);
     } catch (error) {
@@ -456,7 +471,7 @@
   }
 
   function noteLocalChange() {
-    if (suppressLocalSignal) return;
+    if (suppressLocalSignal || READ_ONLY) return;
     saveMeta({ dirty: true, localUpdatedAt: nowISO() });
     setUI(navigator.onLine ? 'dirty' : 'offline', navigator.onLine
       ? 'Alteração salva neste dispositivo; sincronização pendente.'
@@ -487,9 +502,10 @@
   }
 
   function boot() {
-    patchLocalStorage();
+    if(!READ_ONLY)patchLocalStorage();
     mountButton();
     if (!navigator.onLine) setUI('offline', 'Sem internet. Seus registros continuam salvos localmente.');
+    else if (READ_ONLY) setUI('auth', 'Modo consulta no Mac: conecte o mesmo Google Drive do iPhone para atualizar a visualização.');
     else if (meta.dirty) setUI('dirty', 'Há alterações locais esperando sincronização.');
     else if (meta.authorizedOnce) setUI('auth', 'Clique para reconectar ao Google Drive nesta sessão.');
     else setUI('disconnected', 'Clique para ativar a sincronização com o Google Drive.');

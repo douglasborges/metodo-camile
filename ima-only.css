@@ -31,3 +31,15 @@ progress{accent-color:var(--lime);max-width:100%}
 .port-topic-row button{flex-shrink:0}
 .port-topic-form small{line-height:1.55}
 @media(max-width:720px){.port-topic-row{flex-direction:column;align-items:stretch}.port-topic-row button{width:100%}}
+
+/* Ciclo contínuo: leitura rápida no iPhone e no Mac */
+.study-now{border:2px solid #88a957;padding:22px}
+.study-now>.eyebrow{letter-spacing:.12em;color:#bce47a;font-weight:800}
+.study-now h2{margin:0 0 4px;font-size:clamp(1.2rem,3vw,1.7rem)}
+.study-now h3{margin:14px 0;color:#d9fcb0;font-size:clamp(1rem,2.2vw,1.35rem)}
+.continuous-cycle{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:8px;margin:16px 0}
+.cycle-position{display:flex;align-items:center;gap:10px;padding:12px;border:1px solid #4b5540;border-radius:10px;font-size:13px}
+.cycle-position b{background:#333d2c;color:#cde4ad;border-radius:100%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.cycle-position.cycle-current{border:2px solid #afe969;background:#314b27}
+.cycle-position.cycle-current b{background:#dafaab;color:#1d3210}
+@media(max-width:720px){.study-now{padding:16px}.continuous-cycle{grid-template-columns:repeat(2,minmax(0,1fr))}.cycle-position{font-size:11px}.study-now .actions{display:grid;grid-template-columns:1fr}}

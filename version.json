@@ -1,7 +1,7 @@
 {
-  "build": "3.0.1-ima-port-topicos-livres-20261112",
-  "family": "v3.0.1",
-  "publishedAt": "2026-11-12",
+  "build": "3.2.0-ima-ciclo-continuo-pos-edital-20261115",
+  "family": "v3.2.0",
+  "publishedAt": "2026-11-15",
   "effectiveStudyStart": "2026-11-06",
   "channel": "ima-only",
   "board": "FURB",
@@ -14,5 +14,9 @@
   "activeCompetition": "IMA-SC 2026 ANA",
   "activeSubjects": 9,
   "portugueseCourse": "Marcello Giulian — Extensivo, aulas 1–40",
-  "portugueseTopicMode": "Livre, editável e separado do título"
+  "portugueseTopicMode": "Livre, editável e separado do título",
+  "cycleMode": "sequencial persistente — 15 passagens de 2h",
+  "mobileAndDesktop": "iPhone registro; Mac ?mode=read",
+  "environmentalCourses": "Guilherme Tomasoni + André Rocha",
+  "thirdITLesson": "Diego Carvalho IA no setor público"
 }

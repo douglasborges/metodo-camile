@@ -33,10 +33,15 @@ jobs:
       - name: Validar publicação sem CGU e fornecedores excluídos
         run: |
           set -e
-          grep -q "3.0.1-ima-port-topicos-livres-20261112" dist/index.html
+          grep -q "3.2.0-ima-ciclo-continuo-pos-edital-20261115" dist/index.html
           grep -q "ima-only-app.js" dist/index.html
           grep -q "Metas IMA" dist/index.html
           grep -q "Thallius" dist/src/ima-only-state.js
+          grep -q "O QUE ESTUDAR AGORA" dist/src/ima-only-app.js
+          grep -q "cycleSnapshot" dist/src/ima-continuous-cycle.js
+          grep -q "Diego Carvalho" dist/src/ima-only-state.js
+          grep -q "Guilherme Tomasoni" dist/src/ima-only-state.js
+          grep -q "André Rocha" dist/src/ima-only-state.js
           grep -q "Marcello Giulian" dist/src/ima-only-state.js
           grep -q "Bem-vida, Camile" dist/index.html
           grep -q "metodo-et:camile:v1" dist/drive-sync.js

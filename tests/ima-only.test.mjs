@@ -78,7 +78,8 @@ test('DCON conserva A01, A04/VA25 e inicia A05 bloco 01/08',()=>{
 });
 test('DAD contém apenas pastas do Thallius; todas 02–08 liberam Licitações',()=>{
  let st=seed(),u=activeUnits(st,'dad');
- assert.equal(u.length,17);assert.ok(u.every(x=>x.teacher==='Thallius Moraes'));
+ assert.equal(u.length,21);assert.equal(u.filter(x=>x.teacher==='Thallius Moraes').length,17);
+ assert.equal(u.filter(x=>x.teacher==='Leitura dirigida').length,4);
  assert.ok(!u.some(x=>/7 Fontes|Rafael/i.test(x.courseLabel||x.title)));
  assert.equal(u[0].id,'ima-tha-dad-02');
  assert.equal(getUnit(st,'dad','ima-tha-dad-08').parts.length,5);
