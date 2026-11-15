@@ -6,9 +6,10 @@
 import {reconcileDconProgram} from './dcon-programacao-20261103.js';
 import {reconcileImaSubjects,imaLegislationPair,IMA_LAWS} from './ima-sc-curriculum-20261105.js';
 import {reconcileCamileImaProgress} from './ima-camile-progresso-metas-20261107.js';
-import {IMA_AUDIT,imaLicitationStatus,imaWeekScheduleFor,imaWeeklyMinutesFor,IMA_WELCOME} from './ima-sc-auditoria-edital-20261106.js';
+import {IMA_AUDIT,imaLicitationStatus,imaWeekScheduleFor,IMA_WELCOME} from './ima-sc-auditoria-edital-20261106.js';
+import {migrateCycle,cycleSnapshot,cycleTargets,creditCycleSession} from './ima-continuous-cycle.js';
 
-export const VERSION='3.0.1-ima-port-topicos-livres-20261112';
+export const VERSION='3.2.0-ima-ciclo-continuo-pos-edital-20261115';
 export const OLD_STORAGE_KEY='metodo-et:camile:v1';
 export const ARCHIVE_KEY='metodo-et:camile:archive-before-ima-v3';
 export const SUBJECTS=Object.freeze([
@@ -43,18 +44,21 @@ const DAD_PASTAS=[
  ['27','Lei Anticorrupção',[1,2,3]],
  ['28','Lei Geral de Proteção de Dados',[1,2,3,4,5,6,7,8,9,10]]
 ];
-const DAD_IDS=DAD_PASTAS.map(([n])=>'ima-tha-dad-'+n);
+const DAD_IDS=[...DAD_PASTAS.map(([n])=>'ima-tha-dad-'+n),
+ 'IMA-DAD-LEI6745','IMA-DAD-LINDB','IMA-DAD-LC741','IMA-DAD-TERCEIRO'];
 const DCON_IDS=['NELMA-DCON-01','dcon-u-2','ESTRATEGIA-DCON-05',
  ...Array.from({length:9},(_,i)=>'NELMA-DCON-'+String(i+2).padStart(2,'0')),
  'NELMA-DCON-15','NELMA-DCON-16'];
 const PORT_IDS=Array.from({length:40},(_,i)=>'port-u-'+(i+1));
 const AFO_IDS=IMA_AUDIT.afo.map(x=>x.id);
 const RL_IDS=IMA_AUDIT.rl.map(x=>x.id);
-const TI_IDS=['IMA-TI-R67','IMA-TI-R49','IMA-TI-R15','IMA-TI-DIG','IMA-TI-RESP'];
-const ENV_IDS=['ima-env-cf225','ima-env-lc140','ima-env-pnma','ima-env-sc14675-t1','ima-env-sc14675-t2','ima-env-ima17354'];
+const TI_IDS=['IMA-TI-R67','IMA-TI-R49','IMA-TI-DIEGO-IMA','IMA-TI-R15'];
+const ENV_IDS=['ima-env-sc14675-t1','ima-env-sc14675-t2','ima-env-ima17354','ima-env-pnma','ima-env-cf225','ima-env-lc140'];
 const LIC_IDS=['ima-lic-14','ima-lic-15',...Array.from({length:6},(_,i)=>'IMA-LIC-RAFAEL-A10-P'+(i+1)),'IMA-LIC-CRIMES'];
 const IDs={dad:DAD_IDS,dcon:DCON_IDS,port:PORT_IDS,afo:AFO_IDS,'rl-ima':RL_IDS,
- 'adm-publica':['MARC_ADM-ADM-AP-05'],'ti-ima':TI_IDS,'leg-ambiental':ENV_IDS,'licita-ima':LIC_IDS};
+ 'adm-publica':['MARC_ADM-ADM-AP-05','IMA-APU-ZANOLLA-01','IMA-APU-ZANOLLA-02',
+ 'IMA-APU-FANTINI-LIDER','IMA-APU-FANTINI-MOTIV','IMA-APU-FANTINI-COM','IMA-APU-FANTINI-EQUIPE','IMA-APU-FANTINI-CONFLITO','IMA-APU-FANTINI-NEGOCIACAO'],
+ 'ti-ima':TI_IDS,'leg-ambiental':ENV_IDS,'licita-ima':LIC_IDS};
 const LEGACY_KEPT={dcon:new Set(['dcon-u-1','dcon-u-4']),port:new Set(), 'adm-publica':new Set(['MARC_ADM-ADM-AP-01'])};
 const escP=(n)=>String(n).padStart(2,'0');
 export const WEEKDAY=['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
@@ -113,6 +117,19 @@ function buildData(st){
   u.courseStage='DAD';u.isMandatory=true;
   ensureParts(u,nums);
  }
+ // Complementos expressos do edital ANA que não têm aula específica comprovada na trilha Thallius.
+ // Não são trocas de professor de DAD; são leituras dirigidas adicionais.
+ const dadComplements=[
+  ['IMA-DAD-LEI6745','Lei estadual 6.745/1985 — agentes e regime estatutário SC'],
+  ['IMA-DAD-LINDB','LINDB — Decreto-Lei 4.657/1942: aplicação, interpretação e conflitos'],
+  ['IMA-DAD-LC741','LC estadual 741/2019 — organização administrativa de Santa Catarina'],
+  ['IMA-DAD-TERCEIRO','Terceiro setor — Leis 9.637/1998, 9.790/1999 e 13.019/2014']
+ ];
+ dadComplements.forEach(([id,title],i)=>{
+  const u=ensureUnit(dad,id,title,300+i,'Legislação seca direcionada · Anexo V');
+  u.teacher='Leitura dirigida';u.courseLabel='Complemento legal da disciplina DAD';
+  u.imaTopic=title;u.optionalSupplement=false;
+ });
  const port=byId.get('port');
  for(let n=1;n<=40;n++){
   const id='port-u-'+n;
@@ -157,18 +174,55 @@ function buildData(st){
  const ap=ensureUnit(apu,'MARC_ADM-ADM-AP-05','AP-05 · Transparência e Accountability (2 VAs)',1,'Marcelo Soares · Faixa Preta Administração Pública');
  ap.teacher='Marcelo Soares';ap.courseLabel='Faixa Preta — Administração Pública';ap.imaTopic='Transparência, accountability';
  if(!ap.parts?.length)ap.parts=[{id:'AP-05-TRANSP',number:1,title:'T01 — Transparência na Administração Pública',done:!!ap.theoryDone},{id:'AP-05-ACCOUNT',number:2,title:'T01 — Accountability',done:!!ap.theoryDone}];
+ // APU e os conteúdos de relações humanas/ética explicitamente exigidos no edital.
+ // Marcelo Soares permanece a fonte de transparência; Fantini e Zanolla só complementam.
+ const apuExtras=[
+  ['IMA-APU-ZANOLLA-01','Ética e Moral — Aula 01','Tiago Zanolla','Noções de Administração Pública — Ética e moral (pós-edital)'],
+  ['IMA-APU-ZANOLLA-02','Ética no Serviço Público — Aula 02','Tiago Zanolla','Noções de Administração Pública — Ética e moral (pós-edital)'],
+  ['IMA-APU-FANTINI-LIDER','Direção e Liderança','Stefan Fantini','Relações humanas e ética profissional IMA-SC'],
+  ['IMA-APU-FANTINI-MOTIV','Motivação','Stefan Fantini','Relações humanas e ética profissional IMA-SC'],
+  ['IMA-APU-FANTINI-COM','Comunicação','Stefan Fantini','Relações humanas e ética profissional IMA-SC'],
+  ['IMA-APU-FANTINI-EQUIPE','Trabalho em Equipe e Grupos','Stefan Fantini','Relações humanas e ética profissional IMA-SC'],
+  ['IMA-APU-FANTINI-CONFLITO','Gestão de Conflitos — Aula 10','Stefan Fantini','Relações humanas e ética profissional IMA-SC'],
+  ['IMA-APU-FANTINI-NEGOCIACAO','Negociação — Aula 11','Stefan Fantini','Relações humanas e ética profissional IMA-SC']
+ ];
+ apuExtras.forEach(([id,title,teacher,course],i)=>{
+  const u=ensureUnit(apu,id,title,10+i,teacher+' · Estratégia, pós-edital');
+  u.teacher=teacher;u.courseLabel=course;u.imaTopic='Ética e relações humanas no serviço público';
+ });
  const ti=byId.get('ti-ima');
  const tech=[
-  ['IMA-TI-R67','Inteligência Artificial e Aprendizado de Máquina — Rodrigo · Combo (grupo 67)',5],
-  ['IMA-TI-R49','Sistemas de apoio à decisão — Rodrigo · Combo (grupo 49)',1],
-  ['IMA-TI-R15','Segurança da informação — Rodrigo · Combo (grupo 15)',8],
-  ['IMA-TI-DIG','Automação e transformação digital no setor público — complemento pelo edital',0],
-  ['IMA-TI-RESP','IA responsável: vieses, transparência e supervisão humana — complemento pelo edital',0]
+  ['IMA-TI-R67','Aula 1 · Fundamentos de IA — Rodrigo Schaeffer, Combo grupo 67',5,'Rodrigo Schaeffer','Combo Informática'],
+  ['IMA-TI-R49','Aula 2 · Apoio à decisão — Rodrigo Schaeffer, Combo grupo 49',1,'Rodrigo Schaeffer','Combo Informática'],
+  ['IMA-TI-DIEGO-IMA','Aula 3 · IA, automação e produtividade no setor público — Diego Carvalho',0,'Diego Carvalho','Estratégia, Noções de Administração Pública (IA, automação e produtividade), pós-edital'],
+  ['IMA-TI-R15','Complemento seletivo · Segurança da informação pertinente à IA',8,'Rodrigo Schaeffer','Combo Informática, grupo 15']
  ];
- tech.forEach(([id,title,count],i)=>{const u=ensureUnit(ti,id,title,i+1,count?'Rodrigo Schaeffer · Combo':'Edital IMA — complemento');u.teacher=count?'Rodrigo Schaeffer':'Complemento legislativo/temático';u.courseLabel=count?'Informática · Rodrigo Schaeffer':'Complemento do Anexo V';if(count)ensureParts(u,Array.from({length:count},(_,i)=>i+1));});
+ tech.forEach(([id,title,count,teacher,course],i)=>{
+  const u=ensureUnit(ti,id,title,i+1,teacher+' · '+course);
+  u.teacher=teacher;u.courseLabel=course;
+  u.imaTopic='IA, automação, transformação digital, riscos e segurança da informação';
+  if(count)ensureParts(u,Array.from({length:count},(_,i)=>i+1));
+  if(id==='IMA-TI-DIEGO-IMA')u.sourceURL='https://concursos.estrategia.com/curso/pacote-completo-para-ima-sc-analista-de-controle-administrativo-analista-administrativo-2026-pos-edital-sistema-de-questoes/';
+ });
  const env=byId.get('leg-ambiental');
- ENV_IDS.forEach((id,i)=>{const row=IMA_LAWS.find(r=>r.id===id);const u=ensureUnit(env,id,row?.title||id,i+1,'Anexo V IMA/SC — legislação ambiental');
-  u.courseLabel=id==='ima-env-pnma'?'André Rocha · Estratégia / Lei 6.938/81':'Leitura dirigida e questões FURB';});
+ const envTitles={
+  'ima-env-sc14675-t1':'Lei estadual 14.675/2009 — Título I · Disposições Gerais',
+  'ima-env-sc14675-t2':'Lei estadual 14.675/2009 — Título II · Política Estadual do Meio Ambiente',
+  'ima-env-ima17354':'Lei estadual 17.354/2017 — criação, competências e estrutura do IMA',
+  'ima-env-pnma':'Lei federal 6.938/1981 — PNMA, SISNAMA e instrumentos',
+  'ima-env-cf225':'CF/88 — Título VIII, Capítulo VI · Meio Ambiente (art. 225)',
+  'ima-env-lc140':'Lei Complementar 140/2011 — competências ambientais'
+ };
+ ENV_IDS.forEach((id,i)=>{
+  const stateCourse=id.startsWith('ima-env-sc')||id==='ima-env-ima17354';
+  const teacher=stateCourse?'Guilherme Tomasoni':'André Rocha';
+  const course=stateCourse?'Legislação Ambiental Estadual para IMA-SC (pós-edital)':
+   'Legislação Ambiental Aplicada para IMA-SC (pós-edital)';
+  const u=ensureUnit(env,id,envTitles[id],i+1,teacher+' · Estratégia');
+  u.title=envTitles[id];u.teacher=teacher;u.courseLabel=course;
+  u.sourceURL='https://concursos.estrategia.com/curso/pacote-completo-para-ima-sc-analista-de-controle-administrativo-analista-administrativo-2026-pos-edital-sistema-de-questoes/';
+  u.imaTopic=envTitles[id];
+ });
  const lic=byId.get('licita-ima');
  for(const [n,num,topic] of [['14',21,'Lei 14.133/2021 — Licitações'],['15',8,'Contratos administrativos']]){
   const u=ensureUnit(lic,'ima-lic-'+n,'Thallius · Pasta '+n+' — '+topic+' ('+num+' VAs)',Number(n),'Thallius Moraes · Licitações');
@@ -248,7 +302,7 @@ export function prepareIMA(raw){
    estrategiaA05NextBlock:st.imaUserVerified.estrategiaA05NextBlock,
    apuLastConfirmed:st.imaUserVerified.apuLastConfirmed
  }:null;
- return {
+ return migrateCycle({
   version:1,
   settings:{focus:'IMA',secondary:'IMA',weeklyMinimum:1800,weeklyTarget:1800,
    dailyMinimum:240,dailyTarget:240},
@@ -263,7 +317,7 @@ export function prepareIMA(raw){
    archivedOldSessions:initialSessionCount-sessions.length,
    updatedOn:'2026-11-12',exam:'2027-02-14',dailyLawsExtra:30,
    notes:'Planejamento exclusivo IMA; backup integral anterior guardado separadamente no dispositivo.'}
- };
+ });
 
 }
 export function activeUnits(st,sid){const s=st.subjects.find(x=>x.id===sid);return (s?.units||[]).filter(u=>IDs[sid]?.includes(u.id));}
@@ -337,9 +391,12 @@ export function appendSession(st,input){
   !Number.isInteger(correct)||correct<0||correct>questions)throw Error('Questões/acertos inválidos.');
  if(!/^\d{4}-\d{2}-\d{2}$/.test(date)||date>isoToday())throw Error('Data inválida ou futura.');
  const id='ima_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,8);
+ const before=input.inCycle?cycleSnapshot(out):null;
+ if(before&&before.subjectId!==input.subjectId)throw Error('A sessão do ciclo precisa ser registrada na disciplina da posição atual.');
  out.sessions.push({id,date,subjectId:input.subjectId,unitId:input.unitId,activity:input.activity||'theory',
-  minutes,questions,correct,ima:true,title:u.title});
- return out;
+  minutes,questions,correct,ima:true,title:u.title,
+  ...(input.inCycle?{inCycle:true,cyclePosition:before.number,cyclePhase:before.phase}:{} )});
+ return before?creditCycleSession(out,input.subjectId,minutes):out;
 }
 export function appendLaw(st,normId,date=isoToday(),minutes=15){
  const out=clone(st);if(!IMA_LAWS.some(x=>x.id===normId))throw Error('Norma não cadastrada.');
