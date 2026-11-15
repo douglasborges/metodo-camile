@@ -8,8 +8,9 @@ import {reconcileImaSubjects,imaLegislationPair,IMA_LAWS} from './ima-sc-curricu
 import {reconcileCamileImaProgress} from './ima-camile-progresso-metas-20261107.js';
 import {IMA_AUDIT,imaLicitationStatus,imaWeekScheduleFor,IMA_WELCOME} from './ima-sc-auditoria-edital-20261106.js';
 import {migrateCycle,cycleSnapshot,cycleTargets,creditCycleSession} from './ima-continuous-cycle.js';
+import {preserveVerifiedCamileProgress} from './ima-progress-validated-20261115.js';
 
-export const VERSION='3.2.0-ima-ciclo-continuo-pos-edital-20261115';
+export const VERSION='3.2.1-ima-progresso-historico-validado-20261115';
 export const OLD_STORAGE_KEY='metodo-et:camile:v1';
 export const ARCHIVE_KEY='metodo-et:camile:archive-before-ima-v3';
 export const SUBJECTS=Object.freeze([
@@ -246,7 +247,7 @@ function buildData(st){
     'imaTopic','editalTopic','theoryDone','theoryDate','batteryDone','generalDone',
     'materialReady','battery','general','blocksCompleted','exerciseVideoDone',
     'completedBlocks','equivalenceSource','equivalenceReviewRequired','confirmedThallius',
-    'optionalSupplement','imaCompletionSource','imaCompletionVerifiedAt','studiedTopic'];
+    'optionalSupplement','imaCompletionSource','imaCompletionVerifiedAt','studiedTopic','historicalStudy'];
    const out={};for(const k of keys)if(u[k]!==undefined)out[k]=clone(u[k]);
    out.legacy=[];out.marks=[];
    out.parts=(u.parts||[]).map(p=>({id:p.id,title:p.title,number:p.number,done:!!p.done}));
@@ -273,6 +274,7 @@ export function prepareIMA(raw){
  st=reconcileImaSubjects(st);
  st=reconcileCamileImaProgress(st);
  st=buildData(st);
+ st=preserveVerifiedCamileProgress(st);
  const active=new Set(SUBJECTS.map(([id])=>id));
  const initialSessionCount=st.sessions.length;
  const subjectById=new Map(st.subjects.map(s=>[s.id,s]));
@@ -314,9 +316,10 @@ export function prepareIMA(raw){
   imaProfile:{status:'IMA_ACTIVE',examDate:'2027-02-14',
    cycleWeeklyMinutes:1800,lawExtraWeeklyMinutes:210},
   ...(verified?{imaUserVerified:verified}:{}),
+  imaProgressReadout:st.imaProgressReadout,
   imaOnly:{version:VERSION,focus:'IMA-SC',activeIds:[...active],
    archivedOldSessions:initialSessionCount-sessions.length,
-   updatedOn:'2026-11-12',exam:'2027-02-14',dailyLawsExtra:30,
+   updatedOn:'2026-11-15',exam:'2027-02-14',dailyLawsExtra:30,
    notes:'Planejamento exclusivo IMA; backup integral anterior guardado separadamente no dispositivo.'}
  });
 
