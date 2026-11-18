@@ -95,15 +95,16 @@ test('DAD contém apenas pastas do Thallius; todas 02–08 liberam Licitações'
  }
  assert.equal(isLicUnlocked(st),true);
  const next=weekSummary(st);
- for(const sid of ['dad','dcon','licita-ima','afo'])assert.equal(next.targets[sid],240);
- assert.equal(sum(Object.values(next.targets)),1800);
+ for(const sid of ['dad','dcon','licita-ima'])assert.equal(next.targets[sid],240);
+ assert.equal(next.targets.afo,0);assert.equal(next.targets['rl-ima'],0);
+ assert.equal(sum(Object.values(next.targets)),1320);
  assert.equal(getUnit(st,'licita-ima','ima-lic-14').parts.length,21);
  assert.equal(getUnit(st,'licita-ima','ima-lic-15').parts.length,8);
  assert.equal(activeUnits(st,'licita-ima').filter(x=>x.id.startsWith('IMA-LIC-RAFAEL-A10-P')).length,6);
 });
 test('ciclo 30h e leis 3h30 extraciclo nunca se misturam',()=>{
  let st=seed();
- assert.equal(sum(Object.values(weekSummary(st).targets)),1800);
+ assert.equal(sum(Object.values(weekSummary(st).targets)),1320);
  const sch=weekSchedule(st);
  assert.equal(sch.reduce((a,d)=>a+d.slots.reduce((x,v)=>x+v[1],0),0),1800);
  const today='2026-11-12',pair=lawPair(today);
