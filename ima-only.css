@@ -43,3 +43,9 @@ progress{accent-color:var(--lime);max-width:100%}
 .cycle-position.cycle-current{border:2px solid #afe969;background:#314b27}
 .cycle-position.cycle-current b{background:#dafaab;color:#1d3210}
 @media(max-width:720px){.study-now{padding:16px}.continuous-cycle{grid-template-columns:repeat(2,minmax(0,1fr))}.cycle-position{font-size:11px}.study-now .actions{display:grid;grid-template-columns:1fr}}
+
+/* Novembro 2026 — AFO e Exatas pausadas sem exclusão de registros. */
+.cycle-position.cycle-paused{opacity:.56;border-style:dashed;background:transparent}
+.cycle-position.cycle-paused b{background:#333a35;color:#b2b2ad}
+.cycle-position.cycle-paused span{text-decoration:line-through;text-decoration-thickness:1px;text-decoration-color:#8b9087}
+.cycle-position.cycle-paused.cycle-current{border:1px dashed #74786f}

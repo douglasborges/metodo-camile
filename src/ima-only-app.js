@@ -3,7 +3,7 @@ import {
  initialIMAState,prepareIMA,activeUnits,getUnit,isLicUnlocked,nextLessons,setPart,setTheory,setPortugueseTopic,
  weekSummary,weekSchedule,weekBounds,isoToday,formatMinutes,lawPair,appendSession,appendLaw,allSourceRecords
 } from './ima-only-state.js';
-import {cycleSnapshot,advanceCycle} from './ima-continuous-cycle.js';
+import {cycleSnapshot,advanceCycle,isPausedSubject} from './ima-continuous-cycle.js';
 
 const $=s=>document.querySelector(s),esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const subjName=id=>SUBJECTS.find(s=>s[0]===id)?.[1]||id;
@@ -62,13 +62,15 @@ function actionButton(act,label,data={},variant='secondary'){
 }
 function statusText(u){if(u.theoryDone)return 'Teoria concluída';if(u.parts?.some(p=>p.done))return u.parts.filter(x=>x.done).length+'/'+u.parts.length+' vídeos vistos';return 'Não iniciada';}
 function lessonCard(sid,u){
- const done=u.theoryDone,locked=sid==='licita-ima'&&!isLicUnlocked(state);
+ const done=u.theoryDone,locked=sid==='licita-ima'&&!isLicUnlocked(state),paused=isPausedSubject(state,sid);
  const head='<div class="lesson-head"><div><b>'+esc(u.title)+'</b><small>'+esc(u.courseLabel||u.source||'')+'</small>'+
  (u.imaTopic?'<small>Tópico: '+esc(u.imaTopic)+'</small>':'')+
  (u.sourceURL?'<small><a href="'+esc(u.sourceURL)+'" target="_blank" rel="noopener noreferrer">Consultar curso/fonte</a></small>':'')+
  '</div><span class="badge '+(done?'status-done':'status-pending')+'">'+esc(statusText(u))+'</span></div>';
  let content='';
- if(u.parts?.length){
+ if(paused){
+  content='<p class="muted">PAUSADA por enquanto. Registros anteriores e aulas guardados para retomada.</p>';
+ }else if(u.parts?.length){
   content='<div class="ima-parts">'+u.parts.map(p=>'<div class="ima-part"><span>'+
    esc(p.title)+'</span>'+(READ_ONLY?'<span class="badge">'+(p.done?'✓ Concluída':'Pendente')+'</span>':actionButton('part',p.done?'✓ Concluída':'Marcar concluída',
    {subject:sid,unit:u.id,part:p.id,done:p.done?'0':'1'}))+'</div>').join('')+'</div>';
@@ -117,18 +119,21 @@ function dashboard(){
  const subjectLabel=subject?.[1]||cycle.subjectId;
  const course=subject?.[2]||'Material selecionado do edital';
  const nextLabel=lesson?.title||'Questões do TEC, revisão e consolidação do conteúdo';
- const grid=cycle.plan.map((sid,i)=>'<div class="cycle-position '+(i===cycle.index?'cycle-current':'')+'">'+
- '<b>'+(i+1)+'</b><span>'+esc(subjName(sid))+'</span></div>').join('');
+ const grid=cycle.plan.map((sid,i)=>{
+  const paused=isPausedSubject(state,sid);
+  return '<div class="cycle-position '+(i===cycle.index?'cycle-current':'')+(paused?' cycle-paused':'')+'">'+
+   '<b>'+(i+1)+'</b><span>'+esc(subjName(sid))+(paused?' · PAUSADA':'')+'</span></div>';
+ }).join('');
  const items=SUBJECTS.map(([id,name])=>{
   const units=activeUnits(state,id),completed=units.filter(x=>x.theoryDone).length;
   const next=nextLessons(state,id,1)[0];
   return '<article class="card"><h3>'+esc(name)+'</h3><p class="muted">'+completed+'/'+units.length+
-   ' aulas/unidades concluídas</p><p>'+(id==='licita-ima'&&!gate?'Aguardando DAD Pasta 08':
+   ' aulas/unidades concluídas</p><p>'+(isPausedSubject(state,id)?'PAUSADA — registros preservados':id==='licita-ima'&&!gate?'Aguardando DAD Pasta 08':
    (next?'Próxima: '+esc(next.title):'Revisões e questões FURB'))+
    '</p><a href="#disc-'+esc(id)+'">Abrir roteiro</a></article>';
  }).join('');
  return headline('IMA-SC · FURB · Analista Administrativo',IMA_WELCOME,
- 'Um ciclo contínuo: parou em uma posição, retoma exatamente nela, sem calendário fixo.')+
+ 'Um ciclo contínuo: retoma na posição seguinte ativa, pulando temporariamente AFO e Exatas sem apagar o histórico.')+
  (READ_ONLY?'<section class="card warning"><b>Modo consulta — Mac</b><p>Abra o iPhone para registrar estudos e avance o ciclo apenas nele.</p></section>':'')+
  '<section class="card study-now" id="study-now"><span class="eyebrow">O QUE ESTUDAR AGORA</span>'+
  '<div class="page-head"><div><h2>'+esc(subjectLabel)+'</h2><p>'+esc(course)+'</p></div>'+
@@ -146,17 +151,17 @@ function dashboard(){
  stat('Fase',gate?'2 · Licitações liberadas':'1 · Fundamentos',gate?'DAD, DCON e Licitações 4h/sem.':'DAD e DCON 6h/sem.')+
  stat('Prova IMA-SC','14/02/2027','FURB · Analista Administrativo')+'</div>'+confirmedProgressPanel()+
  '<section class="card"><h2>Ciclo sequencial — '+cycle.totalPositions+' posições de 2 horas</h2>'+
- '<p>A ordem é contínua e independe do dia da semana. Cada passagem corresponde a até duas horas. O ciclo completo soma 30 horas; depois da última posição, volta à primeira.</p>'+
+ '<p>Sem grade por dia da semana: as 15 posições originais continuam visíveis. Destas, '+cycle.skippedPositions+' ficam PAUSADAS e são puladas automaticamente. A volta tem '+formatMinutes(cycle.targetMinutes)+' de posições ativas, sem redistribuir as horas pausadas. A meta geral semanal continua 30h, podendo continuar na volta seguinte.</p>'+
  '<div class="continuous-cycle">'+grid+'</div>'+
- '<p>Legislação seca: 30 minutos diários <b>fora</b> do ciclo. Ao concluir DAD pastas 02–08, Licitações entra e as cargas são redistribuídas automaticamente.</p>'+
+ '<p>Legislação seca: 30 minutos diários <b>fora</b> do ciclo. AFO e Exatas seguem na lista para consulta, com as aulas e registros intactos. A trava de Licitações continua dependendo das pastas DAD 02–08.</p>'+
  '</section><section class="section-title"><h2>Disciplinas e aulas restantes</h2><div class="grid two">'+items+'</div></section>';
 }
 function subjectsPage(){
  return headline('ROTEIRO DE ESTUDOS','Disciplinas do IMA','Nove disciplinas, cada uma com professor e curso definidos.')+
  '<div class="grid two">'+SUBJECTS.map(([id,name,course])=>{
   const units=activeUnits(state,id),done=units.filter(u=>u.theoryDone).length;
-  return '<section class="card"><h2>'+esc(name)+'</h2><p>'+esc(course)+'</p>'+
-   '<p>'+done+'/'+units.length+' aulas/unidades concluídas</p><a href="#disc-'+esc(id)+'">Ver aulas</a></section>';
+  return '<section class="card"><h2>'+esc(name)+(isPausedSubject(state,id)?' · PAUSADA':'')+'</h2><p>'+esc(course)+'</p>'+
+   '<p>'+done+'/'+units.length+' aulas/unidades concluídas (histórico preservado)</p><a href="#disc-'+esc(id)+'">Ver aulas</a></section>';
  }).join('')+'</div>';
 }
 function subjectPage(id){
@@ -170,6 +175,7 @@ function subjectPage(id){
  return headline('DISCIPLINA · IMA-SC',s[1],s[2])+
  '<section class="card"><div class="statline"><span><b>'+done+'/'+units.length+'</b> unidades concluídas</span>'+
  '<span><b>'+formatMinutes(weekSummary(state).targets[id]||0)+'</b> meta semanal</span></div><p>'+esc(info)+'</p>'+
+ (isPausedSubject(state,id)?'<div class="warning">Disciplina temporariamente PAUSADA. Nenhum dado foi excluído; retomar depois sem recomeçar.</div>':'')+
  (id==='licita-ima'&&!gate?'<div class="warning">Licitações bloqueada. DAD Thallius exige as pastas 02–08.</div>':'')+
  '</section><section class="card"><h2>Sequência de aulas e módulos</h2><div class="ima-lesson-list">'+
  units.map(u=>lessonCard(id,u)).join('')+'</div></section>';
@@ -183,7 +189,7 @@ function goals(){
    cap=aim?Math.min(100,Math.round(100*done/aim)):0;
   return '<tr><td>'+esc(name)+'</td><td>'+formatMinutes(aim)+'</td><td>'+formatMinutes(done)+'</td>'+
    '<td><progress max="100" value="'+cap+'"></progress></td><td>'+
-   (id==='licita-ima'&&!isLicUnlocked(state)?'Bloqueada até DAD P08':esc(next?.title||'Revisar e resolver questões'))+'</td></tr>';
+   (isPausedSubject(state,id)?'PAUSADA — progresso e histórico preservados':id==='licita-ima'&&!isLicUnlocked(state)?'Bloqueada até DAD P08':esc(next?.title||'Revisar e resolver questões'))+'</td></tr>';
  }).join('');
  const opts=Array.from({length:NUM_GOALS},(_,i)=>{const d=dateWeek(i);return '<option value="'+i+'" '+(i===current?'selected':'')+
  '>Meta '+(i+1)+' · '+fmtDate(d.start)+' a '+fmtDate(d.end)+'</option>';}).join('');
@@ -197,7 +203,7 @@ function goals(){
  '<section class="card"><div class="table-wrap"><table><thead><tr><th>Disciplina</th><th>Meta</th><th>Realizado</th><th>Progresso</th><th>Próximo</th></tr></thead>'+
  '<tbody>'+rows+'</tbody></table></div></section><section class="card">'+
  '<h2>Meta 1 — continuidade</h2><p>Português: Aula 9 do Extensivo de Marcello Giulian (tópico preenchido pela Camile). DCON: Estratégia A05 bloco 01/08. DAD: Thallius Pasta 02.'+
- ' APU: Marcelo AP-05. AFO: BizurAFO. RL: Guilherme Neves. TI: Rodrigo. Ambiental: Anexo V.</p></section>';
+ ' APU: Marcelo AP-05. TI: Rodrigo e Diego Carvalho. Ambiental: Anexo V. AFO e RL/Exatas PAUSADAS (saltadas no ciclo).</p></section>';
 }
 function coverage(){
  const pairs=[['dad','DAD — Thallius'],['port','Português — Marcello'],['dcon','DCON — Nelma'],['afo','AFO — BizurAFO'],
@@ -250,7 +256,9 @@ function selectOptions(sid,chosen=''){
 }
 function registerModal(fromCycle=false){
  if(READ_ONLY){notice('Modo consulta: use o iPhone para registrar estudos.',true);return;}
- const sid=fromCycle?cycleSnapshot(state).subjectId:selectedSubject==='licita-ima'&&!isLicUnlocked(state)?'dad':selectedSubject;const opts=SUBJECTS.filter(([id])=>(!fromCycle||id===sid)&&(id!=='licita-ima'||isLicUnlocked(state)))
+ const preferred=(selectedSubject==='licita-ima'&&!isLicUnlocked(state))||isPausedSubject(state,selectedSubject)?'dad':selectedSubject;
+ const sid=fromCycle?cycleSnapshot(state).subjectId:preferred;
+ const opts=SUBJECTS.filter(([id])=>!isPausedSubject(state,id)&&(!fromCycle||id===sid)&&(id!=='licita-ima'||isLicUnlocked(state)))
  .map(([id,name])=>'<option value="'+esc(id)+'" '+(id===sid?'selected':'')+'>'+esc(name)+'</option>').join('');
  showModal('<h2>'+(fromCycle?'Registrar passagem do ciclo':'Registrar estudo do IMA')+'</h2><form id="session-form" class="form-grid">'+
  '<label>Disciplina<select name="subjectId" id="reg-subject">'+opts+'</select></label>'+

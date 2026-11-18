@@ -7,14 +7,14 @@ import {
 } from '../src/ima-continuous-cycle.js';
 const seed=()=>prepareIMA(initialIMAState());
 const sum=x=>Object.values(x).reduce((a,b)=>a+b,0);
-test('ciclo inicial em 15 posições de 2h mantém distribuição semanal 30h, sem dias fixos',()=>{
+test('ciclo inicial preserva 15 posições mas pausa AFO e Exatas sem redistribuir horas',()=>{
  const st=seed(),c=cycleSnapshot(st);
  assert.equal(c.phase,'1');assert.equal(c.index,0);assert.equal(c.subjectId,'dad');
  assert.equal(c.number,1);assert.equal(c.totalPositions,15);assert.equal(CYCLE_SLOT_MINUTES,120);
- assert.equal(sum(cycleTargets(st)),1800);
+ assert.equal(sum(cycleTargets(st)),1320);
  assert.equal(cycleTargets(st).dad,360);
  assert.equal(cycleTargets(st).dcon,360);
- assert.equal(cycleTargets(st).afo,240);
+ assert.equal(cycleTargets(st).afo,0);assert.equal(cycleTargets(st)['rl-ima'],0);
  assert.equal(cycleTargets(st)['licita-ima'],0);
  assert.equal(FOUNDATION_CYCLE.filter(x=>x==='port').length,2);
  assert.ok(!Object.hasOwn(st,'daySchedule'));
@@ -50,7 +50,7 @@ test('registrar sessão da posição atual credita tempo real e não altera posi
  const w=weekSummary(st,'2026-11-15');
  assert.equal(w.cycle,120);assert.equal(w.targets.dad,360);
 });
-test('fase 2 inclui Licitações, mantém 30h e preserva avanço já feito',()=>{
+test('fase 2 inclui Licitações e mantém as pausas nas duas posições de AFO e RL',()=>{
  let st=seed();st=advanceCycle(st);
  assert.equal(cycleSnapshot(st).number,2);
  for(const n of ['02','03','04','05','06','07','08']){
@@ -58,8 +58,8 @@ test('fase 2 inclui Licitações, mantém 30h e preserva avanço já feito',()=>
   for(const part of getUnit(st,'dad',id).parts)st=setPart(st,'dad',id,part.id,true,'2026-11-15');
  }
  const c=cycleSnapshot(st);assert.equal(c.phase,'2');
- assert.equal(sum(cycleTargets(st)),1800);assert.equal(cycleTargets(st).dad,240);
- assert.equal(cycleTargets(st).dcon,240);assert.equal(cycleTargets(st)['licita-ima'],240);
+ assert.equal(sum(cycleTargets(st)),1320);assert.equal(cycleTargets(st).dad,240);
+ assert.equal(cycleTargets(st).dcon,240);assert.equal(cycleTargets(st)['licita-ima'],240);assert.equal(cycleTargets(st).afo,0);assert.equal(cycleTargets(st)['rl-ima'],0);
  assert.equal(c.totalPositions,15);
  assert.equal(LICITATIONS_CYCLE.filter(x=>x==='licita-ima').length,2);
  assert.ok(c.index>=0&&c.index<15);
