@@ -33,12 +33,14 @@ jobs:
       - name: Validar publicação sem CGU e fornecedores excluídos
         run: |
           set -e
-          grep -q "3.2.1-ima-progresso-historico-validado-20261115" dist/index.html
+          grep -q "3.2.2-ima-pausa-afo-exatas-20261118" dist/index.html
           grep -q "ima-only-app.js" dist/index.html
           grep -q "Metas IMA" dist/index.html
           grep -q "Thallius" dist/src/ima-only-state.js
           grep -q "O QUE ESTUDAR AGORA" dist/src/ima-only-app.js
           grep -q "cycleSnapshot" dist/src/ima-continuous-cycle.js
+          grep -q "DEFAULT_PAUSED_SUBJECT_IDS" dist/src/ima-continuous-cycle.js
+          grep -q "PAUSADA" dist/src/ima-only-app.js
           grep -q "preserveVerifiedCamileProgress" dist/src/ima-only-state.js
           grep -q "historicalStudy" dist/src/ima-progress-validated-20261115.js
           grep -q "Diego Carvalho" dist/src/ima-only-state.js
