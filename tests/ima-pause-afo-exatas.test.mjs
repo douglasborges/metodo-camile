@@ -130,7 +130,8 @@ test('fase 2 permanece após concluir Thallius; Licitações entra, AFO/RL pulam
  assert.equal(t.afo,0);assert.equal(t['rl-ima'],0);
  assert.equal(sum(t),1320);
  // posição 4 Licitações -> pular 5 AFO, 6 RL -> posição 7 APU.
- s=advanceCycle(advanceCycle(advanceCycle(s)));
+ assert.equal(c.number,2,'a fase anterior já avança após a matéria correspondente');
+ s=advanceCycle(advanceCycle(s)); // 2 português -> 3 DCON -> 4 Licitações
  assert.equal(cycleSnapshot(s).number,4);
  assert.equal(cycleSnapshot(s).subjectId,'licita-ima');
  s=advanceCycle(s);
