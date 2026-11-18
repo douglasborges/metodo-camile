@@ -7,10 +7,10 @@ import {reconcileDconProgram} from './dcon-programacao-20261103.js';
 import {reconcileImaSubjects,imaLegislationPair,IMA_LAWS} from './ima-sc-curriculum-20261105.js';
 import {reconcileCamileImaProgress} from './ima-camile-progresso-metas-20261107.js';
 import {IMA_AUDIT,imaLicitationStatus,imaWeekScheduleFor,IMA_WELCOME} from './ima-sc-auditoria-edital-20261106.js';
-import {migrateCycle,cycleSnapshot,cycleTargets,creditCycleSession} from './ima-continuous-cycle.js';
+import {migrateCycle,cycleSnapshot,cycleTargets,creditCycleSession,isPausedSubject} from './ima-continuous-cycle.js';
 import {preserveVerifiedCamileProgress} from './ima-progress-validated-20261115.js';
 
-export const VERSION='3.2.1-ima-progresso-historico-validado-20261115';
+export const VERSION='3.2.2-ima-pausa-afo-exatas-20261118';
 export const OLD_STORAGE_KEY='metodo-et:camile:v1';
 export const ARCHIVE_KEY='metodo-et:camile:archive-before-ima-v3';
 export const SUBJECTS=Object.freeze([
@@ -268,6 +268,15 @@ function buildData(st){
 export function prepareIMA(raw){
  let st=clone(raw);
  if(st.imaOnly?.version===VERSION&&st.subjects?.length===SUBJECTS.length)return st;
+ // A versão imediatamente anterior já tem nove disciplinas auditadas:
+ // mudar SOMENTE flags e cursor, sem reprocessar nem filtrar sessões.
+ if(st.imaOnly?.version==='3.2.1-ima-progresso-historico-validado-20261115'&&
+    st.subjects?.length===SUBJECTS.length){
+  const out=migrateCycle(st);
+  out.imaOnly={...st.imaOnly,version:VERSION,updatedOn:'2026-11-18',
+   pauseNote:'AFO e RL/Exatas temporariamente pausadas; nenhum dado excluído'};
+  return out;
+ }
  if(!Array.isArray(st.subjects))st.subjects=[];
  if(!Array.isArray(st.sessions))st.sessions=[];
  if(!Array.isArray(st.imports))st.imports=[];
@@ -319,6 +328,7 @@ export function prepareIMA(raw){
   sessions,
   imports:[],archive:[],cycle:{index:0,minutes:0},
   ...(st.imaCycle?{imaCycle:st.imaCycle}:{}),
+  ...(st.imaStudyPause?{imaStudyPause:st.imaStudyPause}:{}),
   legislation:{sessions:lawSessions},
   imaProfile:{status:'IMA_ACTIVE',examDate:'2027-02-14',
    cycleWeeklyMinutes:1800,lawExtraWeeklyMinutes:210},
@@ -326,7 +336,7 @@ export function prepareIMA(raw){
   imaProgressReadout:st.imaProgressReadout,
   imaOnly:{version:VERSION,focus:'IMA-SC',activeIds:[...active],
    archivedOldSessions:initialSessionCount-sessions.length,
-   updatedOn:'2026-11-15',exam:'2027-02-14',dailyLawsExtra:30,
+   updatedOn:'2026-11-18',exam:'2027-02-14',dailyLawsExtra:30,
    notes:'Planejamento exclusivo IMA; backup integral anterior guardado separadamente no dispositivo.'}
  });
 
@@ -394,6 +404,7 @@ export {IMA_WELCOME,IMA_AUDIT};
 export function appendSession(st,input){
  const out=clone(st),u=getUnit(out,input.subjectId,input.unitId),date=input.date||isoToday();
  if(!u)throw Error('Selecione uma aula válida.');
+ if(isPausedSubject(out,input.subjectId))throw Error('Disciplina temporariamente pausada. O histórico permanece disponível.');
  if(input.subjectId==='licita-ima'&&!isLicUnlocked(out))throw Error('Licitações bloqueadas até DAD Pasta 08.');
  const minutes=Number(input.hours||0)*60+Number(input.minutes||0),
   questions=Number(input.questions||0),correct=Number(input.correct||0);
