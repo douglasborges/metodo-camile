@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {initialIMAState,prepareIMA,activeUnits,getUnit,appendSession,setTheory,weekSummary} from '../src/ima-only-state.js';
+import {initialIMAState,prepareIMA,activeUnits,getUnit,appendSession,setPart,weekSummary} from '../src/ima-only-state.js';
 import {cycleSnapshot,cycleTargets,advanceCycle,creditCycleSession,isPausedSubject,
  FOUNDATION_CYCLE,LICITATIONS_CYCLE,DEFAULT_PAUSED_SUBJECT_IDS,migrateCycle} from '../src/ima-continuous-cycle.js';
 
@@ -120,7 +120,7 @@ test('fase 2 permanece após concluir Thallius; Licitações entra, AFO/RL pulam
  let s=seed();
  for(const n of ['02','03','04','05','06','07','08']){
   const u=getUnit(s,'dad','ima-tha-dad-'+n);
-  s=setTheory(s,'dad',u.id,true,'2026-11-17');
+  for(const p of u.parts)s=setPart(s,'dad',u.id,p.id,true,'2026-11-17');
  }
  const c=cycleSnapshot(s),t=cycleTargets(s);
  assert.equal(c.phase,'2');
